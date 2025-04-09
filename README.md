@@ -1,11 +1,5 @@
 # Kanban
-Instructions: 
-* Replace "ID1_ID2_ID3" with the correct ID numbers
-* Replace the "00" number at the end with your group's number
-
-
 ## Group members
-ID1_ID2_ID3
-
+322395948_212172118_325047728
 ## Group number (from Moodle)
-00
+31
