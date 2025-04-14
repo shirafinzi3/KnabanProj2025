@@ -31,7 +31,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName, null);
-                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName, null));//add task list instead of null 
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName)); 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 

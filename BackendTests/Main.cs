@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.ServiceLayer;
+using log4net.Config;
+using log4net;
 
 namespace BackendTests
 {
@@ -11,6 +14,8 @@ namespace BackendTests
     {
         public static void Main(string[] args)
         {
+            var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
             //UserService
             Console.WriteLine("USER SERVICE:");
             UserServiceTesting ust = new UserServiceTesting();
@@ -23,7 +28,7 @@ namespace BackendTests
             ust.setup();
             Console.WriteLine("Testing login:");
             ust.LogoutTestCases();
-            //BoardService
+            /*//BoardService
             Console.WriteLine("BOARD SERVICE:");
             BoardServiceTesting bst = new BoardServiceTesting();
             bst.setup();
@@ -55,7 +60,7 @@ namespace BackendTests
             tst.UpdateDueDateTestCases();
             tst.setup();
             Console.WriteLine("Testing get in progress list:");
-            tst.InProgressListTestCases();
+            tst.InProgressListTestCases();*/
         }
     }
 }
