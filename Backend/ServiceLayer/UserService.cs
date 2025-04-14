@@ -48,7 +48,7 @@ namespace Backend.ServiceLayer
             {
                 bool res = UF.Logout(email);
                 Response<bool> res1 = new Response<bool>(null, res);
-                return JsonSerializer.Serialize(res);
+                return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
             {

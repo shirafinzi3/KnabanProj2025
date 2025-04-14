@@ -31,7 +31,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName, null);
-                Response<BoardBL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName, boardBL.Tasks));
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName, null));//add task list instead of null 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 
@@ -69,7 +69,7 @@ namespace Backend.ServiceLayer
             try
             {
                 Dictionary<string,BoardBL> listOfBoards = BF.GetAllBoards(email);
-                Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, //Converting the dictionary to a boardSL dictionary);
+                Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, null); //Converting the dictionary to a boardSL dictionary);
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)

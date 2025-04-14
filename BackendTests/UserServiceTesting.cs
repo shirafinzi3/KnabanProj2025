@@ -19,18 +19,18 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string pass = "Maya12";
-            TestRegister(pass, email);//Valid Register
-            TestRegister(pass, email);//Trying to register with the same email
+            TestRegister(email, pass);//Valid Register
+            TestRegister(email,pass);//Trying to register with the same email
             pass = "AAAAAA";
-            TestRegister(pass, email);//Invalid password - no numbers
+            TestRegister(email,pass);//Invalid password - no numbers
             pass = "A12345";
-            TestRegister(pass, email);//Invalid password - no lowercase letters
+            TestRegister(email, pass);//Invalid password - no lowercase letters
             pass = "a12345";
-            TestRegister(pass, email);//Invalid password - no uppercase letters
+            TestRegister(email, pass);//Invalid password - no uppercase letters
             pass = "Ab1";
-            TestRegister(pass, email);//Invalid password - too short password
+            TestRegister(email, pass);//Invalid password - too short password
             pass = "1234567890ABCDEFGHIJKlmnop";
-            TestRegister(pass, email);//Invalid password - too long password
+            TestRegister(email, pass);//Invalid password - too long password
         }
         public void TestRegister(String email, String pass)
         {
@@ -68,8 +68,10 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             US.Register(email, "Mm2121728");
+            US.Login(email, "Mm2121728");
+            LogoutTest(email); // Valid logout
             LogoutTest(email); // Try to logout a not logged in user
-                               // 
+            LogoutTest("tomer@post.bgu.ac.il");//Try to logout a non existent user
             //Logout and try to access your borad/tasks
         }
         public void LogoutTest(string email)

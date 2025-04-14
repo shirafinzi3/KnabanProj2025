@@ -8,5 +8,23 @@ namespace Backend.BuisnessLayer
 {
     internal class TaskBL
     {
+        private long taskID;
+        private DateTime cTime;
+        public string title;
+        public DateTime dueDate;
+        public string desc;
+        public string column;
+        public TaskBL(string title, DateTime dueDate, string desc)
+        {
+            this.title = title;
+            this.dueDate = dueDate;
+            this.desc = desc;
+        }
+        public long TaskID { get; }
+        public DateTime CTime { get; }
+        public string Desc { get; set; }
+        public string Column { get; set; }
+        public string Title { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }
