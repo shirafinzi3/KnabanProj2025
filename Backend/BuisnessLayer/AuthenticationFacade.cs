@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
@@ -9,6 +10,8 @@ namespace Backend.BuisnessLayer
 {
     internal class AuthenticationFacade
     {
+       
+
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly Dictionary<string, bool> logins = new Dictionary<string, bool>();
