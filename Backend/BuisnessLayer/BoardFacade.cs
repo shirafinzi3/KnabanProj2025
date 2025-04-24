@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
+using log4net;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
 {
     internal class BoardFacade
     {
-        Dictionary<string, Dictionary<string, BoardBL>> boards = new Dictionary<string, Dictionary<string, BoardBL>>();
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly Dictionary<string, Dictionary<string, BoardBL>> boards = new Dictionary<string, Dictionary<string, BoardBL>>();
+        private readonly AuthenticationFacade auth = new AuthenticationFacade();
         public BoardBL CreateBoard(string email, string boardName, int? maxTasks)
         {
             return null;

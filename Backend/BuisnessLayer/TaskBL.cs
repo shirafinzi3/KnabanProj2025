@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace Backend.BuisnessLayer
 {
     internal class TaskBL
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private long taskID;
         private DateTime cTime;
         public string title;
@@ -26,5 +28,6 @@ namespace Backend.BuisnessLayer
         public string Column { get; set; }
         public string Title { get; set; }
         public DateTime DueDate { get; set; }
+
     }
 }
