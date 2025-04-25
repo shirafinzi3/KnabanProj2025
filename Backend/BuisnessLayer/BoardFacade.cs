@@ -62,22 +62,22 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             if (!auth.IsLoggedIn(email))
             {
                 Log.Error($"User {email} is not logged in");
-                throw new Exception($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
             }
             if (!boards.ContainsKey(email))
             {
                 Log.Error($"User {email} does not exist");
-                throw new Exception($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
             }
             if (!boards[email].ContainsKey(boardName))
             {
                 Log.Error($"Board {boardName} does not exist");
-                throw new Exception($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
             if (column == "done")
             {
                 Log.Error($"Can not update the {field} of a task that is already done");
-                throw new Exception($"Can not update the {field} of a task that is already done");
+                throw new InvalidOperationException($"Can not update the {field} of a task that is already done");
             }
             return boards[email][boardName].Tasks[column][taskID];
 
