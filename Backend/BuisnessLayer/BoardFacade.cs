@@ -40,9 +40,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             List<TaskBL> inProgressList = new List<TaskBL>();
             foreach (BoardBL board in boards[email].Values)
             {
-                if (board.Tasks.ContainsKey("Inprogress"))
+                if (board.Tasks.ContainsKey("in progress"))
                 {
-                    foreach (TaskBL task in board.Tasks["Inprogress"].Values)
+                    foreach (TaskBL task in board.Tasks["in progress"].Values)
                     {
                         inProgressList.Add(task);
                     }

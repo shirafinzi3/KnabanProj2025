@@ -137,11 +137,12 @@ namespace Backend.ServiceLayer
             {
                 List<TaskBL> taskBLs = BF.InProgressList(email);
                 List<TaskSL> taskSLs = new List<TaskSL>();
+
                 foreach(TaskBL taskBL in taskBLs)
                 {
                     taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.Column,taskBL.DueDate,taskBL.CTime,taskBL.TaskID));
                 }
-                Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, taskSLs);//add task list instaed of null
+                Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, taskSLs);
                 return JsonSerializer.Serialize(res); 
             }
             catch (Exception e)
