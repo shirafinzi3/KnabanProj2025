@@ -27,7 +27,28 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public List<TaskBL> InProgressList(string email)
         {
-            return null;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            List<TaskBL> inProgressList = new List<TaskBL>();
+            foreach (BoardBL board in boards[email].Values)
+            {
+                if (board.Tasks.ContainsKey("Inprogress"))
+                {
+                    foreach (TaskBL task in board.Tasks["Inprogress"].Values)
+                    {
+                        inProgressList.Add(task);
+                    }
+                }
+            }
+            return inProgressList;
         }
         public TaskBL AddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
