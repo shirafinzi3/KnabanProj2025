@@ -47,14 +47,15 @@ namespace Backend.ServiceLayer
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">The unique board name in which the task is</param>
-        /// <param name="Id">A unique id for the task</param>
+        /// <param name="taskID">A unique id for the task</param>
         /// <param name="title">The title of the task</param>
+        /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateTitle(String email, String boardName, long taskID, String title)
+        public string UpdateTitle(string email, string boardName, long taskID, string title, string column)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateTitle(email, boardName, taskID, title);
+                TaskBL taskBL = BF.UpdateTitle(email, boardName, taskID, title, column);
                 Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
@@ -64,18 +65,19 @@ namespace Backend.ServiceLayer
             }
         }
         /// <summary>
-        /// This method updates the task title
+        /// This method updates the task description
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">The unique board name in which the task is</param>
-        /// <param name="Id">A unique id for the task</param>
+        /// <param name="taskID">A unique id for the task</param>
         /// <param name="desc">The description of the task</param>
+        /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateDesc(String email, String boardName, long taskID, String desc)
+        public string UpdateDesc(string email, string boardName, long taskID, string desc, string column)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateDesc(email, boardName, taskID, desc);
+                TaskBL taskBL = BF.UpdateDesc(email, boardName, taskID, desc, column);
                 Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
@@ -85,18 +87,19 @@ namespace Backend.ServiceLayer
             }
         }
         /// <summary>
-        /// This method updates the task title
+        /// This method updates the due date of a task
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">The unique board name in which the task is</param>
-        /// <param name="Id">A unique id for the task</param>
+        /// <param name="taskID">A unique id for the task</param>
         /// <param name="dueDate">The due date of the task</param>
+        /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateDueDate(String email, String boardName, long taskID, DateTime dueDate)
+        public string UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate, string column)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateDueDate(email, boardName, taskID, dueDate);
+                TaskBL taskBL = BF.UpdateDueDate(email, boardName, taskID, dueDate, column);
                 Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column , taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
