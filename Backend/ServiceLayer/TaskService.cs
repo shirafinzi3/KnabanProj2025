@@ -138,13 +138,19 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                List<TaskBL> inProgressList = BF.InProgressList(email);
-                Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, null);//add task list instaed of null
+                List<TaskBL> taskBLs = BF.InProgressList(email);
+                List<TaskSL> taskSLs = new List<TaskSL>();
+
+                foreach(TaskBL taskBL in taskBLs)
+                {
+                    taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.Column,taskBL.DueDate,taskBL.CTime,taskBL.TaskID));
+                }
+                Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, taskSLs);
                 return JsonSerializer.Serialize(res); 
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<TaskSL>(e.Message));
+                return JsonSerializer.Serialize(new Response<List<TaskSL>>(e.Message));
             }
         }
     }
