@@ -24,9 +24,47 @@ namespace Backend.BuisnessLayer
         }
         public long TaskID { get; }
         public DateTime CTime { get; }
-        public string Desc { get; set; }
+        public string Desc {
+            get => desc; 
+            set
+            {
+                if (value.Length > 300)
+                {
+                    Log.Error("Provided description exceeds character limit");
+                    throw new Exception("Provided description exceeds character limit");
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    Log.Error("Provided description is null or empty");
+                    throw new Exception("Provided descritpion is null or empty");
+                }
+                else
+                {
+                    this.desc = value;
+                }
+            }
+        }
         public string Column { get; set; }
-        public string Title { get; set; }
+        public string Title {
+            get => title; 
+            set
+            {
+                if (value.Length > 50)
+                {
+                    Log.Error("Provided title exceeds charachter limit");
+                    throw new Exception("Provided titlr exceeds character limit");
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    Log.Error("Provided title is null or empty");
+                    throw new Exception("Provided title is null or empty");
+                }
+                else
+                {
+                    this.title = value;
+                }
+            }
+        }
         public DateTime DueDate { get; set; }
 
     }

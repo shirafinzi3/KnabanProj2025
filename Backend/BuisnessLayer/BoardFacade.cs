@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,21 +34,53 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         {
             return null;
         }
-        public TaskBL UpdateTitle(string email, string boardName, long taskID, string title) 
+        public TaskBL UpdateTitle(string email, string boardName, long taskID, string title, string column) 
         {
-            return null;
+            TaskBL toChange = GetEditableTask(email,boardName,taskID, "title" ,column);
+            toChange.Title= title;
+            return toChange;
+
         }
-        public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc)
+        public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc, string column)
         {
-            return null;
+            TaskBL toChange = GetEditableTask(email, boardName, taskID, "description", column);
+            toChange.Desc = desc;
+            return toChange;
         }
-        public TaskBL UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate)
+        public TaskBL UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate,string column)
         {
-            return null;
+            TaskBL toChange = GetEditableTask(email, boardName, taskID, "due date", column);
+            toChange.DueDate = dueDate;
+            return toChange;
         }
         public TaskBL MoveTask(string email, string boardName, long taskID) 
         {
             return null;
+        }
+        private TaskBL GetEditableTask(string email, string boardName, long taskID, string field, string column)
+        {
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            if (column == "done")
+            {
+                Log.Error($"Can not update the {field} of a task that is already done");
+                throw new InvalidOperationException($"Can not update the {field} of a task that is already done");
+            }
+            return boards[email][boardName].Tasks[column][taskID];
+
         }
 
     }
