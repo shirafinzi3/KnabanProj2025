@@ -42,6 +42,29 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<TaskSL>(e.Message));
             }
         }
+
+        /// <summary>
+        /// This method adds a new task to a specific board
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">The unique board name to which the task needs to be added</param>
+        /// <param name="title">The title of the new task</param>
+        /// <param name="desc">The description of the task</param>
+        /// <param name="dueDate">The due date set by the user for the task</param>
+        /// <returns></returns>
+        public string DeleteTask(String email,String boardName, long taskID)
+        {
+            try
+            {
+                bool res = BF.DeleteTask(email, boardName, taskID);
+                Response<bool> res1 = new Response<bool>(null, res);
+                return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<bool>(e.Message));
+            }
+        }
         /// <summary>
         /// This method updates the task title
         /// </summary>
