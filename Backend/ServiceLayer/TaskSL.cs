@@ -23,11 +23,10 @@ namespace Backend.ServiceLayer
         /// <param name="dueDate">The due date set by the user for the task</param>
         /// <param name="cTime">The creation time in which the task was created </param>
         /// <param name="Id">The unique id of the new task</param>
-        public TaskSL(string title, string description, string column, DateTime dueDate, DateTime cTime, long Id)
+        public TaskSL(string title, string description, DateTime dueDate, DateTime cTime, long Id)
         {
             this.title = title;
             this.description = description;
-            this.column = column;
             this.cTime = cTime;
             this.dueDate = dueDate;
             this.Id = Id;
@@ -36,6 +35,6 @@ namespace Backend.ServiceLayer
         public string Description { get; set; } 
         public DateTime CTime { get;}
         public DateTime DueDate { get; set; }
-        public string Column {  get; set; }
+        
     }
 }
