@@ -41,12 +41,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             List<TaskBL> inProgressList = new List<TaskBL>();
             foreach (BoardBL board in boards[email].Values)
             {
-                if (board.Tasks.ContainsKey("in progress"))
+                foreach (TaskBL task in board.Columns["In Progress"].tasks.Values)
                 {
-                    foreach (TaskBL task in board.Tasks["in progress"].Values)
-                    {
-                        inProgressList.Add(task);
-                    }
+                    inProgressList.Add(task);
                 }
             }
             return inProgressList;
@@ -72,22 +69,22 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             BoardBL board = boards[email][boardName];
             return board.addTask(title, dueDate, desc);
         }
-        public TaskBL UpdateTitle(string email, string boardName, long taskID, string title, string column) 
+        public TaskBL UpdateTitle(string email, string boardName, long taskID, string title) 
         {
-            TaskBL toChange = GetEditableTask(email,boardName,taskID, "title" ,column);
+            TaskBL toChange = GetEditableTask(email,boardName,taskID, "title");
             toChange.Title= title;
             return toChange;
 
         }
-        public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc, string column)
+        public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc)
         {
-            TaskBL toChange = GetEditableTask(email, boardName, taskID, "description", column);
+            TaskBL toChange = GetEditableTask(email, boardName, taskID, "description");
             toChange.Desc = desc;
             return toChange;
         }
-        public TaskBL UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate,string column)
+        public TaskBL UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate)
         {
-            TaskBL toChange = GetEditableTask(email, boardName, taskID, "due date", column);
+            TaskBL toChange = GetEditableTask(email, boardName, taskID, "due date");
             toChange.DueDate = dueDate;
             return toChange;
         }
@@ -95,8 +92,10 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         {
             return null;
         }
-        private TaskBL GetEditableTask(string email, string boardName, long taskID, string field, string column)
+        private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
+            TaskBL toReturn = null;
+            Column column = null;
             if (!auth.IsLoggedIn(email))
             {
                 Log.Error($"User {email} is not logged in");
@@ -112,13 +111,26 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            if (column == "done")
+            foreach(Column c in boards[email][boardName].Columns.Values)
+            {
+                if (c.tasks.ContainsKey(taskID))
+                {
+                    toReturn = c.tasks[taskID];
+                    column = c;
+                    break;
+                }
+            }
+            if(toReturn == null)
+            {
+                Log.Error($"TaskID {taskID} does not exist in board {boardName}");
+                throw new KeyNotFoundException($"TaskID {taskID} does not exist in board {boardName}");
+            }
+            if (column.columnName.Equals("Done"))
             {
                 Log.Error($"Can not update the {field} of a task that is already done");
                 throw new InvalidOperationException($"Can not update the {field} of a task that is already done");
             }
-            return boards[email][boardName].Tasks[column][taskID];
-
+            return toReturn;
         }
 
     }
