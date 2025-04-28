@@ -16,9 +16,9 @@ namespace Backend.BuisnessLayer
         private readonly Dictionary<String, Column> columns; //Board constructor should initialize this with below const being keys
         private int[] maxTasks; //need to check if need
         private long nextTaskID; //initialize as 1 in constructor
-        const String BACKLOG = "Backlog";
-        const String IN_PROGRESS = "In Progress";
-        const String DONE = "Done";
+        public const String BACKLOG = "Backlog";
+        public const String IN_PROGRESS = "In Progress";
+        public const String DONE = "Done";
 
         //Maya In the constructor pls make sure to intialize columns with the three constants as the keys, and a new Column 
         //for each key :) thats how I wrote columns to work 

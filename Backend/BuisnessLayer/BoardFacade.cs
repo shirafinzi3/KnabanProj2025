@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
 using log4net;
-using Microsoft.VisualBasic;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
 {
