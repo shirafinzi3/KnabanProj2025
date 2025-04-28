@@ -10,17 +10,19 @@ namespace Backend.BuisnessLayer
     internal class TaskBL
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private long taskID;
-        private DateTime cTime;
+        private readonly long taskID;
+        private readonly DateTime cTime;
         public string title;
         public DateTime dueDate;
         public string desc;
         public string column;
-        public TaskBL(string title, DateTime dueDate, string desc)
+        public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
             this.title = title;
             this.dueDate = dueDate;
             this.desc = desc;
+            this.taskID = id;
+            this.cTime = DateTime.Now;
         }
         public long TaskID { get; }
         public DateTime CTime { get; }
