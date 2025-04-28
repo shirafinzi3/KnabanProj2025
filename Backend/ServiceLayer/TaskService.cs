@@ -140,9 +140,9 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                TaskBL taskBL = BF.MoveTask(email, boardName, taskID);
-                Response<TaskSL> res = new Response<TaskSL>(null ,new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
-                return JsonSerializer.Serialize(res);  
+                bool res = BF.MoveTask(email, boardName, taskID);
+                Response<bool> res1 = new Response<bool>(null, res);
+                return JsonSerializer.Serialize(res1);  
             }
             catch (Exception e)
             {
