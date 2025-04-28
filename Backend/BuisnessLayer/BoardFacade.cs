@@ -51,9 +51,26 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             return inProgressList;
         }
+
         public TaskBL AddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
-            return null;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in"); //maybe make method that checks these first two and we can  
+                throw new InvalidOperationException($"User {email} is not logged in");//put in front of every method that needs it
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.addTask(title, dueDate, desc);
         }
         public TaskBL UpdateTitle(string email, string boardName, long taskID, string title, string column) 
         {
