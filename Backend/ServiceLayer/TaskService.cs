@@ -34,7 +34,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.AddTask(email, boardName, title, desc, dueDate);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -72,12 +72,12 @@ namespace Backend.ServiceLayer
         /// <param name="title">The title of the task</param>
         /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateTitle(string email, string boardName, long taskID, string title, string column)
+        public string UpdateTitle(string email, string boardName, long taskID, string title)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateTitle(email, boardName, taskID, title, column);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                TaskBL taskBL = BF.UpdateTitle(email, boardName, taskID, title);
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -94,12 +94,12 @@ namespace Backend.ServiceLayer
         /// <param name="desc">The description of the task</param>
         /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateDesc(string email, string boardName, long taskID, string desc, string column)
+        public string UpdateDesc(string email, string boardName, long taskID, string desc)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateDesc(email, boardName, taskID, desc, column);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                TaskBL taskBL = BF.UpdateDesc(email, boardName, taskID, desc);
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -116,12 +116,12 @@ namespace Backend.ServiceLayer
         /// <param name="dueDate">The due date of the task</param>
         /// <param name="column">The column in which the task is</param>
         /// <returns>A TaskSL or an error</returns>
-        public string UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate, string column)
+        public string UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate)
         {
             try
             {
-                TaskBL taskBL = BF.UpdateDueDate(email, boardName, taskID, dueDate, column);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column , taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                TaskBL taskBL = BF.UpdateDueDate(email, boardName, taskID, dueDate);
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc , taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -141,7 +141,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.MoveTask(email, boardName, taskID);
-                Response<TaskSL> res = new Response<TaskSL>(null ,new TaskSL(taskBL.Title, taskBL.Desc, taskBL.Column, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null ,new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
                 return JsonSerializer.Serialize(res);  
             }
             catch (Exception e)
@@ -164,7 +164,7 @@ namespace Backend.ServiceLayer
 
                 foreach(TaskBL taskBL in taskBLs)
                 {
-                    taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.Column,taskBL.DueDate,taskBL.CTime,taskBL.TaskID));
+                    taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.DueDate,taskBL.CTime,taskBL.TaskID));
                 }
                 Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, taskSLs);
                 return JsonSerializer.Serialize(res); 
