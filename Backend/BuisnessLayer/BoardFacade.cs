@@ -14,17 +14,59 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly Dictionary<string, Dictionary<string, BoardBL>> boards = new Dictionary<string, Dictionary<string, BoardBL>>();
         private readonly AuthenticationFacade auth = new AuthenticationFacade();
-        public BoardBL CreateBoard(string email, string boardName, int? maxTasks)
+        public BoardBL CreateBoard(string email, string boardName, int[] maxTasks)
         {
-            return null;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            if (boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} already exists for user {email}");
+                throw new InvalidOperationException($"Board {boardName} already exists for user {email}");
+            }
+            
+            BoardBL newBoard = new BoardBL(boardName, maxTasks);
+            boards[email][boardName] = newBoard;
+            return newBoard;
+
         }
         public bool DeleteBoard(string email, string boardName)
         {
-            return false;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            
+            bool isRemove= boards[email].Remove(boardName);
+            Log.Info($"Board {boardName} deleted for user {email} - {isRemove}");
+            return isRemove;
         }
         public Dictionary<string, BoardBL> GetAllBoards(string email) 
         {
-            return null;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            return boards[email];
         }
         public List<TaskBL> InProgressList(string email)
         {

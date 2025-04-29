@@ -25,12 +25,14 @@ namespace Backend.ServiceLayer
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">A unique name for the board that needs to be created</param>
+        /// <param name="maxTasks"> Array with maxTasks per column (-1 no restriction) </param>
         /// <returns>A BoardSL object or an error</returns>
-        public string CreateBoard(String email, String boardName)
+
+        public string CreateBoard(String email, String boardName, int[] maxTasks)
         {
             try
             {
-                BoardBL boardBL = BF.CreateBoard(email, boardName, null);
+                BoardBL boardBL = BF.CreateBoard(email, boardName, maxTasks);
                 Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName)); 
                 return JsonSerializer.Serialize(res);
             }
