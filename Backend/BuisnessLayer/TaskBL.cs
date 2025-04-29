@@ -15,7 +15,6 @@ namespace Backend.BuisnessLayer
         public string title;
         public DateTime dueDate;
         public string desc;
-        public string column;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
             this.title = title;
@@ -46,7 +45,6 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public string Column { get; set; }
         public string Title {
             get => title; 
             set
