@@ -32,9 +32,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             tasks.Add(task.TaskID, task);
         }
 
-        public void Remove(long taskId)
+        public bool Remove(long taskId)
         {
-            tasks.Remove(taskId);
+           return tasks.Remove(taskId);
         }
     }
 }

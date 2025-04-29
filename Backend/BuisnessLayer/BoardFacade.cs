@@ -69,7 +69,29 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             BoardBL board = boards[email][boardName];
             return board.addTask(title, dueDate, desc);
         }
+
+        public bool DeleteTask(String email, String boardName, long taskID)
+        {
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in"); 
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.deleteTask(taskID);
+        } 
         public TaskBL UpdateTitle(string email, string boardName, long taskID, string title) 
+
         {
             TaskBL toChange = GetEditableTask(email,boardName,taskID, "title");
             toChange.Title= title;
@@ -88,9 +110,25 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             toChange.DueDate = dueDate;
             return toChange;
         }
-        public TaskBL MoveTask(string email, string boardName, long taskID) 
+        public bool MoveTask(string email, string boardName, long taskID) 
         {
-            return null;
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist");
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.moveTask(taskID);
         }
         private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
