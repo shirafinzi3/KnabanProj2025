@@ -13,16 +13,26 @@ namespace Backend.BuisnessLayer
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string boardName;
-        private readonly Dictionary<String, Column> columns; //Board constructor should initialize this with below const being keys
-        private int[] maxTasks; //need to check if need
-        private long nextTaskID; //initialize as 1 in constructor
+        private readonly Dictionary<String, Column> columns; 
+        private long nextTaskID;
         public const String BACKLOG = "Backlog";
         public const String IN_PROGRESS = "In Progress";
         public const String DONE = "Done";
 
-        //Maya In the constructor pls make sure to intialize columns with the three constants as the keys, and a new Column 
-        //for each key :) thats how I wrote columns to work 
-        //Also pls intitalize nextTaskID as 1 in the constructor, thank you!! <3
+
+        public BoardBL(string boardName, int[] maxTsaks)
+        {
+            this.boardName = boardName;
+            this.columns = new Dictionary<String, Column>
+            {
+                 { BACKLOG, new Column(BACKLOG, maxTasks[0]) },
+                 { IN_PROGRESS, new Column(IN_PROGRESS, maxTasks[1]) },
+                 { DONE, new Column(DONE, maxTasks[2]) }
+            }
+            this.nextTaskID = 1;
+            
+        }
+        
         public string BoardName
         {
             get;
