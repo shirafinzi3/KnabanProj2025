@@ -28,7 +28,7 @@ namespace Backend.ServiceLayer
         /// <param name="title">The title of the new task</param>
         /// <param name="desc">The description of the task</param>
         /// <param name="dueDate">The due date set by the user for the task</param>
-        /// <returns></returns>
+        /// <returns>A taskSL or an error</returns>
         public string AddTask(String email, String boardName, String title, String desc, DateTime dueDate)
         {
             try
@@ -49,7 +49,7 @@ namespace Backend.ServiceLayer
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">The unique board name to which the task needs to be added</param>
         /// <param name="taskID">The task id of the intended to be deleted</param>
-        /// <returns></returns>
+        /// <returns> returns bool or error </returns>
         public string DeleteTask(String email,String boardName, long taskID)
         {
             try

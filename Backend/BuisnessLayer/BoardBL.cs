@@ -20,7 +20,7 @@ namespace Backend.BuisnessLayer
         public const String DONE = "Done";
 
 
-        public BoardBL(string boardName, int[] maxTsaks)
+        public BoardBL(string boardName, int[] maxTasks)
         {
             this.boardName = boardName;
             this.columns = new Dictionary<String, Column>
@@ -28,7 +28,7 @@ namespace Backend.BuisnessLayer
                  { BACKLOG, new Column(BACKLOG, maxTasks[0]) },
                  { IN_PROGRESS, new Column(IN_PROGRESS, maxTasks[1]) },
                  { DONE, new Column(DONE, maxTasks[2]) }
-            }
+            };
             this.nextTaskID = 1;
             
         }

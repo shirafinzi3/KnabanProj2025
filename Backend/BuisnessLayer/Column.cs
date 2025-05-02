@@ -13,10 +13,10 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public String columnName { get; }
-        public int? maxTasks { get; }
+        public int maxTasks { get; }
         public readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
 
-        public Column(String columnName, int? maxTasks)
+        public Column(String columnName, int maxTasks)
         {
             this.columnName = columnName;
             this.maxTasks = maxTasks;
@@ -24,7 +24,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public void Add(TaskBL task)
         {
-            if (maxTasks.HasValue && tasks.Count >= maxTasks)
+            if (maxTasks>=0 && tasks.Count >= maxTasks) //if -1 (maxTasks<0) no limit, if not, check column isnt at capacity
             {
                 Log.Error($"Column {columnName} is full");
                 throw new InvalidOperationException($"Column {columnName} is full");
