@@ -15,6 +15,8 @@ namespace Backend.BuisnessLayer
         public string title;
         public DateTime dueDate;
         public string desc;
+        public const int DESC_LIM= 300;
+        public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
             this.title = title;
@@ -29,15 +31,15 @@ namespace Backend.BuisnessLayer
             get => desc; 
             set
             {
-                if (value.Length > 300)
+                if (value.Length > DESC_LIM)
                 {
                     Log.Error("Provided description exceeds character limit");
                     throw new Exception("Provided description exceeds character limit");
                 }
-                else if (string.IsNullOrEmpty(value))
+                else if (desc==null)
                 {
-                    Log.Error("Provided description is null or empty");
-                    throw new Exception("Provided descritpion is null or empty");
+                    Log.Error("Provided description is null");
+                    throw new Exception("Provided descritpion is null");
                 }
                 else
                 {
@@ -49,7 +51,7 @@ namespace Backend.BuisnessLayer
             get => title; 
             set
             {
-                if (value.Length > 50)
+                if (value.Length > TITLE_LIM)
                 {
                     Log.Error("Provided title exceeds charachter limit");
                     throw new Exception("Provided titlr exceeds character limit");
