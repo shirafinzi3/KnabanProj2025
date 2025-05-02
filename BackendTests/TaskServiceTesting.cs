@@ -24,8 +24,9 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName);
+            BS.CreateBoard(email, boardName, maxTasks);
             TestAddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));// Valid add
             TestAddTask(email, boardName, "", "desc", DateTime.Now.AddDays(3));//Invalid - Empty title
             TestAddTask(email, boardName, new string('A', 51), "desc", DateTime.Now.AddDays(3)); // Invalid- Title exceeds max length
@@ -46,8 +47,9 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName);
+            BS.CreateBoard(email, boardName, maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateTitle(email, boardName, 0, "New Title"); // Valid update - TODO check id synchronizing
             TestUpdateTitle(email, boardName, 0, "");//Invalid - Empty title
@@ -68,8 +70,9 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName);
+            BS.CreateBoard(email, boardName, maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDueDate(email, boardName, 0, DateTime.Now.AddDays(5)); // Valid update
             TestUpdateDueDate(email, boardName, 999, DateTime.Now.AddDays(5));// Invalid - Non-existent task - TODO check id synchronizing
@@ -89,8 +92,9 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName);
+            BS.CreateBoard(email, boardName,maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDesc(email, boardName, 0, "New Description");// Valid update
             TestUpdateDesc(email, boardName, 0, "");// Valid update - no description
@@ -112,8 +116,9 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName);
+            BS.CreateBoard(email, boardName,maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestMoveTask(email, boardName, 0);// Valid move from Backlog to In Progress
             TestMoveTask(email, boardName, 0);// Valid move from In Progress to Done
@@ -137,9 +142,10 @@ namespace BackendTests
             string email = "MayaLich@post.bgu.ac.il";
             string boardName1 = "Board1";
             string boardName2 = "Board2";
+            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName1);
-            BS.CreateBoard(email, boardName2);
+            BS.CreateBoard(email, boardName1,maxTasks);
+            BS.CreateBoard(email, boardName2,maxTasks);
             TS.AddTask(email, boardName1, "Task1", "desc", DateTime.Now.AddDays(3));
             TS.AddTask(email, boardName2, "Task2", "desc", DateTime.Now.AddDays(3));
             TS.MoveTask(email, boardName1, 1);// Move Task1 to In Progress

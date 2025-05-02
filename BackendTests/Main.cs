@@ -28,7 +28,7 @@ namespace BackendTests
             ust.setup();
             Console.WriteLine("Testing login:");
             ust.LogoutTestCases();
-            /*//BoardService
+            //BoardService
             Console.WriteLine("BOARD SERVICE:");
             BoardServiceTesting bst = new BoardServiceTesting();
             bst.setup();
@@ -60,7 +60,7 @@ namespace BackendTests
             tst.UpdateDueDateTestCases();
             tst.setup();
             Console.WriteLine("Testing get in progress list:");
-            tst.InProgressListTestCases();*/
+            tst.InProgressListTestCases();
         }
     }
 }
