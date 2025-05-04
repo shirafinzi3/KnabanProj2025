@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.ServiceLayer;
 
 namespace BackendTests
 {
@@ -13,7 +14,8 @@ namespace BackendTests
         public UserService US;
         public void setup()
         {
-            US = new UserService(); 
+            ServiceFactory sf = new ServiceFactory();
+            this.US = sf.US; 
         }
         public void RegisterTestCases()
         {

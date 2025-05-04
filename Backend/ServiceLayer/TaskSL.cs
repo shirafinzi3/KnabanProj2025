@@ -8,12 +8,11 @@ namespace Backend.ServiceLayer
 {
     public class TaskSL
     {
-        public long Id;
-        public String title;
-        public String description;
-        public String column;
-        public DateTime cTime;
-        public DateTime dueDate;
+        public long Id {  get; set; }
+        public String Title {  get; set; }
+        public String Description {  get; set; }
+        public DateTime CTime { get; }
+        public DateTime DueDate {  get; set; }
         /// <summary>
         /// This constuctor initiates a new TaskSL object.
         /// </summary>
@@ -25,16 +24,12 @@ namespace Backend.ServiceLayer
         /// <param name="Id">The unique id of the new task</param>
         public TaskSL(string title, string description, DateTime dueDate, DateTime cTime, long Id)
         {
-            this.title = title;
-            this.description = description;
-            this.cTime = cTime;
-            this.dueDate = dueDate;
+            this.Title = title;
+            this.Description = description;
+            this.CTime = cTime;
+            this.DueDate = dueDate;
             this.Id = Id;
         }
-        public string Title { get; set; }
-        public string Description { get; set; } 
-        public DateTime CTime { get;}
-        public DateTime DueDate { get; set; }
         
     }
 }

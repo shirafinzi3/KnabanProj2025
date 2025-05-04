@@ -12,8 +12,14 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
     internal class BoardFacade
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly Dictionary<string, Dictionary<string, BoardBL>> boards = new Dictionary<string, Dictionary<string, BoardBL>>();
-        private readonly AuthenticationFacade auth = new AuthenticationFacade();
+        private readonly Dictionary<string, Dictionary<string, BoardBL>> boards;
+        private readonly AuthenticationFacade auth;
+
+        public BoardFacade (AuthenticationFacade auth)
+        {
+            this.auth = auth;
+            this.boards = new Dictionary<string, Dictionary<string, BoardBL>>();
+        }
         public BoardBL CreateBoard(string email, string boardName, int[] maxTasks)
         {
             if (!auth.IsLoggedIn(email))
@@ -23,8 +29,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             if (!boards.ContainsKey(email))
             {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
+                boards[email]= new Dictionary<string, BoardBL>();
             }
             if (boards[email].ContainsKey(boardName))
             {
@@ -37,22 +42,18 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             return newBoard;
 
         }
-        public bool DeleteBoard(string email, string boardName)
+        public void DeleteBoard(string email, string boardName)
         {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in");
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             
             bool isRemove= boards[email].Remove(boardName);
+            if (!isRemove) 
+            {
+                Log.Error($"cant delete {boardName} because does not exist");
+                throw new InvalidOperationException($"cant delete {boardName} because does not exist");
+            }
             Log.Info($"Board {boardName} deleted for user {email} - {isRemove}");
-            return isRemove;
+
         }
         public Dictionary<string, BoardBL> GetAllBoards(string email) 
         {
@@ -63,23 +64,14 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             if (!boards.ContainsKey(email))
             {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
+                Log.Error($"User {email} does not exist, or has no boards");
+                throw new KeyNotFoundException($"User {email} does not exist or has no boards");
             }
             return boards[email];
         }
         public List<TaskBL> InProgressList(string email)
         {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in");
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             List<TaskBL> inProgressList = new List<TaskBL>();
             foreach (BoardBL board in boards[email].Values)
             {
@@ -93,16 +85,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public TaskBL AddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in"); //maybe make method that checks these first two and we can  
-                throw new InvalidOperationException($"User {email} is not logged in");//put in front of every method that needs it
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             if (!boards[email].ContainsKey(boardName))
             {
                 Log.Error($"Board {boardName} does not exist");
@@ -114,16 +97,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public bool DeleteTask(String email, String boardName, long taskID)
         {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in"); 
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             if (!boards[email].ContainsKey(boardName))
             {
                 Log.Error($"Board {boardName} does not exist");
@@ -152,46 +126,29 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             toChange.DueDate = dueDate;
             return toChange;
         }
-        public bool MoveTask(string email, string boardName, long taskID) 
+        public void MoveTask(string email, string boardName, long taskID) 
         {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in");
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             if (!boards[email].ContainsKey(boardName))
             {
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
             BoardBL board = boards[email][boardName];
-            return board.moveTask(taskID);
+            board.moveTask(taskID);
         }
         private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
             TaskBL toReturn = null;
             Column column = null;
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in");
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boards.ContainsKey(email))
-            {
-                Log.Error($"User {email} does not exist");
-                throw new KeyNotFoundException($"User {email} does not exist");
-            }
+            emailAuth(email);
             if (!boards[email].ContainsKey(boardName))
             {
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            foreach(Column c in boards[email][boardName].Columns.Values)
+            BoardBL board = boards[email][boardName];
+            foreach(Column c in board.Columns.Values)
             {
                 if (c.tasks.ContainsKey(taskID))
                 {
@@ -211,6 +168,20 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"Can not update the {field} of a task that is already done");
             }
             return toReturn;
+        }
+
+        private void emailAuth(String email)
+        {
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                Log.Error($"User {email} does not exist, or has no boards");
+                throw new KeyNotFoundException($"User {email} does not exist or has no boards");
+            }
         }
 
     }

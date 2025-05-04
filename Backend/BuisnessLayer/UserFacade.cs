@@ -10,8 +10,14 @@ namespace Backend.BuisnessLayer
     internal class UserFacade
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly Dictionary<string, UserBL> users = new Dictionary<string, UserBL>();
-        private readonly AuthenticationFacade auth = new AuthenticationFacade();
+        private readonly Dictionary<string, UserBL> users;
+        private readonly AuthenticationFacade auth;
+
+        public UserFacade(AuthenticationFacade auth)
+        {
+            this.users = new Dictionary<string, UserBL>();
+            this.auth = auth;
+        }
         public UserBL Login(string email, string pass)
         {
             if (string.IsNullOrEmpty(email))
@@ -54,6 +60,7 @@ namespace Backend.BuisnessLayer
             }
             UserBL user = new UserBL(email, pass);
             users.Add(email, user);
+            auth.Login(email);
             return user;
         }
      
