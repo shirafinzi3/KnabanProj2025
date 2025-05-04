@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.ServiceLayer;
 using Microsoft.VisualBasic;
 
 namespace BackendTests
@@ -16,9 +17,10 @@ namespace BackendTests
         BoardService BS;
         public void setup()
         {
-            US = new UserService();
-            TS = new TaskService();
-            BS = new BoardService();
+            ServiceFactory sf = new ServiceFactory();
+            US = sf.US;
+            TS = sf.TS;
+            BS = sf.BS;
         }
         public void AddTaskTestCases()
         {
@@ -32,6 +34,7 @@ namespace BackendTests
             TestAddTask(email, boardName, new string('A', 51), "desc", DateTime.Now.AddDays(3)); // Invalid- Title exceeds max length
             TestAddTask(email, boardName, "Task2", new string('D', 301), DateTime.Now.AddDays(3)); // Invaid -Description exceeds max length
             TestAddTask(email, "NonExistentBoard", "Task4", "desc", DateTime.Now.AddDays(3));// Invalid - Add task to non-existent board
+            
         }
         public void TestAddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
@@ -51,9 +54,9 @@ namespace BackendTests
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName, maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
-            TestUpdateTitle(email, boardName, 0, "New Title"); // Valid update - TODO check id synchronizing
-            TestUpdateTitle(email, boardName, 0, "");//Invalid - Empty title
-            TestUpdateTitle(email, boardName, 0, new string('A', 51));// Invalid - Title exceeds max length
+            TestUpdateTitle(email, boardName, 1, "New Title"); // Valid update - TODO check id synchronizing
+            TestUpdateTitle(email, boardName, 1, "");//Invalid - Empty title
+            TestUpdateTitle(email, boardName, 1, new string('A', 51));// Invalid - Title exceeds max length
             TestUpdateTitle(email, boardName, 999, "Another Title"); // Invalid - Non-existent task - TODO check id synchronizing
         }
 
@@ -65,6 +68,8 @@ namespace BackendTests
             {
                 Console.WriteLine("Success");
             }
+            else Console.WriteLine("Failed");
+
         }
         public void UpdateDueDateTestCases()
         {
@@ -130,7 +135,7 @@ namespace BackendTests
         public void TestMoveTask(string email, string boardName, long taskId)
         {
             string str = TS.MoveTask(email, boardName, taskId);
-            Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
+            Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
             if (res.ErrorMsg == null)
             {
                 Console.WriteLine("Success");

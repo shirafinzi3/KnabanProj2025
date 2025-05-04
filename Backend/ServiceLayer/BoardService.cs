@@ -16,9 +16,9 @@ namespace Backend.ServiceLayer
         /// <summary>
         /// This constructor initiates a new Board Facade object
         /// </summary>
-        public BoardService() 
-        { 
-            this.BF = new BoardFacade();
+        internal BoardService(BoardFacade BF) 
+        {
+            this.BF = BF;
         }
         /// <summary>
         /// This method creates a board for a user
@@ -51,8 +51,8 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                bool res = BF.DeleteBoard(email, boardName);
-                Response<bool> res1 = new Response<bool>(null,res);
+                BF.DeleteBoard(email, boardName);
+                Response<String> res1 = new Response<String>(null);
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
@@ -70,8 +70,13 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                Dictionary<string,BoardBL> listOfBoards = BF.GetAllBoards(email);
-                Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, null); //Converting the dictionary to a boardSL dictionary);
+                Dictionary<string,BoardBL> listOfBoardsBL = BF.GetAllBoards(email);
+                Dictionary<string, BoardSL> listOfBoardsSL = new Dictionary<string, BoardSL>();
+                foreach (BoardBL boardBL in listOfBoardsBL.Values)
+                {
+                    listOfBoardsSL[boardBL.BoardName] = new BoardSL(boardBL.BoardName);
+                }
+                Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, listOfBoardsSL); //Converting the dictionary to a boardSL dictionary);
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)

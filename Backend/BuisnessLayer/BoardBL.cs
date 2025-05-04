@@ -13,11 +13,16 @@ namespace Backend.BuisnessLayer
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string boardName;
-        private readonly Dictionary<String, Column> columns; 
+        private Dictionary<String, Column> columns;
         private long nextTaskID;
         public const String BACKLOG = "Backlog";
         public const String IN_PROGRESS = "In Progress";
         public const String DONE = "Done";
+        public Dictionary<string,Column> Columns
+        {
+            get { return columns; }
+        }
+      
 
 
         public BoardBL(string boardName, int[] maxTasks)
@@ -37,11 +42,7 @@ namespace Backend.BuisnessLayer
         {
             get;
         }
-        public Dictionary<string, Column> Columns
-        {
-            get;
-        }
-
+       
         public TaskBL addTask(string title, DateTime dueDate, string desc)
         {
             TaskBL task = new TaskBL(title, dueDate, desc, nextTaskID++);
@@ -49,21 +50,22 @@ namespace Backend.BuisnessLayer
             return task;
         }
 
-        public bool moveTask(long taskID) //taskBL or taskID?
+        public void moveTask(long taskID) //taskBL or taskID?
         {
             if (columns[BACKLOG].tasks.ContainsKey(taskID))
             {
                 TaskBL task = columns[BACKLOG].tasks[taskID];
                 columns[IN_PROGRESS].Add(task); //will throw exception if no space
                 columns[BACKLOG].Remove(taskID);
-                return true; //maybe have method be void bc it either throws exception bc no space or moves it.
+                Log.Info($"Task {taskID} was successfully moved to in progress");
             }
             else if (columns[IN_PROGRESS].tasks.ContainsKey(taskID))
             {
                 TaskBL task = columns[IN_PROGRESS].tasks[taskID];
                 columns[DONE].Add(task); //will throw exception if no space
                 columns[IN_PROGRESS].Remove(taskID);
-                return true;
+                Log.Info($"Task {taskID} was successfully moved to done");
+
             }
             else if (columns[DONE].tasks.ContainsKey(taskID))
             {

@@ -16,9 +16,9 @@ namespace Backend.ServiceLayer
         /// <summary>
         /// This constructor initiates a BoardFacade object
         /// </summary>
-        public TaskService()
+        internal TaskService(BoardFacade BF)
         {
-            BF = new BoardFacade();
+            this.BF = BF;
         }
         /// <summary>
         /// This method adds a new task to a specific board
@@ -140,8 +140,8 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                bool res = BF.MoveTask(email, boardName, taskID);
-                Response<bool> res1 = new Response<bool>(null, res);
+                BF.MoveTask(email, boardName, taskID);
+                Response<string> res1 = new Response<string>(null);
                 return JsonSerializer.Serialize(res1);  
             }
             catch (Exception e)

@@ -14,9 +14,9 @@ namespace Backend.ServiceLayer
         /// <summary>
         /// This construcor intiates a UserFacade object
         /// </summary>
-        public UserService()
+        internal UserService(UserFacade UF)
         {
-           this.UF = new UserFacade();
+            this.UF = UF;
         }
         /// <summary>
         /// This method logs in and existing user.

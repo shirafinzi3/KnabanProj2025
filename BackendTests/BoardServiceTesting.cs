@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.ServiceLayer;
 
 namespace BackendTests
 {
@@ -14,20 +15,22 @@ namespace BackendTests
         public BoardService BS;
         public void setup()
         {
-            US = new UserService();
-            BS = new BoardService();
-
+            
+            ServiceFactory sf = new ServiceFactory();
+            this.US = sf.US;
+            this.BS = sf.BS;
         }
         public void BoardCreationTestCases()
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
+            int[] noLimTask = { -1, -1, -1 };
             US.Register(email, "Mm212178");
-            TestBoardCreation(email,boardName,null);//Valid creation without max tasks
+            TestBoardCreation(email, boardName, noLimTask);//Valid creation without max tasks
             boardName = "Shira's Board";
             TestBoardCreation(email, boardName, maxTasks );//Valid creation with max tasks
-            TestBoardCreation(email, "Maya's Board", null);//Invalid creation - same name
+            TestBoardCreation(email, "Maya's Board", noLimTask);//Invalid creation - same name
         }
         public void TestBoardCreation(string email, string boardName, int[] maxTasks)
         {
@@ -55,7 +58,7 @@ namespace BackendTests
         public void TestBoardDeletion(string email, string boardName)
         {
             string str = BS.DeleteBoard(email, boardName);
-            Response<bool>? res = JsonSerializer.Deserialize<Response<bool>>(str);
+            Response<String>? res = JsonSerializer.Deserialize<Response<String>>(str);
             if (res.ErrorMsg == null)
             {
                 Console.WriteLine("Success");
