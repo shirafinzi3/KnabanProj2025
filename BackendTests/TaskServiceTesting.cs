@@ -26,32 +26,25 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName);
-            Console.Write("Expected: Success, Actual: ");
             TestAddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));// Valid add
-            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "", "desc", DateTime.Now.AddDays(3));//Invalid - Empty title
-            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, new string('A', 51), "desc", DateTime.Now.AddDays(3)); // Invalid- Title exceeds max length
-            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "Task2", new string('D', 301), DateTime.Now.AddDays(3)); // Invaid -Description exceeds max length
-            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, "NonExistentBoard", "Task4", "desc", DateTime.Now.AddDays(3));// Invalid - Add task to non-existent board
-
-            Console.Write("Expected: Success, Actual: ");
             TestAddTask(email, boardName, "Task2", "", DateTime.Now.AddDays(3));// Valid add, empty desc
-            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "Task2", "desc", DateTime.Today.AddDays(-3));// Fail, Invalid due date
-            Console.Write("Expected: Failed, Actual: ");
             BS.ChangeMaxTasks(email, boardName, 0, 2);
             TestAddTask(email, boardName, "Task3", "desc", DateTime.Today.AddDays(3));// Fail, more than maxTasks
             BS.ChangeMaxTasks(email, boardName, 0, 25); //need to check if this fails!!
+
+
+
         }
         public void TestAddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
-            string str = TS.AddTask(email,boardName,title,desc,dueDate);
+            string str = TS.AddTask(email, boardName, title, desc, dueDate);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
             if (res.ErrorMessage == null)
             {
@@ -63,7 +56,6 @@ namespace BackendTests
         {                                   //either way how do we know it during runtime? from user?
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
@@ -93,7 +85,6 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
@@ -120,7 +111,6 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
@@ -150,7 +140,6 @@ namespace BackendTests
         {
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
@@ -176,7 +165,6 @@ namespace BackendTests
             string email = "MayaLich@post.bgu.ac.il";
             string boardName1 = "Board1";
             string boardName2 = "Board2";
-            int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName1);
             BS.CreateBoard(email, boardName2);
@@ -201,6 +189,31 @@ namespace BackendTests
             string str = TS.InProgressList(email);
             Response<List<TaskSL>>? res = JsonSerializer.Deserialize<Response<List<TaskSL>>>(str);
             if (res.ErrorMessage == null)
+            {
+                Console.WriteLine("Success");
+            }
+            else Console.WriteLine("Failed");
+        }
+        public void DeleteTaskTestCases()
+        {
+            string email = "MayaLich@post.bgu.ac.il";
+            string boardName = "Maya's Board";
+            US.Register(email, "Mm212178");
+            BS.CreateBoard(email, boardName);
+            TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
+            TS.AddTask(email, boardName, "Task2", "desc", DateTime.Now.AddDays(3));
+            TestDeleteTask(email, boardName, 1);// valid - delete first task
+            TestDeleteTask(email, boardName, 1);// Invalid - delete second task
+            TestDeleteTask(email, boardName, 100);// Invalid - delete no exist task
+            TestDeleteTask("notvalid@post.bgu.ac.il", boardName, 1);// Invalid - delete from not valid user
+            TestDeleteTask(email, "noBoard", 100);// Invalid - delete no exist board
+
+        }
+        public void TestDeleteTask(string email, string boardName, long TaskId )
+        {
+            string str = TS.DeleteTask(email, boardName, TaskId);
+            Response<bool>? res = JsonSerializer.Deserialize<Response<bool>>(str);
+            if (res.ErrorMessage == null && res.ReturnValue == true)
             {
                 Console.WriteLine("Success");
             }

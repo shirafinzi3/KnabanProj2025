@@ -92,7 +92,7 @@ namespace BackendTests
         public void LogoutTest(string email)
         {
             string str = US.Logout(email);
-            Response<bool>? res = JsonSerializer.Deserialize<Response<bool>>(str);
+            Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
             if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");

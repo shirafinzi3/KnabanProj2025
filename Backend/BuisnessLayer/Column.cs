@@ -15,14 +15,15 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public String columnName { get; }
         private int maxTasks;
-        public readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
+        private readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
 
         public Column(String columnName, int maxTasks)
         {
             this.columnName = columnName;
             MaxTasks = maxTasks;
         }
-
+       
+       
         public int MaxTasks
         {
             get => maxTasks; 
