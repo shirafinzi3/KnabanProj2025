@@ -19,13 +19,13 @@ namespace Backend.BuisnessLayer
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
-            this.title = title;
+            this.Title = title;
             this.DueDate = dueDate;
-            this.desc = desc;
+            this.Desc = desc;
             this.taskID = id;
-            this.cTime = DateTime.Now;
+            this.CTime = DateTime.Now;
         }
-        public long TaskID { get { return this.taskID; } }
+        public long TaskID { get { return this.taskID; }}
         public DateTime CTime { get; }
         public string Desc
         {
@@ -74,7 +74,7 @@ namespace Backend.BuisnessLayer
             get => this.dueDate;
             set
             {
-                if (value >= DateTime.Now)
+                if (value >= DateTime.Today)
                 {
                     this.dueDate = value;
                 }
