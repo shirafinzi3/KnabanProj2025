@@ -38,7 +38,6 @@ namespace Backend.BuisnessLayer
 
         public string BoardName
         {
-<<<<<<< HEAD
             get=> boardName;
             set
             {
@@ -48,9 +47,7 @@ namespace Backend.BuisnessLayer
                     throw new Exception("Provided title is null or empty");
                 }
             }
-=======
-            get { return boardName; }
->>>>>>> origin/develop
+
         }
        
         public TaskBL addTask(string title, DateTime dueDate, string desc)
@@ -104,7 +101,7 @@ namespace Backend.BuisnessLayer
         {
             if (colIdx == 0) { columns[BACKLOG].MaxTasks = newLim; }
             if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
-            if (colIdx == 0) { columns[DONE].MaxTasks = newLim; }
+            if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
             
         }
     }
