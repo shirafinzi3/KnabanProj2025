@@ -35,7 +35,6 @@ namespace BackendTests
             TestBoardCreation(email, boardName, maxTasks );//Valid creation with max tasks
             TestBoardCreation(email, "Maya's Board", noLimTask);//Invalid creation - same name
             TestBoardCreation(email2, "Tomer's Board", noLimTask);//Invalid creation - not register email
-
         }
         public void TestBoardCreation(string email, string boardName, int[] maxTasks)
         {

@@ -35,7 +35,7 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, maxTasks[2]) }
             };
             this.nextTaskID = 1;
-
+    
         }
 
         public string BoardName
