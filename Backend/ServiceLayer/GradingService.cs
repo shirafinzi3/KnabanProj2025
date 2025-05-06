@@ -122,7 +122,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
-            throw new NotImplementedException();
+            return serviceFactory.BS.ChangeMaxTasks(email, boardName, columnOrdinal, limit);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the column's limit, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            return serviceFactory.BS.GetColumnLimit(email, boardName, columnOrdinal);
         }
 
 
@@ -147,7 +147,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string GetColumnName(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            return serviceFactory.BS.GetColumnName(email, boardName, columnOrdinal);
         }
 
 
@@ -267,7 +267,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with a list of the column's tasks, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string GetColumn(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            return serviceFactory.BS.GetColumn(email, boardName, columnOrdinal);
         }
 
 

@@ -49,5 +49,6 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         {
            return tasks.Remove(taskId);
         }
+        public Dictionary<long, TaskBL> GetTasks() { return tasks; }
     }
 }

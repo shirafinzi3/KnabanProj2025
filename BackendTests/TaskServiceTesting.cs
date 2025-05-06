@@ -45,9 +45,9 @@ namespace BackendTests
             Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "Task2", "desc", DateTime.Today.AddDays(-3));// Fail, Invalid due date
             Console.Write("Expected: Failed, Actual: ");
-            BS.ChangeMaxTasks(email, boardName, new int[] { 2, 25, 25 });
+            BS.ChangeMaxTasks(email, boardName, 0, 2);
             TestAddTask(email, boardName, "Task3", "desc", DateTime.Today.AddDays(3));// Fail, more than maxTasks
-            BS.ChangeMaxTasks(email, boardName, new int[] { 25, 25, 25 }); //need to check if this fails!!
+            BS.ChangeMaxTasks(email, boardName, 0, 25); //need to check if this fails!!
         }
         public void TestAddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
@@ -126,10 +126,7 @@ namespace BackendTests
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDesc(email, boardName, 1, "New Description");// Valid update
             TestUpdateDesc(email, boardName, 1, "");// Valid update - no description
-<<<<<<< HEAD
             TestUpdateDesc(email, boardName, 1, new string('D', 300)); // Valid - Exactly max length
-=======
->>>>>>> origin/develop
             TestUpdateDesc(email, boardName, 1, new string('D', 301));// Invalid - Description exceeds max length
             TestUpdateDesc(email, boardName, 999, "desc");// Non-existent task - TODO check id synchronizing
             TestUpdateDesc("fake@post.bgu.ac.il", boardName, 1, "New Desc"); // Invalid - Non-existent user
