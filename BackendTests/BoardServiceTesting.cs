@@ -38,7 +38,7 @@ namespace BackendTests
         }
         public void TestBoardCreation(string email, string boardName, int[] maxTasks)
         {
-            string str = BS.CreateBoard(email, boardName,maxTasks);
+            string str = BS.CreateBoard(email, boardName);
             Response<BoardSL>? res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
             if (res.ErrorMessage == null)
             {
@@ -54,13 +54,13 @@ namespace BackendTests
             string boardName2 = "Shira's Board Number 2";
             int[] maxTasks = { 25,25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName,maxTasks);
+            BS.CreateBoard(email, boardName);
             TestBoardDeletion(email, boardName);//Valid deletion 
             boardName = "Shira's Board"; 
-            BS.CreateBoard(email,boardName2 ,maxTasks);
+            BS.CreateBoard(email,boardName2 );
             TestBoardDeletion(email, boardName);//Invalid deltion - non existent board 
             TestBoardDeletion(email2, boardName2);//Invalid deltion - delete board that belongs to someone else 
-            BS.CreateBoard(email, boardName, maxTasks);
+            BS.CreateBoard(email, boardName);
             TestBoardDeletion("shira@post.bgu.ac.il", boardName);//Invalid deletion - email not register
         }
         public void TestBoardDeletion(string email, string boardName)
@@ -83,12 +83,12 @@ namespace BackendTests
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             US.Register(email2, "Shira123");
-            BS.CreateBoard(email, boardName1, maxTasks);
-            BS.CreateBoard(email, boardName2, maxTasks);
+            BS.CreateBoard(email, boardName1);
+            BS.CreateBoard(email, boardName2);
             TestGetAllBoards(email, 2);//Valid
             TestGetAllBoards(email2, 0);//Invalid - user with no boards
             TestGetAllBoards("wrong@email.com", 0); // Invalid - user not exists
-            BS.CreateBoard(email, boardName3, maxTasks);
+            BS.CreateBoard(email, boardName3);
             TestGetAllBoards(email, 3); // Valid - user has 3 boards
         }
         public void TestGetAllBoards(string email, int expectedBoardsCount)

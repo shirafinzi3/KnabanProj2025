@@ -29,7 +29,7 @@ namespace Backend.ServiceLayer
             try
             {
                 UserBL ubl = UF.Login(email, password);
-                Response<UserSL> res = new Response<UserSL>(null, new UserSL(ubl.Email));
+                Response<UserSL> res = new Response<UserSL>(new UserSL(ubl.Email));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -46,13 +46,13 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                bool res = UF.Logout(email);
-                Response<bool> res1 = new Response<bool>(null, res);
+                UF.Logout(email);
+                Response<string> res1 = new Response<string>();
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<bool>(e.Message));
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
         /// <summary>

@@ -25,15 +25,15 @@ namespace Backend.BuisnessLayer
                 Log.Error("Provided email is null or empty");
                 throw new ArgumentNullException("Provided email is null or empty");
             }
-            if (!users.ContainsKey(email))
+            if (!users.ContainsKey(email.ToLower()))
             {
                 Log.Error($"Provided email: {email} does not exist in the system ");
                 throw new ArgumentException($"Provided email: {email} does not exist in the system ");
             }
-            UserBL user = users[email];
+            UserBL user = users[email.ToLower()];
             if (user.Login(pass))
             {
-                auth.Login(email);
+                auth.Login(email.ToLower());
                 return user;
             }
             else
@@ -42,9 +42,19 @@ namespace Backend.BuisnessLayer
                 throw new ArgumentException("Email or password are invalid");
             }
         }
-        public bool Logout(string email)
+        public void Logout(string email)
         {
-            return auth.Logout(email);
+            if (string.IsNullOrEmpty(email))
+            {
+                Log.Error("Provided email is null or empty");
+                throw new ArgumentNullException("Provided email is null or empty");
+            }
+            if (!users.ContainsKey(email.ToLower()))
+            {
+                Log.Error($"Provided email: {email} does not exist in the system ");
+                throw new ArgumentException($"Provided email: {email} does not exist in the system ");
+            }
+            auth.Logout(email.ToLower());
         }
         public UserBL Register(string email, string pass)
         {
@@ -53,14 +63,14 @@ namespace Backend.BuisnessLayer
                 Log.Error("Provided email is null or empty");
                 throw new ArgumentNullException("Provided email is null or empty");
             }
-            if (users.ContainsKey(email))
+            if (users.ContainsKey(email.ToLower()))
             {
                 Log.Error($"Provided email: {email} already exists in the system ");
                 throw new ArgumentException($"Provided email: {email} already exists in the system ");
             }
-            UserBL user = new UserBL(email, pass);
-            users.Add(email, user);
-            auth.Login(email);
+            UserBL user = new UserBL(email.ToLower(), pass);
+            users.Add(email.ToLower(), user);
+            auth.Login(email.ToLower());
             return user;
         }
      

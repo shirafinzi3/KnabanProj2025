@@ -21,7 +21,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             this.auth = auth;
             this.boards = new Dictionary<string, Dictionary<string, BoardBL>>();
         }
-        public BoardBL CreateBoard(string email, string boardName, int[] maxTasks)
+        public BoardBL CreateBoard(string email, string boardName)
         {
             if (!auth.IsLoggedIn(email))
             {
@@ -38,7 +38,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"Board {boardName} already exists for user {email}");
             }
             
-            BoardBL newBoard = new BoardBL(boardName, maxTasks);
+            BoardBL newBoard = new BoardBL(boardName);
             boards[email][boardName] = newBoard;
             return newBoard;
 
@@ -65,8 +65,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             if (!boards.ContainsKey(email))
             {
-                Log.Error($"User {email} does not exist, or has no boards");
-                throw new KeyNotFoundException($"User {email} does not exist or has no boards");
+               return new Dictionary<string, BoardBL>();
             }
             return boards[email];
         }

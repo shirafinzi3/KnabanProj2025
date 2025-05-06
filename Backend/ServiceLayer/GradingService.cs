@@ -90,7 +90,16 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the user's email, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Login(string email, string password)
         {
-            return serviceFactory.US.Login(email, password);
+            Response<UserSL> res = JsonSerializer.Deserialize<Response<UserSL>>(serviceFactory.US.Login(email,password));
+            if (res.ReturnValue != null &&  res.ErrorMessage == null)
+            {
+                return JsonSerializer.Serialize(new Response<string>(res.ReturnValue.Email));
+            }
+            else
+            {
+                return JsonSerializer.Serialize(new Response<string>(res.ErrorMessage));
+            }
+          
         }
 
 
@@ -101,15 +110,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Logout(string email)
         {
-            Response<bool> res = JsonSerializer.Deserialize<Response<bool>>(serviceFactory.US.Logout(email));
-            if (res.ReturnValue != null && res.ErrorMessage == null)
-            {
-                return JsonSerializer.Serialize(new Response<TaskSL>());
-            }
-            else
-            {
-                return JsonSerializer.Serialize(res);
-            }
+            return serviceFactory.US.Logout(email);
         }
 
         /// <summary>
@@ -279,8 +280,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string CreateBoard(string email, string name)
         {
-            int[] maxTasks = { 100, 100, 100 };
-            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(serviceFactory.BS.CreateBoard(email, name, maxTasks));
+            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(serviceFactory.BS.CreateBoard(email, name));
             if (res.ReturnValue != null && res.ErrorMessage == null)
             {
                 return JsonSerializer.Serialize(new Response<TaskSL>());
@@ -312,15 +312,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with a list of the in-progress tasks of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string InProgressTasks(string email)
         {
-            Response<List<TaskSL>> res = JsonSerializer.Deserialize<Response<List<TaskSL>>>(serviceFactory.TS.InProgressList(email));
-            if (res.ReturnValue != null && res.ErrorMessage == null)
-            {
-                return JsonSerializer.Serialize(new Response<TaskSL>());
-            }
-            else
-            {
-                return JsonSerializer.Serialize(res);
-            }
+            return serviceFactory.TS.InProgressList(email);
         }
     }
 }
