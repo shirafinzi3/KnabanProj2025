@@ -72,7 +72,6 @@ namespace BackendTests
         {
             string str = US.Login(email, pass);
             Response<UserSL>? res = JsonSerializer.Deserialize<Response<UserSL>>(str);
-            Console.WriteLine(str);
             if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
