@@ -17,6 +17,7 @@ namespace Backend.ServiceLayer
         { 
             this.Email = email;
         }
+        public UserSL() { }
 
 
     }

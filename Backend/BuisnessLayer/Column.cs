@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
 using log4net;
+using log4net.Repository.Hierarchy;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
 {
@@ -27,7 +28,12 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             get => maxTasks; 
             set
             {
-                if(value>0 && tasks.Count > value)
+                if(value < -1)
+                {
+                    Log.Error($"Cant lower max tasks of {columnName} to a negative number");
+                    throw new InvalidOperationException($"Cant lower max tasks of {columnName} to a negative number");
+                }
+                if(value > 0 && tasks.Count > value)
                 {
                     Log.Error($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
                     throw new InvalidOperationException($"Cant lower max tasks of {columnName} as it currently holds more than {value}");

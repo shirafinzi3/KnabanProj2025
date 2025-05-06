@@ -30,6 +30,7 @@ namespace Backend.ServiceLayer
             this.DueDate = dueDate;
             this.Id = Id;
         }
+        public TaskSL() { }
         
     }
 }

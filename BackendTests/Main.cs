@@ -61,6 +61,9 @@ namespace BackendTests
             tst.setup();
             Console.WriteLine("Testing get in progress list:");
             tst.InProgressListTestCases();
+            
+
+
         }
     }
 }

@@ -28,11 +28,11 @@ namespace Backend.ServiceLayer
         /// <param name="maxTasks"> Array with maxTasks per column (-1 no restriction) </param>
         /// <returns>A BoardSL object or an error</returns>
 
-        public string CreateBoard(String email, String boardName, int[] maxTasks)
+        public string CreateBoard(String email, String boardName)
         {
             try
             {
-                BoardBL boardBL = BF.CreateBoard(email, boardName, maxTasks);
+                BoardBL boardBL = BF.CreateBoard(email, boardName);
                 Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName)); 
                 return JsonSerializer.Serialize(res);
             }
@@ -97,12 +97,12 @@ namespace Backend.ServiceLayer
             try
             {
                 BF.ChangeMaxTasks(email, boardName, colIdx, newLim);
-                Response<int> res1 = new Response<int>(newLim);
+                Response<string> res1 = new Response<string>();
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
 
         }
@@ -139,7 +139,7 @@ namespace Backend.ServiceLayer
             try
             {
                 string columnName = BF.GetColumnName(email, boardName, colIdx);
-                Response<string> res1 = new Response<string>(columnName);
+                Response<string> res1 = new Response<string>(null, columnName);
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)

@@ -15,9 +15,9 @@ namespace Backend.BuisnessLayer
         private string boardName;
         private Dictionary<String, Column> columns;
         private long nextTaskID;
-        public const String BACKLOG = "Backlog";
-        public const String IN_PROGRESS = "In Progress";
-        public const String DONE = "Done";
+        public const String BACKLOG = "backlog";
+        public const String IN_PROGRESS = "in progress";
+        public const String DONE = "done";
         public Dictionary<string,Column> Columns
         {
             get { return columns; }
@@ -25,7 +25,7 @@ namespace Backend.BuisnessLayer
       
         public BoardBL(string boardName, int[] maxTasks)
         {
-            this.boardName = boardName;
+            this.BoardName = boardName;
             this.columns = new Dictionary<String, Column>
             {
                  { BACKLOG, new Column(BACKLOG, maxTasks[0]) },
@@ -33,7 +33,18 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, maxTasks[2]) }
             };
             this.nextTaskID = 1;
-    
+   
+        }
+        public BoardBL(string boardName)
+        {
+            this.BoardName = boardName;
+            this.columns = new Dictionary<String, Column>
+            {
+                 { BACKLOG, new Column(BACKLOG, -1) },
+                 { IN_PROGRESS, new Column(IN_PROGRESS, -1) },
+                 { DONE, new Column(DONE, -1) }
+            };
+            this.nextTaskID = 1;
         }
 
         public string BoardName
@@ -100,11 +111,13 @@ namespace Backend.BuisnessLayer
         public void changeMaxTasks(int colIdx, int newLim)
         {
             if (colIdx == 0) { columns[BACKLOG].MaxTasks = newLim; }
-            if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
-            if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
-            Log.Error($"Column index {colIdx} is invalid");
-            throw new InvalidOperationException($"Column index {colIdx} is invalid");
-
+            else if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
+            else if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
+            else
+            {
+                Log.Error($"Column index {colIdx} is invalid");
+                throw new InvalidOperationException($"Column index {colIdx} is invalid");
+            }
         }
         public int GetColumnLimit(int colIdx)
         {

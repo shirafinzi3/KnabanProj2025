@@ -18,6 +18,7 @@ namespace Backend.ServiceLayer
         {
             this.Name = name;
         }
+        public BoardSL() { }
         
     }
 }

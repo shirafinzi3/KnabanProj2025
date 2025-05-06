@@ -28,7 +28,7 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName, maxTasks);
+            BS.CreateBoard(email, boardName);
             Console.Write("Expected: Success, Actual: ");
             TestAddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));// Valid add
             Console.Write("Expected: Failed, Actual: ");
@@ -65,7 +65,7 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName, maxTasks);
+            BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateTitle(email, boardName, 1, "New Title"); // Valid update 
             TestUpdateTitle(email, boardName, 1, "");//Invalid - Empty title
@@ -95,7 +95,7 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName, maxTasks);
+            BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDueDate(email, boardName, 1, DateTime.Now.AddDays(5)); // Valid update
             TestUpdateDueDate(email, boardName, 1, DateTime.Now.AddDays(-1)); // Invalid - Due date in the past
@@ -122,7 +122,7 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName,maxTasks);
+            BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDesc(email, boardName, 1, "New Description");// Valid update
             TestUpdateDesc(email, boardName, 1, "");// Valid update - no description
@@ -152,7 +152,7 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName,maxTasks);
+            BS.CreateBoard(email, boardName);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestMoveTask(email, boardName, 1);// Valid move from Backlog to In Progress
             TestMoveTask(email, boardName, 1);// Valid move from In Progress to Done
@@ -178,8 +178,8 @@ namespace BackendTests
             string boardName2 = "Board2";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
-            BS.CreateBoard(email, boardName1,maxTasks);
-            BS.CreateBoard(email, boardName2,maxTasks);
+            BS.CreateBoard(email, boardName1);
+            BS.CreateBoard(email, boardName2);
             TS.AddTask(email, boardName1, "Task1", "desc", DateTime.Now.AddDays(3));
             TS.AddTask(email, boardName2, "Task2", "desc", DateTime.Now.AddDays(3));
             TS.MoveTask(email, boardName1, 1);// Move Task1 to In Progress
