@@ -15,21 +15,21 @@ namespace Backend.BuisnessLayer
         private string title;
         public DateTime dueDate;
         public string desc;
-        public const int DESC_LIM= 300;
+        public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
-        {
-            Title = title;
-            DueDate = dueDate;
-            Desc = desc;
+        { 
+            this.Title = title;
+            this.DueDate = dueDate;
+            this.Desc = desc;
             this.taskID = id;
-            this.cTime = DateTime.Today;
+            this.CTime = DateTime.Now;
         }
-        public long TaskID { 
-            get => taskID; }
+        public long TaskID { get { return this.taskID; }}
         public DateTime CTime { get; }
-        public string Desc {
-            get => desc; 
+        public string Desc
+        {
+            get => desc;
             set
             {
                 if (value.Length > DESC_LIM)
@@ -48,8 +48,9 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public string Title {
-            get => title; 
+        public string Title
+        {
+            get => title;
             set
             {
                 if (value.Length > TITLE_LIM)
@@ -70,17 +71,21 @@ namespace Backend.BuisnessLayer
         }
         public DateTime DueDate
         {
-            get => dueDate;
+            get => this.dueDate;
             set
             {
-                if (value.Date < DateTime.Today)
+                if (value >= DateTime.Today)
                 {
-                    Log.Error($"Invalid DueDate as {dueDate} is earlier then current time");
-                    throw new Exception($"Invalid DueDate as {dueDate} is earlier then current time");
+                    this.dueDate = value;
                 }
-                this.dueDate = value;
-            }
-        }
+                else
+                {
+                    Log.Error("Provided duedate is invalid - not a future date");
+                    throw new Exception("Provided duedate is invalid - not a future date");
+                }
 
+            }
+
+        }
     }
 }

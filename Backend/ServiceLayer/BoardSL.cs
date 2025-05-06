@@ -8,7 +8,7 @@ namespace Backend.ServiceLayer
 {
     public class BoardSL
     {
-        public string name;
+        public string Name { get; set; }
         /// <summary>
         /// This constructor initiates a BoardSL object with a unique name and a list of tasks
         /// </summary>
@@ -16,8 +16,8 @@ namespace Backend.ServiceLayer
         /// <param name="tasks">A dictionary of the tasks in each column of the board</param>
         public BoardSL(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
-        public string Name { get; set; }
+        
     }
 }

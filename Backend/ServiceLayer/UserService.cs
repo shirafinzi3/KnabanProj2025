@@ -66,7 +66,7 @@ namespace Backend.ServiceLayer
             try
             {
                 UserBL ubl = UF.Register(email, password);
-                Response<UserSL> res = new Response<UserSL>(null, new UserSL(ubl.Email));
+                Response<UserSL> res = new Response<UserSL>(new UserSL(ubl.Email));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)

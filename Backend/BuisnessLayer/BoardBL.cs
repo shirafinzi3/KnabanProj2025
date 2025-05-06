@@ -102,7 +102,34 @@ namespace Backend.BuisnessLayer
             if (colIdx == 0) { columns[BACKLOG].MaxTasks = newLim; }
             if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
             if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
-            
+            Log.Error($"Column index {colIdx} is invalid");
+            throw new InvalidOperationException($"Column index {colIdx} is invalid");
+
+        }
+        public int GetColumnLimit(int colIdx)
+        {
+            if (colIdx == 0) { return columns[BACKLOG].MaxTasks;  }
+            if (colIdx == 1) { return columns[IN_PROGRESS].MaxTasks; }
+            if (colIdx == 2) { return columns[DONE].MaxTasks; }
+            Log.Error($"Column index {colIdx} is invalid");
+            throw new InvalidOperationException($"Column index {colIdx} is invalid");
+
+        }
+        public string GetColumnName(int colIdx)
+        {
+            if (colIdx == 0) { return BACKLOG; }
+            if (colIdx == 1) { return IN_PROGRESS; }
+            if (colIdx == 2) { return DONE; }
+            Log.Error($"Column index {colIdx} is invalid");
+            throw new InvalidOperationException($"Column index {colIdx} is invalid");
+        }
+        public Dictionary<long,TaskBL> GetColumn(int colIdx)
+        {
+            if (colIdx == 0) { return columns[BACKLOG].GetTasks(); }
+            if (colIdx == 1) { return columns[IN_PROGRESS].GetTasks(); }
+            if (colIdx == 2) { return columns[DONE].GetTasks(); }
+            Log.Error($"Column index {colIdx} is invalid");
+            throw new InvalidOperationException($"Column index {colIdx} is invalid");
         }
     }
 }

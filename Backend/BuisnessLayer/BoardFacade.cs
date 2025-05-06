@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
+using Backend.ServiceLayer;
 using log4net;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
@@ -149,6 +150,40 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             BoardBL board = boards[email][boardName];
             board.changeMaxTasks(colIdx, newLim);
         }
+        public int GetColumnLimit(string email, string boardName, int colIdx)
+        {
+            emailAuth(email);
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.GetColumnLimit(colIdx);
+        }
+        public string GetColumnName(string email, string boardName, int colIdx)
+        {
+            emailAuth(email);
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.GetColumnName(colIdx);
+        }
+        public Dictionary<long,TaskBL> GetColumn(string email, string boardName, int colIdx)
+        {
+            emailAuth(email);
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            return board.GetColumn(colIdx);
+        }
+
         private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
             TaskBL toReturn = null;

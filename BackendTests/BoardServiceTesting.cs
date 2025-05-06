@@ -40,7 +40,7 @@ namespace BackendTests
         {
             string str = BS.CreateBoard(email, boardName,maxTasks);
             Response<BoardSL>? res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -67,7 +67,7 @@ namespace BackendTests
         {
             string str = BS.DeleteBoard(email, boardName);
             Response<String>? res = JsonSerializer.Deserialize<Response<String>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -95,7 +95,7 @@ namespace BackendTests
         {
             string str = BS.GetAllBoards(email); 
             Response<Dictionary<string,BoardSL>>? res = JsonSerializer.Deserialize<Response<Dictionary<string,BoardSL>>>(str);
-            if (res.ErrorMsg == null && res.RetVal.Count == expectedBoardsCount)
+            if (res.ErrorMessage == null && res.ReturnValue.Count == expectedBoardsCount)
             {
                 Console.WriteLine("Success");
             }

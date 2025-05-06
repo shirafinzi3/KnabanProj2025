@@ -52,7 +52,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BF.DeleteBoard(email, boardName);
-                Response<String> res1 = new Response<String>(null);
+                Response<String> res1 = new Response<String>();
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
@@ -85,18 +85,19 @@ namespace Backend.ServiceLayer
             }
         }
         /// <summary>
-        /// This changes a boards max tasks
+        /// This changes a column max tasks
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">A unique name of the board that need to be deleted</param>
-        /// <param name="newMaxTasks">an array of new MaxTasks limits</param>
-        /// <returns>void</returns>
+        /// <param name="colIdx">The column index </param>
+        /// <param name="newLim">New limit for the column</param>
+        /// <returns>int - new column limit</returns>
         public string ChangeMaxTasks(String email, String boardName, int colIdx, int newLim)
         {
             try
             {
                 BF.ChangeMaxTasks(email, boardName, colIdx, newLim);
-                Response<String> res1 = new Response<String>(null);
+                Response<int> res1 = new Response<int>(newLim);
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
@@ -104,6 +105,72 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
 
+        }
+        /// <summary>
+        /// This gets a column max tasks
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">A unique name of the board that need to be deleted</param>
+        /// <param name="colIdx">The column index</param>
+        /// <returns>int - new column limit</returns>
+        public string GetColumnLimit(String email, String boardName, int colIdx)
+        {
+            try
+            {
+                int columnLim = BF.GetColumnLimit(email, boardName, colIdx);
+                Response<int> res1 = new Response<int>(columnLim);
+                return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+
+        }
+        /// <summary>
+        /// This gets a column's name
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">A unique name of the board that need to be deleted</param>
+        /// <param name="colIdx">The column index</param>
+        /// <returns>string - column name </returns>
+        public string GetColumnName(String email, String boardName, int colIdx)
+        {
+            try
+            {
+                string columnName = BF.GetColumnName(email, boardName, colIdx);
+                Response<string> res1 = new Response<string>(columnName);
+                return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This gets a column's list of tasks
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">A unique name of the board that need to be deleted</param>
+        /// <param name="colIdx">The column index</param>
+        /// <returns>List of tasks in the specified column </returns>
+        public string GetColumn(String email, String boardName, int colIdx)
+        {
+            try
+            {
+                Dictionary<long, TaskBL> columnTaskBL =  BF.GetColumn(email, boardName, colIdx);
+                List<TaskSL> columnTaskSL = new List<TaskSL>();
+                foreach(TaskBL taskBL in columnTaskBL.Values)
+                {
+                    columnTaskSL.Add(new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                }
+                Response<List<TaskSL>> res1 = new Response<List<TaskSL>>(columnTaskSL);
+                return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
         }
 
     }
