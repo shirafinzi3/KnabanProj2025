@@ -33,11 +33,12 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, maxTasks[2]) }
             };
             this.nextTaskID = 1;
-            
+    
         }
-        
+
         public string BoardName
         {
+<<<<<<< HEAD
             get=> boardName;
             set
             {
@@ -47,6 +48,9 @@ namespace Backend.BuisnessLayer
                     throw new Exception("Provided title is null or empty");
                 }
             }
+=======
+            get { return boardName; }
+>>>>>>> origin/develop
         }
        
         public TaskBL addTask(string title, DateTime dueDate, string desc)

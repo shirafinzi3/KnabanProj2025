@@ -47,7 +47,7 @@ namespace BackendTests
             Console.WriteLine("Testing add task:");
             tst.AddTaskTestCases();
             tst.setup();
-            Console.WriteLine("Testing move task:");
+            Console.WriteLine("Testing nove task:");
             tst.MoveTaskTestCases();
             tst.setup();
             Console.WriteLine("Testing update title:");
