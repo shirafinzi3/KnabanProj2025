@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
+using Backend.ServiceLayer;
 using log4net;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer

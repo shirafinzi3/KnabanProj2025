@@ -35,12 +35,12 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, maxTasks[2]) }
             };
             this.nextTaskID = 1;
-            
+
         }
-        
+
         public string BoardName
         {
-            get;
+            get { return boardName; }
         }
        
         public TaskBL addTask(string title, DateTime dueDate, string desc)

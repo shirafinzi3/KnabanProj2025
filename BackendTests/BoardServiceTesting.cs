@@ -26,11 +26,16 @@ namespace BackendTests
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
             int[] noLimTask = { -1, -1, -1 };
+            int [] partialLim = { -1, 10, 10};
             US.Register(email, "Mm212178");
             TestBoardCreation(email, boardName, noLimTask);//Valid creation without max tasks
+            TestBoardCreation(email,"Tomer's Board", partialLim);//Valid creation with partial max tasks
             boardName = "Shira's Board";
+            string email2 = "Tomer@post.bgu.ac.il";
             TestBoardCreation(email, boardName, maxTasks );//Valid creation with max tasks
             TestBoardCreation(email, "Maya's Board", noLimTask);//Invalid creation - same name
+            TestBoardCreation(email2, "Tomer's Board", noLimTask);//Invalid creation - not register email
+
         }
         public void TestBoardCreation(string email, string boardName, int[] maxTasks)
         {
@@ -45,15 +50,19 @@ namespace BackendTests
         public void BoardDeletionTestCases()
         {
             string email = "MayaLich@post.bgu.ac.il";
+            string email2 = "Tomer@post.bgu.ac.il";
             string boardName = "Maya's Board";
+            string boardName2 = "Shira's Board Number 2";
             int[] maxTasks = { 25,25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName,maxTasks);
             TestBoardDeletion(email, boardName);//Valid deletion 
-            boardName = "Shira's Board";
+            boardName = "Shira's Board"; 
+            BS.CreateBoard(email,boardName2 ,maxTasks);
             TestBoardDeletion(email, boardName);//Invalid deltion - non existent board 
+            TestBoardDeletion(email2, boardName2);//Invalid deltion - delete board that belongs to someone else 
             BS.CreateBoard(email, boardName, maxTasks);
-            TestBoardDeletion("shira@post.bgu.ac.il", boardName);//Valid deletion 
+            TestBoardDeletion("shira@post.bgu.ac.il", boardName);//Invalid deletion - email not register
         }
         public void TestBoardDeletion(string email, string boardName)
         {
@@ -68,14 +77,17 @@ namespace BackendTests
         public void GetAllBoardsTestCases()
         {
             string email = "MayaLich@post.bgu.ac.il";
+            string email2 = "Shira@post.bgu.ac.il";
             string boardName1 = "Maya's Board";
             string boardName2 = "Shira's Board";
             string boardName3 = "Or's Board";
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
+            US.Register(email2, "Shira123");
             BS.CreateBoard(email, boardName1, maxTasks);
             BS.CreateBoard(email, boardName2, maxTasks);
-            TestGetAllBoards(email, 2);
+            TestGetAllBoards(email, 2);//Valid
+            TestGetAllBoards(email2, 0);//Invalid - user with no boards
             TestGetAllBoards("wrong@email.com", 0); // Invalid - user not exists
             BS.CreateBoard(email, boardName3, maxTasks);
             TestGetAllBoards(email, 3); // Valid - user has 3 boards
