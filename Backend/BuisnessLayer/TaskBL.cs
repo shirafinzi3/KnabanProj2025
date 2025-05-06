@@ -13,8 +13,8 @@ namespace Backend.BuisnessLayer
         private readonly long taskID;
         private readonly DateTime cTime;
         private string title;
-        public DateTime dueDate;
-        public string desc;
+        private DateTime dueDate;
+        private string desc;
         public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)

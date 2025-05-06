@@ -75,7 +75,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             List<TaskBL> inProgressList = new List<TaskBL>();
             foreach (BoardBL board in boards[email].Values)
             {
-                foreach (TaskBL task in board.Columns[BoardBL.IN_PROGRESS].tasks.Values)
+                foreach (TaskBL task in board.Columns[BoardBL.IN_PROGRESS].GetTasks().Values)
                 {
                     inProgressList.Add(task);
                 }
@@ -196,9 +196,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             BoardBL board = boards[email][boardName];
             foreach(Column c in board.Columns.Values)
             {
-                if (c.tasks.ContainsKey(taskID))
+                if (c.GetTasks().ContainsKey(taskID))
                 {
-                    toReturn = c.tasks[taskID];
+                    toReturn = c.GetTasks()[taskID];
                     column = c;
                     break;
                 }

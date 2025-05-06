@@ -40,6 +40,19 @@ namespace BackendTests
             bst.setup();
             Console.WriteLine("Testing get all boards:");
             bst.GetAllBoardsTestCases();
+            bst.setup();
+            Console.WriteLine("Testing change max tasks:");
+            bst.ChangeMaxTaskCases();
+            bst.setup();
+            Console.WriteLine("Testing Get max tasks:");
+            bst.GetColumnLimitCases();
+            bst.setup();
+            Console.WriteLine("Testing Get board name:");
+            bst.GetColumnNameCases();
+            bst.setup();
+            Console.WriteLine("Testing Get board column:");
+            bst.GetColumnCases();
+
             //TaskService
             Console.WriteLine("TASK SERVICE:");
             TaskServiceTesting tst = new TaskServiceTesting();
@@ -47,7 +60,7 @@ namespace BackendTests
             Console.WriteLine("Testing add task:");
             tst.AddTaskTestCases();
             tst.setup();
-            Console.WriteLine("Testing nove task:");
+            Console.WriteLine("Testing move task:");
             tst.MoveTaskTestCases();
             tst.setup();
             Console.WriteLine("Testing update title:");
@@ -61,8 +74,9 @@ namespace BackendTests
             tst.setup();
             Console.WriteLine("Testing get in progress list:");
             tst.InProgressListTestCases();
-            
-
+            tst.setup();
+            Console.WriteLine("Testing delete task:");
+            tst.DeleteTaskTestCases();
 
         }
     }

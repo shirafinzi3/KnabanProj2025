@@ -13,7 +13,7 @@ namespace Backend.BuisnessLayer
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string boardName;
-        private Dictionary<String, Column> columns;
+        private readonly Dictionary<String, Column> columns;
         private long nextTaskID;
         public const String BACKLOG = "backlog";
         public const String IN_PROGRESS = "in progress";
@@ -21,19 +21,6 @@ namespace Backend.BuisnessLayer
         public Dictionary<string,Column> Columns
         {
             get { return columns; }
-        }
-      
-        public BoardBL(string boardName, int[] maxTasks)
-        {
-            this.BoardName = boardName;
-            this.columns = new Dictionary<String, Column>
-            {
-                 { BACKLOG, new Column(BACKLOG, maxTasks[0]) },
-                 { IN_PROGRESS, new Column(IN_PROGRESS, maxTasks[1]) },
-                 { DONE, new Column(DONE, maxTasks[2]) }
-            };
-            this.nextTaskID = 1;
-   
         }
         public BoardBL(string boardName)
         {
@@ -57,6 +44,7 @@ namespace Backend.BuisnessLayer
                     Log.Error("Provided title is null or empty");
                     throw new Exception("Provided title is null or empty");
                 }
+                boardName = value;
             }
 
         }
@@ -70,22 +58,22 @@ namespace Backend.BuisnessLayer
 
         public void moveTask(long taskID) //taskBL or taskID?
         {
-            if (columns[BACKLOG].tasks.ContainsKey(taskID))
+            if (columns[BACKLOG].GetTasks().ContainsKey(taskID))
             {
-                TaskBL task = columns[BACKLOG].tasks[taskID];
+                TaskBL task = columns[BACKLOG].GetTasks()[taskID];
                 columns[IN_PROGRESS].Add(task); //will throw exception if no space
                 columns[BACKLOG].Remove(taskID);
                 Log.Info($"Task {taskID} was successfully moved to in progress");
             }
-            else if (columns[IN_PROGRESS].tasks.ContainsKey(taskID))
+            else if (columns[IN_PROGRESS].GetTasks().ContainsKey(taskID))
             {
-                TaskBL task = columns[IN_PROGRESS].tasks[taskID];
+                TaskBL task = columns[IN_PROGRESS].GetTasks()[taskID];
                 columns[DONE].Add(task); //will throw exception if no space
                 columns[IN_PROGRESS].Remove(taskID);
                 Log.Info($"Task {taskID} was successfully moved to done");
 
             }
-            else if (columns[DONE].tasks.ContainsKey(taskID))
+            else if (columns[DONE].GetTasks().ContainsKey(taskID))
             {
                 Log.Error("Cant move task forward from Done column");
                 throw new Exception("Cant move task forward from Done column");
