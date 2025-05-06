@@ -13,15 +13,28 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public String columnName { get; }
-        public int maxTasks { get; }
+        private int maxTasks;
         public readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
 
         public Column(String columnName, int maxTasks)
         {
             this.columnName = columnName;
-            this.maxTasks = maxTasks;
+            MaxTasks = maxTasks;
         }
 
+        public int MaxTasks
+        {
+            get => maxTasks; 
+            set
+            {
+                if(value>0 && tasks.Count > value)
+                {
+                    Log.Error($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
+                    throw new InvalidOperationException($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
+                }
+                this.maxTasks = value;
+            }
+        }
         public void Add(TaskBL task)
         {
             if (maxTasks>=0 && tasks.Count >= maxTasks) //if -1 (maxTasks<0) no limit, if not, check column isnt at capacity

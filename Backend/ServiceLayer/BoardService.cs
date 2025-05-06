@@ -46,7 +46,7 @@ namespace Backend.ServiceLayer
         /// </summary>
         /// <param name="email">The email of the user</param>
         /// <param name="boardName">A unique name of the board that need to be deleted</param>
-        /// <returns>A boolean - true if the board was succesfully deleted and false otherwise or an error</returns>
+        /// <returns>void</returns>
         public string DeleteBoard(String email, String boardName)
         {
             try
@@ -84,5 +84,27 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<Dictionary<string, BoardSL>>(e.Message));
             }
         }
+        /// <summary>
+        /// This changes a boards max tasks
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">A unique name of the board that need to be deleted</param>
+        /// <param name="newMaxTasks">an array of new MaxTasks limits</param>
+        /// <returns>void</returns>
+        public string ChangeMaxTasks(String email, String boardName, int colIdx, int newLim)
+        {
+            try
+            {
+                BF.ChangeMaxTasks(email, boardName, colIdx, newLim);
+                Response<String> res1 = new Response<String>(null);
+                return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+
+        }
+
     }
 }

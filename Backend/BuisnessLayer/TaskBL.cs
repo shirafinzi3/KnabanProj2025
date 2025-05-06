@@ -12,20 +12,21 @@ namespace Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly long taskID;
         private readonly DateTime cTime;
-        public string title;
+        private string title;
         public DateTime dueDate;
         public string desc;
         public const int DESC_LIM= 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
-            this.title = title;
-            this.dueDate = dueDate;
-            this.desc = desc;
+            Title = title;
+            DueDate = dueDate;
+            Desc = desc;
             this.taskID = id;
-            this.cTime = DateTime.Now;
+            this.cTime = DateTime.Today;
         }
-        public long TaskID { get; }
+        public long TaskID { 
+            get => taskID; }
         public DateTime CTime { get; }
         public string Desc {
             get => desc; 
@@ -36,7 +37,7 @@ namespace Backend.BuisnessLayer
                     Log.Error("Provided description exceeds character limit");
                     throw new Exception("Provided description exceeds character limit");
                 }
-                else if (desc==null)
+                else if (value==null)
                 {
                     Log.Error("Provided description is null");
                     throw new Exception("Provided descritpion is null");
@@ -67,7 +68,19 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public DateTime DueDate { get; set; }
+        public DateTime DueDate
+        {
+            get => dueDate;
+            set
+            {
+                if (value.Date < DateTime.Today)
+                {
+                    Log.Error($"Invalid DueDate as {dueDate} is earlier then current time");
+                    throw new Exception($"Invalid DueDate as {dueDate} is earlier then current time");
+                }
+                this.dueDate = value;
+            }
+        }
 
     }
 }
