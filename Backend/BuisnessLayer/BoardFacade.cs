@@ -137,6 +137,18 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             BoardBL board = boards[email][boardName];
             board.moveTask(taskID);
         }
+
+        public void ChangeMaxTasks(string email, string boardName, int colIdx, int newLim)
+        {
+            emailAuth(email);
+            if (!boards[email].ContainsKey(boardName))
+            {
+                Log.Error($"Board {boardName} does not exist");
+                throw new KeyNotFoundException($"Board {boardName} does not exist");
+            }
+            BoardBL board = boards[email][boardName];
+            board.changeMaxTasks(colIdx, newLim);
+        }
         private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
             TaskBL toReturn = null;

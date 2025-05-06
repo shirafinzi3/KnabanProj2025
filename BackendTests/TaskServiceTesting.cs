@@ -29,12 +29,25 @@ namespace BackendTests
             int[] maxTasks = { 25, 25, 25 };
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName, maxTasks);
+            Console.Write("Expected: Success, Actual: ");
             TestAddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));// Valid add
+            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "", "desc", DateTime.Now.AddDays(3));//Invalid - Empty title
+            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, new string('A', 51), "desc", DateTime.Now.AddDays(3)); // Invalid- Title exceeds max length
+            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, boardName, "Task2", new string('D', 301), DateTime.Now.AddDays(3)); // Invaid -Description exceeds max length
+            Console.Write("Expected: Failed, Actual: ");
             TestAddTask(email, "NonExistentBoard", "Task4", "desc", DateTime.Now.AddDays(3));// Invalid - Add task to non-existent board
-            
+
+            Console.Write("Expected: Success, Actual: ");
+            TestAddTask(email, boardName, "Task2", "", DateTime.Now.AddDays(3));// Valid add, empty desc
+            Console.Write("Expected: Failed, Actual: ");
+            TestAddTask(email, boardName, "Task2", "desc", DateTime.Today.AddDays(-3));// Fail, Invalid due date
+            Console.Write("Expected: Failed, Actual: ");
+            BS.ChangeMaxTasks(email, boardName, new int[] { 2, 25, 25 });
+            TestAddTask(email, boardName, "Task3", "desc", DateTime.Today.AddDays(3));// Fail, more than maxTasks
+            BS.ChangeMaxTasks(email, boardName, new int[] { 25, 25, 25 }); //need to check if this fails!!
         }
         public void TestAddTask(string email, string boardName, string title, string desc, DateTime dueDate)
         {
@@ -46,8 +59,8 @@ namespace BackendTests
             }
             else Console.WriteLine("Failed");
         }
-        public void UpdateTitleTestCases()
-        {
+        public void UpdateTitleTestCases() //maybe we should have the updates get TaskSLs in contract?? 
+        {                                   //either way how do we know it during runtime? from user?
             string email = "MayaLich@post.bgu.ac.il";
             string boardName = "Maya's Board";
             int[] maxTasks = { 25, 25, 25 };
@@ -113,7 +126,10 @@ namespace BackendTests
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             TestUpdateDesc(email, boardName, 1, "New Description");// Valid update
             TestUpdateDesc(email, boardName, 1, "");// Valid update - no description
+<<<<<<< HEAD
             TestUpdateDesc(email, boardName, 1, new string('D', 300)); // Valid - Exactly max length
+=======
+>>>>>>> origin/develop
             TestUpdateDesc(email, boardName, 1, new string('D', 301));// Invalid - Description exceeds max length
             TestUpdateDesc(email, boardName, 999, "desc");// Non-existent task - TODO check id synchronizing
             TestUpdateDesc("fake@post.bgu.ac.il", boardName, 1, "New Desc"); // Invalid - Non-existent user
@@ -141,9 +157,9 @@ namespace BackendTests
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName,maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
-            TestMoveTask(email, boardName, 0);// Valid move from Backlog to In Progress
-            TestMoveTask(email, boardName, 0);// Valid move from In Progress to Done
-            TestMoveTask(email, boardName, 0);// Invalid - move from Done (cannot move further)
+            TestMoveTask(email, boardName, 1);// Valid move from Backlog to In Progress
+            TestMoveTask(email, boardName, 1);// Valid move from In Progress to Done
+            TestMoveTask(email, boardName, 1);// Invalid - move from Done (cannot move further)
             TestMoveTask(email, boardName, 999); // Invalid move non-existent task - TODO check id synchronizing
             TestMoveTask(email, "NonExistentBoard", 0);// Invalid - move non-existent board
         }

@@ -23,8 +23,6 @@ namespace Backend.BuisnessLayer
             get { return columns; }
         }
       
-
-
         public BoardBL(string boardName, int[] maxTasks)
         {
             this.boardName = boardName;
@@ -35,12 +33,21 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, maxTasks[2]) }
             };
             this.nextTaskID = 1;
-            
+    
         }
-        
+
         public string BoardName
         {
-            get;
+            get=> boardName;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Log.Error("Provided title is null or empty");
+                    throw new Exception("Provided title is null or empty");
+                }
+            }
+
         }
        
         public TaskBL addTask(string title, DateTime dueDate, string desc)
@@ -88,6 +95,14 @@ namespace Backend.BuisnessLayer
                 }
             }
             return false;
+        }
+
+        public void changeMaxTasks(int colIdx, int newLim)
+        {
+            if (colIdx == 0) { columns[BACKLOG].MaxTasks = newLim; }
+            if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
+            if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
+            
         }
     }
 }
