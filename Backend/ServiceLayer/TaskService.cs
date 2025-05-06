@@ -141,7 +141,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BF.MoveTask(email, boardName, taskID);
-                Response<string> res1 = new Response<string>(null);
+                Response<string> res1 = new Response<string>();
                 return JsonSerializer.Serialize(res1);  
             }
             catch (Exception e)

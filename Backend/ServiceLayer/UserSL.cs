@@ -8,14 +8,14 @@ namespace Backend.ServiceLayer
 {
     public class UserSL
     {
-        public string email { get; set; }
+        public string Email { get; set; }
         /// <summary>
         /// This constructor get an email and creates a UserSL
         /// </summary>
         /// <param name="email">The email of the user</param>
         public UserSL(string email)
         { 
-            this.email = email;
+            this.Email = email;
         }
 
 

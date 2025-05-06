@@ -40,7 +40,7 @@ namespace BackendTests
         {
             string str = TS.AddTask(email,boardName,title,desc,dueDate);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -54,17 +54,22 @@ namespace BackendTests
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName, maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
-            TestUpdateTitle(email, boardName, 1, "New Title"); // Valid update - TODO check id synchronizing
+            TestUpdateTitle(email, boardName, 1, "New Title"); // Valid update 
             TestUpdateTitle(email, boardName, 1, "");//Invalid - Empty title
             TestUpdateTitle(email, boardName, 1, new string('A', 51));// Invalid - Title exceeds max length
-            TestUpdateTitle(email, boardName, 999, "Another Title"); // Invalid - Non-existent task - TODO check id synchronizing
+            TestUpdateTitle(email, boardName, 999, "Another Title"); // Invalid - Non-existent task 
+            TestUpdateTitle("wrong@post.bgu.ac.il", boardName, 1, "ValidTitle"); // Invalid - Non-existent user
+            TestUpdateTitle(email, "FakeBoard", 1, "ValidTitle"); // Invalid - Non-existent board
+            US.Logout(email);
+            TestUpdateTitle(email, boardName, 1, "New Title"); // Invalid - not logged in user
+
         }
 
         public void TestUpdateTitle(string email, string boardName, long taskId, string newTitle)
         {
             string str = TS.UpdateTitle(email, boardName, taskId, newTitle);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -79,15 +84,20 @@ namespace BackendTests
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName, maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
-            TestUpdateDueDate(email, boardName, 0, DateTime.Now.AddDays(5)); // Valid update
+            TestUpdateDueDate(email, boardName, 1, DateTime.Now.AddDays(5)); // Valid update
+            TestUpdateDueDate(email, boardName, 1, DateTime.Now.AddDays(-1)); // Invalid - Due date in the past
+            TestUpdateDueDate("fake@post.bgu.ac.il", boardName, 1, DateTime.Now.AddDays(2)); //Invalid -  Non-existent user
+            TestUpdateDueDate(email, "UnknownBoard", 1, DateTime.Now.AddDays(2)); // Invalid - Non-existent board
             TestUpdateDueDate(email, boardName, 999, DateTime.Now.AddDays(5));// Invalid - Non-existent task - TODO check id synchronizing
+            US.Logout(email);
+            TestUpdateDueDate(email, boardName, 1, DateTime.Now.AddDays(5)); // Invalid - not logged in user
         }
 
         public void TestUpdateDueDate(string email, string boardName, long taskId, DateTime newDueDate)
         {
             string str = TS.UpdateDueDate(email, boardName, taskId, newDueDate);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -101,17 +111,23 @@ namespace BackendTests
             US.Register(email, "Mm212178");
             BS.CreateBoard(email, boardName,maxTasks);
             TS.AddTask(email, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
-            TestUpdateDesc(email, boardName, 0, "New Description");// Valid update
-            TestUpdateDesc(email, boardName, 0, "");// Valid update - no description
-            TestUpdateDesc(email, boardName, 0, new string('D', 301));// Invalid - Description exceeds max length
+            TestUpdateDesc(email, boardName, 1, "New Description");// Valid update
+            TestUpdateDesc(email, boardName, 1, "");// Valid update - no description
+            TestUpdateDesc(email, boardName, 1, new string('D', 300)); // Valid - Exactly max length
+            TestUpdateDesc(email, boardName, 1, new string('D', 301));// Invalid - Description exceeds max length
             TestUpdateDesc(email, boardName, 999, "desc");// Non-existent task - TODO check id synchronizing
+            TestUpdateDesc("fake@post.bgu.ac.il", boardName, 1, "New Desc"); // Invalid - Non-existent user
+            TestUpdateDesc(email, "WrongBoard", 1, "New Desc"); // Invalid - Non-existent board
+            US.Logout(email);
+            TestUpdateDesc(email, boardName, 1, "New Description"); // Invalid - not logged in user
+
         }
 
         public void TestUpdateDesc(string email, string boardName, long taskId, string newDesc)
         {
             string str = TS.UpdateDesc(email, boardName, taskId, newDesc);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -136,7 +152,7 @@ namespace BackendTests
         {
             string str = TS.MoveTask(email, boardName, taskId);
             Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -163,13 +179,15 @@ namespace BackendTests
             TS.MoveTask(email, boardName1, 1);//Move Task1 to done
             TS.MoveTask(email, boardName2, 3);//Move Task3 to done
             TestInProgressList(email);//Expect an empty list
-
+            TestInProgressList("fake@post.bgu.ac.il"); // Invalid - non-existent user
+            US.Logout(email);
+            TestInProgressList(email); // Invalid - not logged in user
         }
         public void TestInProgressList(string email)
         {
             string str = TS.InProgressList(email);
             Response<List<TaskSL>>? res = JsonSerializer.Deserialize<Response<List<TaskSL>>>(str);
-            if (res.ErrorMsg == null)
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }

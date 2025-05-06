@@ -8,8 +8,8 @@ namespace Backend.ServiceLayer
 {
     public class Response<T>
     {
-        public string? ErrorMsg {get;set;}
-        public T? RetVal { get;set;}
+        public string ErrorMessage {get;set;}
+        public T ReturnValue { get;set;}
         /// <summary>
         /// This constuctor intiates a response object with null values
         /// </summary>
@@ -20,17 +20,23 @@ namespace Backend.ServiceLayer
         /// <param name="msg">The error message</param>
         public Response(string msg)
         {
-            ErrorMsg = msg;
+            ErrorMessage = msg;
+            ReturnValue = default(T);
         }
         /// <summary>
         /// This constuctor intiates a response object with an error message and\or a generic value
         /// </summary>
         /// <param name="msg">The error message</param>
         /// <param name="retVal">The generic return value</param>
-        public Response(string msg, T retVal)
+        public Response(T retVal)
         {
-            ErrorMsg = msg;
-            RetVal = retVal;
+            ErrorMessage = null;
+            ReturnValue = retVal;
+        }
+        public Response(string errorMsg , T retVal)
+        {
+            ErrorMessage = errorMsg;
+            ReturnValue = retVal;
         }
     }
 }

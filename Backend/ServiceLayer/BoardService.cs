@@ -52,7 +52,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BF.DeleteBoard(email, boardName);
-                Response<String> res1 = new Response<String>(null);
+                Response<String> res1 = new Response<String>();
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)

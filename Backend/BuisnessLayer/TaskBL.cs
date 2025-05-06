@@ -15,20 +15,21 @@ namespace Backend.BuisnessLayer
         public string title;
         public DateTime dueDate;
         public string desc;
-        public const int DESC_LIM= 300;
+        public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
             this.title = title;
-            this.dueDate = dueDate;
+            this.DueDate = dueDate;
             this.desc = desc;
             this.taskID = id;
             this.cTime = DateTime.Now;
         }
-        public long TaskID { get; }
+        public long TaskID { get { return this.taskID; } }
         public DateTime CTime { get; }
-        public string Desc {
-            get => desc; 
+        public string Desc
+        {
+            get => desc;
             set
             {
                 if (value.Length > DESC_LIM)
@@ -36,7 +37,7 @@ namespace Backend.BuisnessLayer
                     Log.Error("Provided description exceeds character limit");
                     throw new Exception("Provided description exceeds character limit");
                 }
-                else if (desc==null)
+                else if (desc == null)
                 {
                     Log.Error("Provided description is null");
                     throw new Exception("Provided descritpion is null");
@@ -47,8 +48,9 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public string Title {
-            get => title; 
+        public string Title
+        {
+            get => title;
             set
             {
                 if (value.Length > TITLE_LIM)
@@ -67,7 +69,23 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public DateTime DueDate { get; set; }
+        public DateTime DueDate
+        {
+            get => this.dueDate;
+            set
+            {
+                if (value >= DateTime.Now)
+                {
+                    this.dueDate = value;
+                }
+                else
+                {
+                    Log.Error("Provided duedate is invalid - not a future date");
+                    throw new Exception("Provided duedate is invalid - not a future date");
+                }
 
+            }
+
+        }
     }
 }

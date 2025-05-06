@@ -26,7 +26,7 @@ namespace BackendTests
             Console.WriteLine("Testing login:");
             ust.LoginTestCases();
             ust.setup();
-            Console.WriteLine("Testing login:");
+            Console.WriteLine("Testing logout:");
             ust.LogoutTestCases();
             //BoardService
             Console.WriteLine("BOARD SERVICE:");
