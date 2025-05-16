@@ -33,7 +33,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName);
-                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName)); 
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID)); 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 
@@ -74,7 +74,7 @@ namespace Backend.ServiceLayer
                 Dictionary<string, BoardSL> listOfBoardsSL = new Dictionary<string, BoardSL>();
                 foreach (BoardBL boardBL in listOfBoardsBL.Values)
                 {
-                    listOfBoardsSL[boardBL.BoardName] = new BoardSL(boardBL.BoardName);
+                    listOfBoardsSL[boardBL.BoardName] = new BoardSL(boardBL.BoardName, boardBL.BoardID);
                 }
                 Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, listOfBoardsSL); //Converting the dictionary to a boardSL dictionary);
                 return JsonSerializer.Serialize(res);
@@ -166,6 +166,53 @@ namespace Backend.ServiceLayer
                 }
                 Response<List<TaskSL>> res1 = new Response<List<TaskSL>>(columnTaskSL);
                 return JsonSerializer.Serialize(res1);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        public string JoinBoard(String email, long boardID)
+        {
+            try
+            {
+                BF.JoinBoard(email, boardID);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        public string LeaveBoard(String email, long boardID)
+        {
+            try
+            {
+                BF.LeaveBoard(email, boardID);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        public string TransferOwnership(String ownerEmail, long boardID, string otherEmail)
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            {
+                BF.TransferOwnership(ownerEmail, boardID, otherEmail);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
             {

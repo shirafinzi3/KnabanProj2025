@@ -219,7 +219,7 @@ namespace BackendTests
             }
             else Console.WriteLine("Failed");
         }
-        public void AssignUserTestCases()
+        public void AssignTaskTestCases()
         {
             string email1 = "MayaLich@post.bgu.ac.il";
             string email2 = "OtherUser@post.bgu.ac.il";
@@ -233,18 +233,18 @@ namespace BackendTests
             string taskResponse = TS.AddTask(email1, boardName, "Task1", "desc", DateTime.Now.AddDays(3));
             Response<TaskSL>? taskRes = JsonSerializer.Deserialize<Response<TaskSL>>(taskResponse);
             long testTaskID = taskRes.ReturnValue.Id;
-            TestAssignUser(email1, boardName, 0, testTaskID, email2); // Valid - assign to user that is a member of the board
-            TestAssignUser(email1, boardName, 0, testTaskID, email1); // Valid - reassign to original creator
-            TestAssignUser(email1, boardName, 0, testTaskID, "nonexistent@user.com"); // Invalid - user doesn't exist
-            TestAssignUser("nonexistent@user.com", boardName, 0, testTaskID, email2); // Invalid - assigner doesn't exist
-            TestAssignUser(email1, "FakeBoard", 0, testTaskID, email2); // Invalid - board doesn't exist
-            TestAssignUser(email1, boardName, 0,99999, email2); // Invalid - task doesn't exist
+            TestAssignTask(email1, boardName, 0, testTaskID, email2); // Valid - assign to user that is a member of the board
+            TestAssignTask(email1, boardName, 0, testTaskID, email1); // Valid - reassign to original creator
+            TestAssignTask(email1, boardName, 0, testTaskID, "nonexistent@user.com"); // Invalid - user doesn't exist
+            TestAssignTask("nonexistent@user.com", boardName, 0, testTaskID, email2); // Invalid - assigner doesn't exist
+            TestAssignTask(email1, "FakeBoard", 0, testTaskID, email2); // Invalid - board doesn't exist
+            TestAssignTask(email1, boardName, 0,99999, email2); // Invalid - task doesn't exist
             US.Logout(email1);
-            TestAssignUser(email1, boardName, 0, testTaskID, email2); // Invalid - user not logged in
+            TestAssignTask(email1, boardName, 0, testTaskID, email2); // Invalid - user not logged in
         }
-        public void TestAssignUser(string email,string boardName,int col, long TaskID, string emailAssignee)
+        public void TestAssignTask(string email,string boardName,int col, long TaskID, string emailAssignee)
         {
-            string str = TS.AssignUser(email, boardName,col, TaskID, emailAssignee);
+            string str = TS.AssignTask(email, boardName,col, TaskID, emailAssignee);
             Response<TaskSL>? res = JsonSerializer.Deserialize<Response<TaskSL>>(str);
             if (res != null && res.ErrorMessage == null)
             {
