@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -207,6 +208,92 @@ namespace BackendTests
             {
                 Console.WriteLine("Failed");
             }
+        }
+        public void JoinBoardCasses()
+        {
+            string email = "maya@post.bgu.ac.il";
+            string boardName = "Maya's board";
+            US.Register(email, "Maya1905");
+            string str = BS.CreateBoard(email, boardName);
+            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
+            long MayaBoardId = res.ReturnValue.boardID;
+            string joinerEmail = "Tal@post.bgu.ac.il";
+            US.Register(joinerEmail, "Tal1905");
+            TestJoinBoard(joinerEmail, MayaBoardId); // Valid join
+            TestJoinBoard("nonRegistered@email.com", MayaBoardId); // Invalid join - user not registered
+            TestJoinBoard(joinerEmail, 999999); // Invalid join - board doesn't exist
+        }
+        public void TestJoinBoard(String email, long boardId)
+        {
+            string str = BS.JoinBoard(email, boardId);
+            Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
+            if (res.ErrorMessage == null)
+            {
+                Console.WriteLine("Success");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+        }
+        public void LeaveBoardCasses()
+        {
+            string ownerEmail = "Owner@post.bgu.ac.il";
+            string userEmail = "member@post.bgu.ac.il";
+            string boardName = "LeaveTestBoard";
+            US.Register(ownerEmail, "Owner123");
+            US.Register(userEmail, "Member123");
+            string str= BS.CreateBoard(ownerEmail, boardName);
+            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
+            long TestBoardId = res.ReturnValue.boardID;
+            TestLeaveBoard(userEmail, TestBoardId);//invalid-not memeber leaves
+            BS.JoinBoard(userEmail, TestBoardId);
+            TestLeaveBoard(userEmail, TestBoardId);//valid- memeber leaves
+            TestLeaveBoard(ownerEmail, TestBoardId);//Invalid- owner try to leaves
+        }
+        public void TestLeaveBoard(String email, long boardId)
+        {  
+            string str = BS.LeaveBoard(email, boardId);
+            Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
+            if (res.ErrorMessage == null)
+                Console.WriteLine("Success");
+            else
+                Console.WriteLine("Failed");
+         }
+        
+        public void TransferOwnershipCasses()
+        {
+            string ownerEmail = "Owner@post.bgu.ac.il";
+            string userEmail = "member@post.bgu.ac.il";
+            string userEmail2 = "member2@post.bgu.ac.il";
+            string boardName = "toTransfer";
+            US.Register(ownerEmail, "Owner123");
+            US.Register(userEmail, "Member123");
+            US.Register(userEmail2, "Member234");
+            string str =BS.CreateBoard(ownerEmail, boardName);
+            string str2 = BS.CreateBoard(userEmail, "tempName");
+            string str3 = BS.CreateBoard(userEmail, boardName);
+            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
+            Response<BoardSL> res2 = JsonSerializer.Deserialize<Response<BoardSL>>(str2);
+            Response<BoardSL> res3 = JsonSerializer.Deserialize<Response<BoardSL>>(str3);
+            long TestBoardId = res.ReturnValue.boardID;
+            long TestBoardId2 = res2.ReturnValue.boardID;
+            long TestBoardId3 = res3.ReturnValue.boardID;
+            BS.JoinBoard(userEmail2, TestBoardId);
+            TestTransferOwnership(ownerEmail, TestBoardId, userEmail2); //  valid transfer
+            TestTransferOwnership(ownerEmail, TestBoardId, "ghost@post.bgu.ac.il"); // Invalid - not a member
+            TestTransferOwnership(ownerEmail, TestBoardId, userEmail); // Invalid transfer - the user is already have board with the same name
+            TestTransferOwnership(ownerEmail, TestBoardId, "someone@post.bgu.ac.il"); // Invalid - no longer the owner
+            TestTransferOwnership(ownerEmail, TestBoardId2, userEmail); // Invalid - is not the owner
+        }
+        public void TestTransferOwnership(String email, long boardId, String newOwnerEmail)
+        {
+            string str = BS.TransferOwnership(email, boardId, newOwnerEmail);
+            Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
+            if (res.ErrorMessage == null)
+                Console.WriteLine("Success");
+            else
+                Console.WriteLine("Failed");
         }
     }
 }
