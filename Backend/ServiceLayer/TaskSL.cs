@@ -13,6 +13,7 @@ namespace Backend.ServiceLayer
         public String Description {  get; set; }
         public DateTime CTime { get; }
         public DateTime DueDate {  get; set; }
+        public string assignee { get; set; }
         /// <summary>
         /// This constuctor initiates a new TaskSL object.
         /// </summary>

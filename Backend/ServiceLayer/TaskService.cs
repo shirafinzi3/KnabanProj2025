@@ -174,5 +174,18 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<List<TaskSL>>(e.Message));
             }
         }
+        public string AssignTask(String email,string boardName,int colIndex,long taskID,string emailAssignee)
+        {
+            try
+            {
+                BF.AssignTask(email,boardName,colIndex,taskID,emailAssignee);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<List<TaskSL>>(e.Message));
+            }
+        }
     }
 }
