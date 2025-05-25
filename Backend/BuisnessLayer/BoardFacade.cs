@@ -13,7 +13,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
     internal class BoardFacade
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly Dictionary<string, Dictionary<string, BoardBL>> boardsByEmail;
+        private readonly Dictionary<string, Dictionary<string, long>> boardsByEmail;
         private readonly AuthenticationFacade auth;
         private readonly Dictionary<long, BoardBL> boardsById;
         private long nextBoardID;
@@ -21,7 +21,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public BoardFacade (AuthenticationFacade auth)
         {
             this.auth = auth;
-            this.boardsByEmail = new Dictionary<string, Dictionary<string, BoardBL>>();
+            this.boardsByEmail = new Dictionary<string, Dictionary<string, long>>();
             this.boardsById = new Dictionary<long, BoardBL>();
             this.nextBoardID = 1;
         }
@@ -34,7 +34,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             if (!boardsByEmail.ContainsKey(email))
             {
-                boardsByEmail[email]= new Dictionary<string, BoardBL>();
+                boardsByEmail[email]= new Dictionary<string, long>();
             }
             if (boardsByEmail[email].ContainsKey(boardName))
             {
@@ -43,7 +43,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             
             BoardBL newBoard = new BoardBL(boardName,email,nextBoardID++);
-            boardsByEmail[email][boardName] = newBoard;
+            boardsByEmail[email][boardName] = newBoard.BoardID;
             boardsById[newBoard.BoardID] = newBoard;
             return newBoard;
 
@@ -51,37 +51,27 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public void DeleteBoard(string email, string boardName)
         {
             emailAuth(email);
-            BoardBL toDelete = boardsByEmail[email][boardName];
-            bool isRemove = boardsByEmail[email].Remove(boardName);
-            if (!isRemove) 
+            long id = boardsByEmail[email][boardName];
+            BoardBL toDelete = boardsById[id];
+            bool isRemoveFromEmail = boardsByEmail[email].Remove(boardName);
+            bool isRemoveFromID = boardsById.Remove(id);
+            if (!isRemoveFromEmail && !isRemoveFromID) 
             {
                 Log.Error($"cant delete {boardName} because does not exist");
                 throw new InvalidOperationException($"cant delete {boardName} because does not exist");
             }
             boardsById.Remove(toDelete.BoardID);
-            Log.Info($"Board {boardName} deleted for user {email} - {isRemove}");
+            Log.Info($"Board {boardName} deleted for user {email} - {isRemoveFromID}");
             
 
-        }
-        public Dictionary<string, BoardBL> GetAllboards(string email) 
-        {
-            if (!auth.IsLoggedIn(email))
-            {
-                Log.Error($"User {email} is not logged in");
-                throw new InvalidOperationException($"User {email} is not logged in");
-            }
-            if (!boardsByEmail.ContainsKey(email))
-            {
-               return new Dictionary<string, BoardBL>();
-            }
-            return boardsByEmail[email];
         }
         public List<TaskBL> InProgressList(string email)
         {
             emailAuth(email);
             List<TaskBL> inProgressList = new List<TaskBL>();
-            foreach (BoardBL board in boardsByEmail[email].Values)
+            foreach (long id in boardsByEmail[email].Values)
             {
+                BoardBL board = boardsById[id];
                 foreach (TaskBL task in board.Columns[BoardBL.IN_PROGRESS].GetTasks().Values)
                 {
                     if(task.Assignee == email)
@@ -101,7 +91,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             if (!board.Users.Contains(email))
             {
                 Log.Error($"User {email} is not a member of board {boardName}");
@@ -118,7 +109,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             if (!board.Users.Contains(email))
             {
                 Log.Error($"User {email} is not a member of board {boardName}");
@@ -130,7 +122,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         {
             TaskBL toChange = GetEditableTask(email,boardName,taskID, "title");
-            if(toChange.Assignee != email)
+            if(toChange.Assignee != email && toChange.Assignee != null)
             {
                 Log.Error($"User {email} is not the assignee for task {toChange.Title}");
                 throw new InvalidOperationException($"User {email} is not the assignee for task {toChange.Title}");
@@ -142,7 +134,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc)
         {
             TaskBL toChange = GetEditableTask(email, boardName, taskID, "description");
-            if (toChange.Assignee != email)
+            if (toChange.Assignee != email && toChange != null)
             {
                 Log.Error($"User {email} is not the assignee for task {toChange.Title}");
                 throw new InvalidOperationException($"User {email} is not the assignee for task {toChange.Title}");
@@ -153,7 +145,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public TaskBL UpdateDueDate(string email, string boardName, long taskID, DateTime dueDate)
         {
             TaskBL toChange = GetEditableTask(email, boardName, taskID, "due date");
-            if (toChange.Assignee != email)
+            if (toChange.Assignee != email && toChange.Assignee != null)
             {
                 Log.Error($"User {email} is not the assignee for task {toChange.Title}");
                 throw new InvalidOperationException($"User {email} is not the assignee for task {toChange.Title}");
@@ -170,7 +162,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
             TaskBL toMove = null;
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             foreach (Column c in board.Columns.Values)
             {
                 if (c.GetTasks().ContainsKey(taskID))
@@ -179,7 +172,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                     break;
                 }
             }
-            if (toMove.Assignee != email)
+            if (toMove.Assignee != email && toMove.Assignee != null)
             {
                 Log.Error($"User {email} is not the assignee for task {toMove.Title}");
                 throw new InvalidOperationException($"User {email} is not the assignee for task {toMove.Title}");
@@ -195,7 +188,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             board.changeMaxTasks(colIdx, newLim);
         }
         public int GetColumnLimit(string email, string boardName, int colIdx)
@@ -206,7 +200,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             return board.GetColumnLimit(colIdx);
         }
         public string GetColumnName(string email, string boardName, int colIdx)
@@ -217,7 +212,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             return board.GetColumnName(colIdx);
         }
         public Dictionary<long,TaskBL> GetColumn(string email, string boardName, int colIdx)
@@ -228,7 +224,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             return board.GetColumn(colIdx);
         }
         public void JoinBoard(string email, long boardID)
@@ -246,6 +243,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"Board {toJoin.BoardName} already exists for user {email}");
             }
             toJoin.AddUser(email);
+            boardsByEmail[email].Add(toJoin.BoardName, toJoin.BoardID);
             Log.Info($"User {email} joined board {toJoin.BoardName}");
         }
         public void LeaveBoard(string email, long boardID)
@@ -270,7 +268,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL toTransfer = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL toTransfer = boardsById[id];
             toTransfer.Owner = otherEmail;
             Log.Info($"Ownership for board {toTransfer.BoardName} transferd from {email} to {otherEmail}");
         }
@@ -282,7 +281,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
             board.AssignTask(email, colIDX, taskID, emailAssignee);
             Log.Info($"User {email} assigned task to user {emailAssignee}");
         }
@@ -300,9 +300,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         {
             emailAuth(email);
             List<long> ids = new List<long>();
-            foreach (BoardBL board in boardsByEmail[email].Values)
+            foreach (long id in boardsByEmail[email].Values)
             {
-                ids.Add(board.BoardID);
+                ids.Add(id);
             }
             return ids;
         }
@@ -316,8 +316,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Board {boardName} does not exist");
                 throw new KeyNotFoundException($"Board {boardName} does not exist");
             }
-            BoardBL board = boardsByEmail[email][boardName];
-            foreach(Column c in board.Columns.Values)
+            long id = boardsByEmail[email][boardName];
+            BoardBL board = boardsById[id];
+            foreach (Column c in board.Columns.Values)
             {
                 if (c.GetTasks().ContainsKey(taskID))
                 {

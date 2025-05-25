@@ -205,7 +205,7 @@ namespace Backend.BuisnessLayer
                 throw new Exception("Task does not exist");
             }
             TaskBL toAssign = columns[columnName].GetTasks()[taskID];
-            if(toAssign.Assignee != email)
+            if(toAssign.Assignee != email && toAssign.Assignee != null)
             {
                 Log.Error($"User {email} is not the assignee of the task");
                 throw new Exception($"User {email} is not the assignee of the task");
