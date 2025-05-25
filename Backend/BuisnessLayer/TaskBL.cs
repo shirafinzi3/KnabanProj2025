@@ -15,6 +15,7 @@ namespace Backend.BuisnessLayer
         private string title;
         private DateTime dueDate;
         private string desc;
+        private string assignee;
         public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
@@ -24,6 +25,7 @@ namespace Backend.BuisnessLayer
             this.Desc = desc;
             this.taskID = id;
             this.CTime = DateTime.Now;
+            this.Assignee = null;
         }
         public long TaskID { get { return this.taskID; }}
         public DateTime CTime { get; }
@@ -86,6 +88,11 @@ namespace Backend.BuisnessLayer
 
             }
 
+        }
+        public string Assignee
+        {
+            get => assignee;
+            set {this.assignee = value; }
         }
     }
 }

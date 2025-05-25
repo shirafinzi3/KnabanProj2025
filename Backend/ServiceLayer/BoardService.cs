@@ -70,7 +70,7 @@ namespace Backend.ServiceLayer
         {
             try
             {
-                Dictionary<string,BoardBL> listOfBoardsBL = BF.GetAllBoards(email);
+                Dictionary<string,BoardBL> listOfBoardsBL = BF.GetAllboards(email);
                 Dictionary<string, BoardSL> listOfBoardsSL = new Dictionary<string, BoardSL>();
                 foreach (BoardBL boardBL in listOfBoardsBL.Values)
                 {
@@ -198,20 +198,38 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
-        public string TransferOwnership(String ownerEmail, long boardID, string otherEmail)
+        public string TransferOwnership(String ownerEmail, string boardName, string otherEmail)
         {
             try
             {
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            {
-                BF.TransferOwnership(ownerEmail, boardID, otherEmail);
+                BF.TransferOwnership(ownerEmail, boardName, otherEmail);
                 Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        public string GetBoardName(long boardID)
+        {
+            try
+            {
+                string boardName = BF.GetBoardName(boardID);
+                Response<string> res = new Response<string>(null,boardName);
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        public string GetUserBoards(string email)
+        {
+            try
+            {
+                List<long> ids = BF.GetUserBoards(email);
+                Response<List<long>> res = new Response<List<long>>(null, ids);
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)

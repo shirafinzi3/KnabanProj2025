@@ -274,26 +274,26 @@ namespace BackendTests
             string str2 = BS.CreateBoard(userEmail, "tempName");
             string str3 = BS.CreateBoard(userEmail, boardName);
             Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
-            Response<BoardSL> res2 = JsonSerializer.Deserialize<Response<BoardSL>>(str2);
-            Response<BoardSL> res3 = JsonSerializer.Deserialize<Response<BoardSL>>(str3);
             long TestBoardId = res.ReturnValue.boardID;
-            long TestBoardId2 = res2.ReturnValue.boardID;
-            long TestBoardId3 = res3.ReturnValue.boardID;
             BS.JoinBoard(userEmail2, TestBoardId);
-            TestTransferOwnership(ownerEmail, TestBoardId, userEmail2); //  valid transfer
-            TestTransferOwnership(ownerEmail, TestBoardId, "ghost@post.bgu.ac.il"); // Invalid - not a member
-            TestTransferOwnership(ownerEmail, TestBoardId, userEmail); // Invalid transfer - the user is already have board with the same name
-            TestTransferOwnership(ownerEmail, TestBoardId, "someone@post.bgu.ac.il"); // Invalid - no longer the owner
-            TestTransferOwnership(ownerEmail, TestBoardId2, userEmail); // Invalid - is not the owner
+            TestTransferOwnership(ownerEmail, boardName, userEmail2); //  valid transfer
+            TestTransferOwnership(ownerEmail, boardName, "ghost@post.bgu.ac.il"); // Invalid - not a member
+            TestTransferOwnership(ownerEmail, boardName, userEmail); // Invalid transfer - the user is already have board with the same name
+            TestTransferOwnership(ownerEmail, boardName, "someone@post.bgu.ac.il"); // Invalid - no longer the owner
+            TestTransferOwnership(ownerEmail, boardName, userEmail); // Invalid - is not the owner
         }
-        public void TestTransferOwnership(String email, long boardId, String newOwnerEmail)
+        public void TestTransferOwnership(String email, string boardName, String newOwnerEmail)
         {
-            string str = BS.TransferOwnership(email, boardId, newOwnerEmail);
+            string str = BS.TransferOwnership(email, boardName, newOwnerEmail);
             Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
             if (res.ErrorMessage == null)
+            {
                 Console.WriteLine("Success");
+            }
             else
+            {
                 Console.WriteLine("Failed");
+            }
         }
     }
 }
