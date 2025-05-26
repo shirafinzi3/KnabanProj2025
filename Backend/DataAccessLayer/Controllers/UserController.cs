@@ -41,7 +41,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                     dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
-                        result.Add(ConvertReaderToMessage(dataReader));
+                        result.Add(ConvertReaderToUser(dataReader));
                     }
                 }
                 catch (Exception ex) 
@@ -148,7 +148,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return res > 0;
         }
-        private UserDTO ConvertReaderToMessage(SQLiteDataReader reader)
+        private UserDTO ConvertReaderToUser(SQLiteDataReader reader)
         {
             return new UserDTO(reader.GetString(0),reader.GetString(1));
         }
