@@ -15,7 +15,7 @@ namespace Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string boardName;
         private readonly Dictionary<String, Column> columns;
-        private readonly List<string> users;
+        private readonly List<string> users = new List<string>();
         private long boardID;
         private long nextTaskID;
         private string owner { get; set; }

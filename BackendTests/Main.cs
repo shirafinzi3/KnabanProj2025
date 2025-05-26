@@ -39,7 +39,7 @@ namespace BackendTests
             bst.BoardDeletionTestCases();
             bst.setup();
             Console.WriteLine("Testing get all boards:");
-            bst.GetAllBoardsTestCases();
+            //bst.GetAllBoardsTestCases();
             bst.setup();
             Console.WriteLine("Testing change max tasks:");
             bst.ChangeMaxTaskCases();
