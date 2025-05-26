@@ -6,45 +6,152 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.IO;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
+using log4net;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
     internal class UserController
     {
         private readonly string connectionString;
-        private const string TableName = "Users";
+        private const string tableName = "Users";
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public UserController()
         {
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanbanDB.db"));
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanban.db"));
             connectionString = $"Data Source={path}; Version=3;";
         }
 
         public List<UserDTO> SelectAll()
         {
-            //TODO
+            return Select();
         }
     
         public List <UserDTO> Select()
         {
-            //TODO
+            List<UserDTO> result = new List<UserDTO>();
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null,connection);
+                command.CommandText = $"SELECT * FROM {tableName}";
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        result.Add(ConvertReaderToMessage(dataReader));
+                    }
+                }
+                catch (Exception ex) 
+                {
+                    Log.Error("Failed to select users from database");
+                    throw new Exception("Failed to select users from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return result;
         }
 
         public bool Insert(UserDTO user)
         {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                int res = -1;
+                try
+                {
+                    connection.Open();
+                    command.CommandText = $"INSERT INTO {tableName} ({UserDTO.emailColumnName}, {UserDTO.passColumnName}) " + $"VALUES (@emailVal, @passwordVal);";
+                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
+                    SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", user.Password);
+                    command.Parameters.Add(emailParam);
+                    command.Parameters.Add(passwordParam);
+                    command.Prepare();
+                    res = command.ExecuteNonQuery();
 
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Failed to insert user to database");
+                    throw new Exception("Failed to insert user to database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+                return res > 0;
+            }
         }
 
         public bool Delete(UserDTO user)
         {
-            //TODO
+            int res = -1;
+            using( var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                try
+                {
+                    command.CommandText = $"DELETE FROM {tableName} WHERE {UserDTO.emailColumnName}=@emailVal";
+                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
+                    command.Parameters.Add(emailParam);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                }
+                catch(Exception ex)
+                {
+                    Log.Error("Failed to delete user from database");
+                    throw new Exception("Failed to delete user from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return res > 0;
         }
 
-        public bool UpdatePassword(string password)
+        public bool UpdatePassword(string email, string password)
         {
-            //Do we need to do this?
-        }
+            int res = -1;
+            using( var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null,connection);
+                try
+                {   
+                    command.CommandText = $"UPDATE {tableName} SET {UserDTO.passColumnName} = @passwordVal WHERE {UserDTO.emailColumnName}=@emailVal";
+                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", email);
+                    SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", password);
+                    command.Parameters.Add(emailParam);
+                    command.Parameters.Add(passwordParam);
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                }
+                catch(Exception ex)
+                {
+                    Log.Error("Failed to update password in database");
+                    throw new Exception("Failed to update password in database");
 
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return res > 0;
+        }
+        private UserDTO ConvertReaderToMessage(SQLiteDataReader reader)
+        {
+            return new UserDTO(reader.GetString(0),reader.GetString(1));
+        }
 
     }
 }

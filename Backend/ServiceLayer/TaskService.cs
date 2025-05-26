@@ -174,6 +174,15 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<List<TaskSL>>(e.Message));
             }
         }
+        /// <summary>
+        /// This method allows a user to assign a task to himself or to another user
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">The name od the board in which the task is</param>
+        /// <param name="colIndex">The column index of the task</param>
+        /// <param name="taskID">The unique task id</param>
+        /// <param name="emailAssignee">The email of the assignee</param>
+        /// <returns>An empty response or an error message</returns>
         public string AssignTask(String email,string boardName,int colIndex,long taskID,string emailAssignee)
         {
             try

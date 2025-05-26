@@ -60,7 +60,7 @@ namespace Backend.ServiceLayer
         /// </summary>
         /// <param name="email">Inserted email attempt, used by the UserFacade to try to register</param>
         /// <param name="password">Inserted password attempt, used by the UserFacade to try to register</param>
-        /// <returns>A UserSL response or and error message</returns>
+        /// <returns>A UserSL response or an error message</returns>
         public string Register (string email, string password) 
         {
             try
@@ -74,5 +74,57 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<UserSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method allows a user to change his/hers password
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="newpass">The new password the user is changing to</param>
+        /// <returns>An empty response or an error message</returns>
+        public string ChangePassword(string email, string newpass)
+        {
+            try
+            {
+                UF.ChangePassword(email, newpass);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method loads all user data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string LoadAllUsers()
+        {
+            try
+            {
+                UF.LoadAllUsers();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch(Exception e) 
+            {
+                    return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method deletes all user data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string DeleteAllUsers()
+        {
+            try
+            {
+                UF.DeleteAllUsers();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+
     }
 }
