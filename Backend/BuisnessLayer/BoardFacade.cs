@@ -172,6 +172,11 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                     break;
                 }
             }
+            if (toMove == null)
+            {
+                Log.Error($"task {taskID} does not exist");
+                throw new InvalidOperationException($"task {taskID} does not exist");
+            }
             if (toMove.Assignee != email && toMove.Assignee != null)
             {
                 Log.Error($"User {email} is not the assignee for task {toMove.Title}");
