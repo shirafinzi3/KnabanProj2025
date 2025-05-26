@@ -9,9 +9,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
 {
     internal class ColumnDTO
     {
-        private long columnID { get; }
-        private long boardID { get; }
-        private string colName { get; }
+        private long columnID;
+        private long boardID;
+        private string colName;
         private int maxTasks;
         public const string ColumnIDColumnName = "ColumnID";
         public const string BoardIDColumnName = "BoardID";
@@ -20,6 +20,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public ColumnController columnController { get; set; }
         private bool isPersistent = false;
 
+        public long ColumnID { get => columnID; }
+        public long BoardID { get => boardID; }
+        public string ColName { get => colName; }
         public int MaxTasks
         {
             get => maxTasks;
@@ -28,18 +31,35 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
                 maxTasks = value;
             }
         }
+       
 
-        public ColumnDTO(long columnID, long boardID, string colName, int maxTasks)
+        public ColumnDTO(long columnID, string colName, int maxTasks)
         {
             this.columnID = columnID;
-            this.boardID = boardID;
             this.colName = colName;
             this.maxTasks = MaxTasks;
             columnController = new ColumnController();
         }
 
-        public void save()
+        public void AddTask(TaskDTO task)
         {
+            task.Save(this.columnID);
+        }
+
+        public void Save()
+        {
+            if (isPersistent)
+            {
+                throw new InvalidOperationException("Cannot save persisted object");
+            }
+        }
+        public void Save(long boardID)
+        {
+            if (isPersistent)
+            {
+                throw new InvalidOperationException("Cannot save persisted object");
+            }
+            this.boardID = boardID;
             columnController.Insert(this);
             isPersistent = true;
         }

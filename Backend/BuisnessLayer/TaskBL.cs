@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 
 namespace Backend.BuisnessLayer
@@ -16,6 +18,7 @@ namespace Backend.BuisnessLayer
         private DateTime dueDate;
         private string desc;
         private string assignee;
+        private TaskDTO tDTO;
         public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
@@ -26,6 +29,11 @@ namespace Backend.BuisnessLayer
             this.taskID = id;
             this.CTime = DateTime.Now;
             this.Assignee = null;
+            tDTO.Save();
+        }
+        public TaskDTO TaskDTO
+        {
+            get => tDTO;
         }
         public long TaskID { get { return this.taskID; }}
         public DateTime CTime { get; }
