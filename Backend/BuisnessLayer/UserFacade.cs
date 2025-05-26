@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 
 namespace Backend.BuisnessLayer
@@ -75,6 +77,46 @@ namespace Backend.BuisnessLayer
             users.Add(email, user);
             auth.Login(email);
             return user;
+        }
+        public void ChangePassword(string email, string newpass)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                Log.Error("Provided email is null or empty");
+                throw new ArgumentNullException("Provided email is null or empty");
+            }
+            email = email.ToLower().Trim();
+            if (!users.ContainsKey(email))
+            {
+                Log.Error($"Provided email: {email} does not exist in the system ");
+                throw new ArgumentException($"Provided email: {email} does not exist in the system ");
+            }
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in ");
+                throw new ArgumentException($"User {email} is not logged in");
+            }
+            UserBL user = users[email];
+            user.Password = newpass;
+        }
+        public void LoadAllUsers()
+        {
+            UserController userController = new UserController();
+            List<UserDTO> userDTOs = userController.SelectAll();
+            foreach (UserDTO userDTO in userDTOs)
+            {
+                users[userDTO.Email] = new UserBL(userDTO);
+            }
+            Log.Info("Users data uploaded from database");
+        }
+        public void DeleteAllUsers()
+        {
+            UserController userController = new UserController();
+            foreach(UserBL userBL in users.Values)
+            {
+                userController.Delete(userBL.UDTO); 
+            }
+            Log.Info("Users data deleted  from database");
         }
      
     }

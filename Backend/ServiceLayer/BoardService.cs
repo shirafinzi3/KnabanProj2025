@@ -149,6 +149,12 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method allows a user join another board
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>An empty response or an error message </returns>
         public string JoinBoard(String email, long boardID)
         {
             try
@@ -162,6 +168,12 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method allows a user leave another board
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>An empty response or an error message </returns>
         public string LeaveBoard(String email, long boardID)
         {
             try
@@ -175,6 +187,13 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method alllows a user to transfer the ownership of a board that he/she owns
+        /// </summary>
+        /// <param name="ownerEmail">The email of the current owner</param>
+        /// <param name="boardName">The board name which is beign transferd</param>
+        /// <param name="otherEmail">The email to which the board is being transfered</param>
+        /// <returns>An empty response or an error message </returns>
         public string TransferOwnership(String ownerEmail, string boardName, string otherEmail)
         {
             try
@@ -188,6 +207,11 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method returns a board name
+        /// </summary>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>A response with the board name or an error message </returns>
         public string GetBoardName(long boardID)
         {
             try
@@ -201,6 +225,11 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
         }
+        /// <summary>
+        /// This method returns a list of all the ids of the boards that the user is a member of
+        /// </summary>
+        /// <param name="email">A unique email of the user</param>
+        /// <returns>A response with the list of ids or an error message </returns>
         public string GetUserBoards(string email)
         {
             try
