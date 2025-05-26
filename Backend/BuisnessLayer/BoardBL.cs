@@ -17,7 +17,6 @@ namespace Backend.BuisnessLayer
         private readonly Dictionary<String, Column> columns;
         private readonly List<string> users = new List<string>();
         private long boardID;
-        private long nextTaskID;
         private string owner { get; set; }
         public const String BACKLOG = "backlog";
         public const String IN_PROGRESS = "in progress";
@@ -26,16 +25,15 @@ namespace Backend.BuisnessLayer
         {
             get { return columns; }
         }
-        public BoardBL(string boardName, string owner, long boardID)
+        public BoardBL(string boardName, string owner, long boardID, long startColID)
         {
             this.BoardName = boardName;
             this.columns = new Dictionary<String, Column>
             {
-                 { BACKLOG, new Column(BACKLOG, -1) },
-                 { IN_PROGRESS, new Column(IN_PROGRESS, -1) },
-                 { DONE, new Column(DONE, -1) }
+                 { BACKLOG, new Column(BACKLOG, -1, startColID) },
+                 { IN_PROGRESS, new Column(IN_PROGRESS, -1 ,startColID+1) },
+                 { DONE, new Column(DONE, -1, startColID+2) }
             };
-            this.nextTaskID = 1;
             this.owner = owner;
             this.users.Add(owner);
             this.boardID = boardID;
@@ -77,9 +75,9 @@ namespace Backend.BuisnessLayer
         }
        
        
-        public TaskBL addTask(string title, DateTime dueDate, string desc)
+        public TaskBL addTask(string title, DateTime dueDate, string desc, long taskID)
         {
-            TaskBL task = new TaskBL(title, dueDate, desc, nextTaskID++);
+            TaskBL task = new TaskBL(title, dueDate, desc, taskID);
             columns[BACKLOG].Add(task);
             return task;
         }

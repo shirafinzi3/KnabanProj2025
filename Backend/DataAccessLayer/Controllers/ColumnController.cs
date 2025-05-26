@@ -8,38 +8,41 @@ using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
-    internal class TaskController
+    internal class ColumnController
     {
         private readonly string connectionString;
-        private const string TableName = "Tasks";
+        private const string TableName = "Columns";
 
-        public TaskController()
+        public ColumnController()
         {
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanbanDB.db"));
             connectionString = $"Data Source={path}; Version=3;";
         }
 
-        public List<TaskDTO> SelectAll()
+        public List<ColumnDTO> SelectAll()
         {
             //TODO
         }
 
-        public List<TaskDTO> Select()
+        public List<ColumnDTO> Select()
         {
             //TODO
         }
 
-        public bool Insert(TaskDTO board)
+        public bool Insert(ColumnDTO board)
         {
             //TODO
         }
 
-        public bool Delete(TaskDTO board)
+        public bool Delete(ColumnDTO board)
         {
             //TODO
         }
 
-
-
+        public bool UpdateMaxTasks(int newMaxTasks)
+        {
+            //TODO
+        }
     }
 }
+
