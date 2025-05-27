@@ -32,7 +32,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             }
         }
        
-
         public ColumnDTO(long columnID, string colName, int maxTasks)
         {
             this.columnID = columnID;
@@ -41,6 +40,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             columnController = new ColumnController();
         }
 
+        public ColumnDTO(long columnID, long boardID, string colName, int maxTasks)
+        {
+            this.columnID = columnID;
+            this.boardID = boardID;
+            this.colName = colName;
+            this.maxTasks = MaxTasks;
+            columnController = new ColumnController();
+        }
         public void AddTask(TaskDTO task)
         {
             task.Save(this.columnID);
