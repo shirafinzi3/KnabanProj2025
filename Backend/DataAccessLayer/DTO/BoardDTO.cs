@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IntroSE.Kanban.Backend.BuisnessLayer;
 using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
 using log4net;
 
@@ -10,7 +11,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
 {
     internal class BoardDTO
     {
-        private long boardID; 
+        private long boardID;
         private string name;
         private string ownerEmail;
         public const string boardIDColumnName = "BoardID";
@@ -37,7 +38,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             get => ownerEmail;
             set
             {
-               ownerEmail = value; 
+                if (isPersistent)
+                {
+                    boardController.UpdateBoardName(boardID, boardNameColumnName, value);
+                }
+                ownerEmail = value;
             }
         }
         public string Name
@@ -46,23 +51,33 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         }
         public long BoardID
         {
-            get =>boardID;
+            get => boardID;
+        }
+
+        public List<string> Users
+        {
+            get => users; //need to do using SELECT i think?
         }
         public void AddUser(string userEmail)
         {
-            if(!users.Contains(userEmail)) //need to check if we can just add it without if
-                users.Add (userEmail);
+            if (!users.Contains(userEmail))//need to check if we can just add it without if
+            {
+                users.Add(userEmail);
+                
+            }
         }
         public void RemoveUser(string userEmail)
         {
-            if(!users.Contains(userEmail)) //need to check if we can just remove it without if
-                users.Remove (userEmail);
+            if (!users.Contains(userEmail)) //need to check if we can just remove it without if
+            { 
+                users.Remove(userEmail);
+            }
         }
-        public void AddTask(TaskDTO taskDTO) //NEED TO CHECK THE UML
+        public void AddColumn(ColumnDTO column) //NEED TO CHECK THE UML
         {
-            //todo 
+            column.Save(this.BoardID);
         }
-        public void save()
+        public void Save()
         {
             if (isPersistent) throw new InvalidOperationException("Cannot save persisted object");
             if (boardController.Insert(this))

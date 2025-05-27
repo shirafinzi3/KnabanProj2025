@@ -67,6 +67,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public bool Remove(long taskId)
         {
+           //NEED to update in deleting
            return tasks.Remove(taskId);
         }
         public Dictionary<long, TaskBL> GetTasks() { return tasks; }

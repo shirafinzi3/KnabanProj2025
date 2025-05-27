@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
 using Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
@@ -363,7 +366,26 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new KeyNotFoundException($"User {email} does not exist or has no boardsByEmail");
             }
         }
-        
+
+        public void LoadAllBoards()
+        {
+            BoardController boardController = new BoardController();
+            List<BoardDTO> bDTOs = boardController.SelectAll();
+            foreach (BoardDTO bDTO in bDTOs)
+            {
+                foreach(string email in bDTO.Users)
+                {
+                    if (!boardsByEmail.ContainsKey(email))
+                    {
+                        boardsByEmail[email] = new Dictionary<string, long>();
+                    }
+                    boardsByEmail[email][bDTO.Name] = bDTO.BoardID;
+                }
+                BoardBL board = new BoardBL(bDTO);
+                boardsById[bDTO.BoardID] = board;
+            }
+            Log.Info("Users data uploaded from database");
+        }
 
     }
 }

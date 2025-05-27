@@ -22,7 +22,8 @@ namespace Backend.BuisnessLayer
         public const int DESC_LIM = 300;
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
-        { 
+        {
+            tDTO = new TaskDTO(taskID, title, desc, dueDate, cTime, assignee);
             this.Title = title;
             this.DueDate = dueDate;
             this.Desc = desc;

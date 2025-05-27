@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
+using log4net;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
 {
@@ -19,19 +20,12 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public const string MaxTasksColumnName = "MaxTasks";
         public ColumnController columnController { get; set; }
         private bool isPersistent = false;
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public long ColumnID { get => columnID; }
         public long BoardID { get => boardID; }
         public string ColName { get => colName; }
-        public int MaxTasks
-        {
-            get => maxTasks;
-            set
-            {
-                maxTasks = value;
-            }
-        }
-       
+      
         public ColumnDTO(long columnID, string colName, int maxTasks)
         {
             this.columnID = columnID;
@@ -47,6 +41,19 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             this.colName = colName;
             this.maxTasks = MaxTasks;
             columnController = new ColumnController();
+        }
+
+        public int MaxTasks
+        {
+            get => maxTasks;
+            set
+            {
+                if (isPersistent)
+                {
+                    columnController.UpdateMaxTasks(columnID, MaxTasksColumnName, value);
+                }
+                maxTasks = value;
+            }
         }
         public void AddTask(TaskDTO task)
         {
@@ -68,6 +75,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             }
             this.boardID = boardID;
             columnController.Insert(this);
+            Log.Info("Column data saved to database");
             isPersistent = true;
         }
     }

@@ -18,7 +18,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
         public BoardController()
         {
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanbanDB.db"));
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanban.db"));
             connectionString = $"Data Source={path}; Version=3;";
         }
 
@@ -120,6 +120,37 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 return res > 0;
             }
+
+        public bool UpdateBoardName(long boardID, string attributeName, string attributeValue)
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand
+                {
+                    Connection = connection,
+                    CommandText = $"UPDATE {TableName} SET [{attributeName}]=@attributeValue WHERE {BoardDTO.boardIDColumnName}={boardID}"
+                };
+                try
+                {
+                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    Log.Error($"Failed to update {attributeName} for board {boardID} in DB");
+                    throw new InvalidOperationException($"Failed to update {attributeName} for board {boardID} in DB");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+
+            }
+            return res > 0;
+        }
         private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
         {
             int id = reader.GetInt32(0); 
