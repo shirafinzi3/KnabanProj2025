@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
+using log4net;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
 {
@@ -15,6 +16,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public const string boardIDColumnName = "BoardID";
         public const string boardNameColumnName = "BoardName";
         public const string ownerEmailColumnName = "OwnerEmail";
+        private readonly List<string> users;
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public BoardController boardController { get; set; }
         private bool isPersistent = false;
 
@@ -24,6 +28,8 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             this.name = name;
             this.ownerEmail = OwnerEmail;
             boardController = new BoardController();
+            users = new List<string>();
+            users.Add(ownerEmail);
         }
 
         public string OwnerEmail
@@ -34,10 +40,41 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
                ownerEmail = value; 
             }
         }
+        public string Name
+        {
+            get => name;
+        }
+        public long BoardID
+        {
+            get =>boardID;
+        }
+        public void AddUser(string userEmail)
+        {
+            if(!users.Contains(userEmail)) //need to check if we can just add it without if
+                users.Add (userEmail);
+        }
+        public void RemoveUser(string userEmail)
+        {
+            if(!users.Contains(userEmail)) //need to check if we can just remove it without if
+                users.Remove (userEmail);
+        }
+        public void AddTask(TaskDTO taskDTO) //NEED TO CHECK THE UML
+        {
+            //todo 
+        }
         public void save()
         {
-            boardController.Insert(this);
-            isPersistent = true;
+            if (isPersistent) throw new InvalidOperationException("Cannot save persisted object");
+            if (boardController.Insert(this))
+            {
+                isPersistent = true;
+                Log.Info("board data saved to database");
+            }
+            else
+            {
+                Log.Error("Failed to insert board into DB");
+                throw new InvalidOperationException("Failed to insert user into DB");
+            }
         }
     }
 }
