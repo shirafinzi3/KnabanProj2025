@@ -17,6 +17,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         private readonly AuthenticationFacade auth;
         private readonly Dictionary<long, BoardBL> boardsById;
         private long nextBoardID;
+        private long nextColumnID;
+        private long nextTaskID;
 
         public BoardFacade (AuthenticationFacade auth)
         {
@@ -24,6 +26,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             this.boardsByEmail = new Dictionary<string, Dictionary<string, long>>();
             this.boardsById = new Dictionary<long, BoardBL>();
             this.nextBoardID = 1;
+            this.nextColumnID = 1;
+            this.nextTaskID = 1;
         }
         public BoardBL CreateBoard(string email, string boardName)
         {
@@ -42,7 +46,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"Board {boardName} already exists for user {email}");
             }
             
-            BoardBL newBoard = new BoardBL(boardName,email,nextBoardID++);
+            BoardBL newBoard = new BoardBL(boardName,email,nextBoardID++, nextColumnID);
+            nextColumnID = nextColumnID + 3;
             boardsByEmail[email][boardName] = newBoard.BoardID;
             boardsById[newBoard.BoardID] = newBoard;
             return newBoard;
@@ -98,7 +103,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"User {email} is not a member of board {boardName}");
                 throw new InvalidOperationException($"User {email} is not a member of board {boardName}");
             }
-            return board.addTask(title, dueDate, desc);
+            return board.addTask(title, dueDate, desc, nextTaskID++);
         }
 
         public bool DeleteTask(String email, String boardName, long taskID)
@@ -134,7 +139,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public TaskBL UpdateDesc(string email, string boardName, long taskID, string desc)
         {
             TaskBL toChange = GetEditableTask(email, boardName, taskID, "description");
-            if (toChange.Assignee != email && toChange != null)
+            if (toChange.Assignee != email && toChange.Assignee!=null && toChange != null )
             {
                 Log.Error($"User {email} is not the assignee for task {toChange.Title}");
                 throw new InvalidOperationException($"User {email} is not the assignee for task {toChange.Title}");

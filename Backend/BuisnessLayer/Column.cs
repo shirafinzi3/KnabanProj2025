@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 using log4net.Repository.Hierarchy;
 
@@ -15,15 +16,25 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public String columnName { get; }
         private int maxTasks;
+        private long columnID;
+        private ColumnDTO cDTO;
         private readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
 
-        public Column(String columnName, int maxTasks)
+        public Column(String columnName, int maxTasks, long columnID)
         {
+            cDTO = new ColumnDTO(columnID, columnName, maxTasks);
             this.columnName = columnName;
             MaxTasks = maxTasks;
+            this.columnID = columnID;
+            cDTO.Save();
+            
         }
-       
-       
+
+        public ColumnDTO ColumnDTO
+        {
+            get => cDTO;
+        }
+        public long ColumnID { get => columnID; }
         public int MaxTasks
         {
             get => maxTasks; 
@@ -39,6 +50,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                     Log.Error($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
                     throw new InvalidOperationException($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
                 }
+                cDTO.MaxTasks = value;
                 this.maxTasks = value;
             }
         }
@@ -49,6 +61,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Column {columnName} is full");
                 throw new InvalidOperationException($"Column {columnName} is full");
             }
+            cDTO.AddTask(task.TaskDTO);
             tasks.Add(task.TaskID, task);
         }
 

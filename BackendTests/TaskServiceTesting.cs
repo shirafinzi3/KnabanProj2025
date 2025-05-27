@@ -43,7 +43,7 @@ namespace BackendTests
             Console.Write("Expected: Fail, Actual: ");
             TestAddTask(email, boardName, "Task2", "desc", DateTime.Today.AddDays(-3));// Fail, Invalid due date
             BS.ChangeMaxTasks(email, boardName, 0, 2);
-            Console.Write("Expected: Sucqcess, Actual: ");
+            Console.Write("Expected: Fail, Actual: ");
             TestAddTask(email, boardName, "Task3", "desc", DateTime.Today.AddDays(3));// Fail, more than maxTasks
             BS.ChangeMaxTasks(email, boardName, 0, 25); //need to check if this fails!!
 
@@ -205,15 +205,15 @@ namespace BackendTests
             TS.AddTask(email, boardName1, "Task1", "desc", DateTime.Now.AddDays(3));
             TS.AddTask(email, boardName2, "Task2", "desc", DateTime.Now.AddDays(3));
             TS.AssignTask(email, boardName1, 0, 1, email);
-            TS.AssignTask(email, boardName2, 0, 1, email);
+            TS.AssignTask(email, boardName2, 0, 2, email);
             TS.MoveTask(email, boardName1, 1);// Move Task1 to In Progress
-            TS.MoveTask(email, boardName2, 1);
-            TS.MoveTask(email, boardName2, 1);// Move Task2 to Done (should not appear in In Progress list)
+            TS.MoveTask(email, boardName2, 2);
+            TS.MoveTask(email, boardName2, 2);// Move Task2 to Done (should not appear in In Progress list)
             TestInProgressList(email);// Only Task1 should be In Progress
             Console.WriteLine("Only Task1 should be in List, Actual: " + TS.InProgressList(email));
             TS.AddTask(email, boardName1, "Task3", "desc", DateTime.Now.AddDays(3));
-            TS.AssignTask(email, boardName1, 0, 2, email);
-            TS.MoveTask(email, boardName1, 2);
+            TS.AssignTask(email, boardName1, 0, 3, email);
+            TS.MoveTask(email, boardName1, 3);
             TestInProgressList(email);//Task1 and Task3 should be In Progress
             Console.WriteLine("Task1 and Task 3 should be in List, Actual: " + TS.InProgressList(email));
             TS.MoveTask(email, boardName1, 1);//Move Task1 to done
