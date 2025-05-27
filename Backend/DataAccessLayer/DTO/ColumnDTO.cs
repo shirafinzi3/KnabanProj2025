@@ -78,5 +78,8 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             Log.Info("Column data saved to database");
             isPersistent = true;
         }
+
+
+
     }
 }

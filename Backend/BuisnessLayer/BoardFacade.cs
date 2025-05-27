@@ -68,6 +68,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"cant delete {boardName} because does not exist");
                 throw new InvalidOperationException($"cant delete {boardName} because does not exist");
             }
+
+            toDelete.BoardDTO.Delete();
             boardsById.Remove(toDelete.BoardID);
             Log.Info($"Board {boardName} deleted for user {email} - {isRemoveFromID}");
             
@@ -370,7 +372,12 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         public void LoadAllBoards()
         {
             BoardController boardController = new BoardController();
+            ColumnController columnController = new ColumnController();
+            TaskController taskController = new TaskController();
+
             List<BoardDTO> bDTOs = boardController.SelectAll();
+
+            //Load Boards
             foreach (BoardDTO bDTO in bDTOs)
             {
                 foreach(string email in bDTO.Users)
@@ -384,8 +391,41 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 BoardBL board = new BoardBL(bDTO);
                 boardsById[bDTO.BoardID] = board;
             }
-            Log.Info("Users data uploaded from database");
+            //Load Columns
+            foreach(BoardDTO bDTO in bDTOs)
+            {
+                BoardBL board = boardsById[bDTO.BoardID];
+                List<ColumnDTO> cDtos = columnController.SelectColumnByBoard(bDTO.BoardID);
+
+                foreach(ColumnDTO cDTO in cDtos)
+                {
+                    board.AddLoadedColumn(new Column(cDTO));
+                }
+            }
+
+            foreach(BoardBL board in boardsById.Values)
+            {
+                foreach(Column col in board.Columns.Values)
+                {
+                    List<TaskDTO> tDTOs = taskController.SelectTaskByColumn(col.ColumnID);
+                    foreach(TaskDTO tDTO in tDTOs)
+                    {
+                        col.AddLoadedTask(new TaskBL(tDTO));
+                    }
+                }
+            }
+            Log.Info("Board data uploaded from database");
         }
 
+        public void DeleteAllBoards()
+        {
+            foreach (BoardBL boardBL in boardsById.Values)
+            {
+                boardBL.BoardDTO.Delete();
+            }
+            boardsByEmail.Clear();
+            boardsById.Clear();
+            Log.Info("Board data deleted from database");
+        }
     }
 }

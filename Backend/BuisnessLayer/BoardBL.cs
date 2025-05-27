@@ -38,12 +38,13 @@ namespace Backend.BuisnessLayer
                  { DONE, new Column(DONE, -1, startColID+2) }
             };
             bDTO.AddColumn(columns[BACKLOG].ColumnDTO);
-            bDTO.AddColumn(columns[BACKLOG].ColumnDTO);
-            bDTO.AddColumn(columns[BACKLOG].ColumnDTO);
+            bDTO.AddColumn(columns[IN_PROGRESS].ColumnDTO);
+            bDTO.AddColumn(columns[DONE].ColumnDTO);
             bDTO.AddUser(owner);
             this.owner = owner;
             this.users.Add(owner);
             this.boardID = boardID;
+            bDTO.Save();
         }
 
         public BoardBL(BoardDTO bDTO)
@@ -51,10 +52,18 @@ namespace Backend.BuisnessLayer
             this.bDTO = bDTO;
             this.boardName = bDTO.Name;
             this.boardID = bDTO.BoardID;
-            this.users = bDTO.Users;
+            this.owner = bDTO.OwnerEmail;
+            this.users = new List<string>(bDTO.Users);
+            this.columns= new Dictionary<String, Column>();
+        }
 
-
-
+        public BoardDTO BoardDTO 
+        {
+            get => bDTO; 
+        }
+        public void AddLoadedColumn(Column col)
+        {
+            columns[col.columnName] = col;
         }
         public long BoardID {  get { return boardID; } }
         public string Owner 
@@ -72,6 +81,7 @@ namespace Backend.BuisnessLayer
                     Log.Error($"{value} is not a member of {this.boardName}");
                     throw new Exception($"{value} is not a member of {this.boardName}");
                 }
+                bDTO.OwnerEmail = value;
                 owner = value;
             }
         }
@@ -87,6 +97,7 @@ namespace Backend.BuisnessLayer
                     Log.Error("Provided title is null or empty");
                     throw new Exception("Provided title is null or empty");
                 }
+                bDTO.Name = value;
                 boardName = value;
             }
 
@@ -106,14 +117,14 @@ namespace Backend.BuisnessLayer
             {
                 TaskBL task = columns[BACKLOG].GetTasks()[taskID];
                 columns[IN_PROGRESS].Add(task); //will throw exception if no space
-                columns[BACKLOG].Remove(taskID);
+                columns[BACKLOG].Remove(task);
                 Log.Info($"Task {taskID} was successfully moved to in progress");
             }
             else if (columns[IN_PROGRESS].GetTasks().ContainsKey(taskID))
             {
                 TaskBL task = columns[IN_PROGRESS].GetTasks()[taskID];
                 columns[DONE].Add(task); //will throw exception if no space
-                columns[IN_PROGRESS].Remove(taskID);
+                columns[IN_PROGRESS].Remove(task);
                 Log.Info($"Task {taskID} was successfully moved to done");
 
             }
@@ -131,10 +142,12 @@ namespace Backend.BuisnessLayer
         public bool deleteTask(long taskID)
         {
             foreach (Column col in columns.Values)
-            {
-                if (col.Remove(taskID))
+            { 
+                if (col.GetTasks().ContainsKey(taskID))
                 {
-                    return true;
+                    TaskBL toRemove = col.GetTasks()[taskID];
+                    toRemove.TaskDTO.Delete();
+                    return col.GetTasks().Remove(taskID);
                 }
             }
             return false;
@@ -142,9 +155,21 @@ namespace Backend.BuisnessLayer
 
         public void changeMaxTasks(int colIdx, int newLim)
         {
-            if (colIdx == 0) { columns[BACKLOG].MaxTasks = newLim; }
-            else if (colIdx == 1) { columns[IN_PROGRESS].MaxTasks = newLim; }
-            else if (colIdx == 2) { columns[DONE].MaxTasks = newLim; }
+            if (colIdx == 0) 
+            {
+                columns[BACKLOG].ColumnDTO.MaxTasks = newLim;
+                columns[BACKLOG].MaxTasks = newLim; 
+            }
+            else if (colIdx == 1) 
+            {
+                columns[IN_PROGRESS].ColumnDTO.MaxTasks = newLim;
+                columns[IN_PROGRESS].MaxTasks = newLim; 
+            }
+            else if (colIdx == 2)
+            {
+                columns[DONE].ColumnDTO.MaxTasks = newLim;
+                columns[DONE].MaxTasks = newLim; 
+            }
             else
             {
                 Log.Error($"Column index {colIdx} is invalid");

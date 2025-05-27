@@ -74,6 +74,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                         results.Add(ConvertReaderToColumn(dataReader));
                     }
                 }
+                catch
+                {
+                    Log.Error($"Failed to select column");
+                    throw new InvalidOperationException($"Failed to selecrt column");
+                }
                 finally
                 {
                     if (dataReader != null)

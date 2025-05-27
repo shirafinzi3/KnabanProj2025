@@ -244,5 +244,38 @@ namespace Backend.ServiceLayer
             }
         }
 
+        /// <summary>
+        /// This method loads all board data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string LoadAllBoards()
+        {
+            try
+            {
+                BF.LoadAllBoards();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method deletes all boar data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string DeleteAllBoards()
+        {
+            try
+            {
+                BF.DeleteAllBoards();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+
     }
 }

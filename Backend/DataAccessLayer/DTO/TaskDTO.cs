@@ -95,14 +95,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public long ColumnID
         {
             get => columnID;
-            set
+           /* set
             {
                 if (isPersistent)
                 {
                     taskController.MoveTask(taskID, ColumnIDColumnName, value);
                 }
                 columnID = value;
-            }
+            }*/
         }
 
         public TaskDTO(long taskID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee) 
@@ -147,5 +147,18 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             Log.Info("Task data saved to database");
             isPersistent = true;
         }
+
+        public void Delete()
+        {
+            if (!isPersistent)
+            {
+                throw new InvalidOperationException("Cannot delete non persisted object");
+            }
+            taskController.Delete(this);
+            Log.Info("Task data deleted from DB");
+            isPersistent = false;
+        }
+        
+       
     }
 }

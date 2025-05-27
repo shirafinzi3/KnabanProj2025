@@ -116,6 +116,7 @@ namespace Backend.BuisnessLayer
             {
                 userController.Delete(userBL.UDTO); 
             }
+            users.Clear();
             Log.Info("Users data deleted  from database");
         }
      

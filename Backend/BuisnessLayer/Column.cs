@@ -54,6 +54,15 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 this.maxTasks = value;
             }
         }
+
+        public Column(ColumnDTO cDTO)
+        {
+            this.cDTO = cDTO;
+            this.columnName = cDTO.ColName;
+            MaxTasks = cDTO.MaxTasks;
+            this.columnID = cDTO.ColumnID;
+
+        }
         public void Add(TaskBL task)
         {
             if (maxTasks>=0 && tasks.Count >= maxTasks) //if -1 (maxTasks<0) no limit, if not, check column isnt at capacity
@@ -65,10 +74,15 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             tasks.Add(task.TaskID, task);
         }
 
-        public bool Remove(long taskId)
+        public bool Remove(TaskBL task)
         {
-           //NEED to update in deleting
-           return tasks.Remove(taskId);
+            task.TaskDTO.Delete();
+           return tasks.Remove(task.TaskID);
+        }
+
+        public void AddLoadedTask(TaskBL task)
+        {
+            tasks[task.TaskID] = task;
         }
         public Dictionary<long, TaskBL> GetTasks() { return tasks; }
     }
