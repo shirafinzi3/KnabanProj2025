@@ -30,7 +30,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         {
             this.columnID = columnID;
             this.colName = colName;
-            this.maxTasks = MaxTasks;
+            this.maxTasks = maxTasks;
             columnController = new ColumnController();
         }
 
@@ -39,7 +39,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             this.columnID = columnID;
             this.boardID = boardID;
             this.colName = colName;
-            this.maxTasks = MaxTasks;
+            this.maxTasks = maxTasks;
             columnController = new ColumnController();
         }
 

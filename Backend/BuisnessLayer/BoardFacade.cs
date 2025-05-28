@@ -69,7 +69,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"cant delete {boardName} because does not exist");
             }
 
-            toDelete.BoardDTO.Delete();
+            toDelete.GetBoardDTO().Delete();
             boardsById.Remove(toDelete.BoardID);
             Log.Info($"Board {boardName} deleted for user {email} - {isRemoveFromID}");
             
@@ -414,6 +414,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                     }
                 }
             }
+            this.nextBoardID = boardController.SelectMaxBoardID() + 1;
+            this.nextColumnID = columnController.SelectMaxColumnID() + 1;
+            this.nextTaskID = taskController.SelectMaxTaskID() + 1;
             Log.Info("Board data uploaded from database");
         }
 
@@ -421,7 +424,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         {
             foreach (BoardBL boardBL in boardsById.Values)
             {
-                boardBL.BoardDTO.Delete();
+                boardBL.GetBoardDTO().Delete();
             }
             boardsByEmail.Clear();
             boardsById.Clear();

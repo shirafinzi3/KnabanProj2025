@@ -30,9 +30,9 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             
         }
 
-        public ColumnDTO ColumnDTO
+        public ColumnDTO GetColumnDTO()
         {
-            get => cDTO;
+            return this.cDTO;
         }
         public long ColumnID { get => columnID; }
         public int MaxTasks
@@ -70,13 +70,13 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Column {columnName} is full");
                 throw new InvalidOperationException($"Column {columnName} is full");
             }
-            cDTO.AddTask(task.TaskDTO);
+            cDTO.AddTask(task.GetTaskDTO());
             tasks.Add(task.TaskID, task);
         }
 
         public bool Remove(TaskBL task)
         {
-            task.TaskDTO.Delete();
+            task.GetTaskDTO().Delete();
            return tasks.Remove(task.TaskID);
         }
 

@@ -27,10 +27,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         {
             boardID = ID;
             this.name = name;
-            this.ownerEmail = OwnerEmail;
+            this.ownerEmail = ownerEmail;
             boardController = new BoardController();
             users = new List<string>();
-            AddUser(ownerEmail);
         }
 
         public string OwnerEmail

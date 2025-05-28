@@ -108,11 +108,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public TaskDTO(long taskID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee) 
         {
             this.taskID = taskID;
-            this.title = Title;
-            this.desc = Desc;
-            this.dueDate = DueDate;
+            this.title = title;
+            this.desc = desc;
+            this.dueDate = dueDate;
             this.cTime = cTime;
-            this.assignee = Assignee;
+            this.assignee = assignee;
             taskController = new TaskController();
         }
 
@@ -120,7 +120,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         {
             this.taskID = taskID;
             this.columnID = columnID;
-            this.title = Title;
+            this.title = title;
             this.desc = desc;
             this.dueDate = dueDate;
             this.cTime = cTime;

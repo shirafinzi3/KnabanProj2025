@@ -22,6 +22,13 @@ namespace BackendTests
             US = sf.US;
             TS = sf.TS;
             BS = sf.BS;
+            US.LoadAllUsers();
+            BS.LoadAllBoards();
+        }
+        public void deconstruct()
+        {
+            BS.DeleteAllBoards();
+            US.DeleteAllUsers();
         }
         public void BoardCreationTestCases()
         {

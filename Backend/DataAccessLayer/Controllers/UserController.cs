@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.IO;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
+using System.Threading;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
@@ -37,6 +38,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
                     while (dataReader.Read())
@@ -66,6 +68,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 int res = -1;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {tableName} ({UserDTO.emailColumnName}, {UserDTO.passColumnName}) " + $"VALUES (@emailVal, @passwordVal);";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
@@ -98,6 +101,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
+                    Thread.Sleep(100);
                     command.CommandText = $"DELETE FROM {tableName} WHERE {UserDTO.emailColumnName}=@emailVal";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
                     command.Parameters.Add(emailParam);
@@ -125,7 +129,8 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             {
                 SQLiteCommand command = new SQLiteCommand(null,connection);
                 try
-                {   
+                {
+                    Thread.Sleep(100);
                     command.CommandText = $"UPDATE {tableName} SET {UserDTO.passColumnName} = @passwordVal WHERE {UserDTO.emailColumnName}=@emailVal";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", email);
                     SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", password);

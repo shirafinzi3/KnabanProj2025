@@ -15,7 +15,12 @@ namespace BackendTests
         public void setup()
         {
             ServiceFactory sf = new ServiceFactory();
-            this.US = sf.US; 
+            this.US = sf.US;
+            US.LoadAllUsers();
+        }
+        public void deconstruct()
+        {
+            US.DeleteAllUsers();
         }
         public void RegisterTestCases()
         {

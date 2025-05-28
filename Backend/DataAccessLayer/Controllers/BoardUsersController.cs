@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
@@ -33,6 +34,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -67,6 +69,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -98,6 +101,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} ({BoardUsersDTO.boardIDColumnName} ,{BoardUsersDTO.userEmailColumnName})" +
                         $"VALUES (@boardID, @userEmail);";
@@ -135,6 +139,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -172,6 +177,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }

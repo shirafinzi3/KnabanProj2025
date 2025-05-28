@@ -44,9 +44,9 @@ namespace Backend.BuisnessLayer
             this.assignee = tDTO.Assignee;
 
         }
-        public TaskDTO TaskDTO
+        public TaskDTO GetTaskDTO()
         {
-            get => tDTO;
+            return this.tDTO;
         }
         public long TaskID { get { return this.taskID; }}
         public DateTime CTime { get; }
@@ -67,7 +67,7 @@ namespace Backend.BuisnessLayer
                 }
                 else
                 {
-                    this.TaskDTO.Desc= value;
+                    this.GetTaskDTO().Desc= value;
                     this.desc = value;
                 }
             }
@@ -89,7 +89,7 @@ namespace Backend.BuisnessLayer
                 }
                 else
                 {
-                    this.TaskDTO.Title = value;
+                    this.GetTaskDTO().Title = value;
                     this.title = value;
                 }
             }
@@ -101,7 +101,7 @@ namespace Backend.BuisnessLayer
             {
                 if (value >= DateTime.Today)
                 {
-                    this.TaskDTO.DueDate = value;
+                    this.GetTaskDTO().DueDate = value;
                     this.dueDate = value;
                 }
                 else
@@ -118,7 +118,7 @@ namespace Backend.BuisnessLayer
             get => assignee;
             set 
             {
-                this.TaskDTO.Assignee = value;
+                this.GetTaskDTO().Assignee = value;
                 this.assignee = value; 
             }
         }

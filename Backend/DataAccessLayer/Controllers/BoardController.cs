@@ -7,6 +7,8 @@ using System.IO;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using System.Data.SQLite;
 using log4net;
+using System.Reflection.PortableExecutable;
+using System.Threading;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
@@ -38,6 +40,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
                     while (dataReader.Read())
@@ -74,6 +77,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 int res = -1;
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} " +
                         $"({BoardDTO.boardIDColumnName}, {BoardDTO.boardNameColumnName}, {BoardDTO.ownerEmailColumnName}) " +
@@ -112,6 +116,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
+                    Thread.Sleep(100);
                     command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -130,13 +135,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return res > 0;
         }
-        private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
-        {
-            int id = reader.GetInt32(0);
-            string name = reader.GetString(1);
-            string creator = reader.GetString(2);
-            return new BoardDTO(id, name, creator);
-        }
 
         public bool Delete(BoardDTO board)
         {
@@ -146,6 +144,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
+                    Thread.Sleep(100);
                     connection.Open();
 
                     //delete tasks
@@ -185,6 +184,44 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
             }
             return res > 0;
+        }
+        public long SelectMaxBoardID()
+        {
+            long result = 0;
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT MAX({BoardDTO.boardIDColumnName}) FROM {TableName};";
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    Thread.Sleep(100);
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+                    if (dataReader.Read() && !dataReader.IsDBNull(0))
+                    {
+                        result = dataReader.GetInt64(0);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to select max board id from database");
+                    throw new Exception("Failed to select max board id from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+        private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
+        {
+            int id = reader.GetInt32(0);
+            string name = reader.GetString(1);
+            string creator = reader.GetString(2);
+            return new BoardDTO(id, name, creator);
         }
     }
 }

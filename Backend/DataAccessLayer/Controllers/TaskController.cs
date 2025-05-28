@@ -229,36 +229,66 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             return res > 0;
         }
 
-       /* public bool MoveTask(long taskID, string columnIDColumnName, long newColumnID)
+        /* public bool MoveTask(long taskID, string columnIDColumnName, long newColumnID)
+         {
+             int res = -1;
+             using (var connection = new SQLiteConnection(connectionString))
+             {
+                 SQLiteCommand command = new SQLiteCommand
+                 {
+                     Connection = connection,                                                        
+                     CommandText = $"UPDATE {TableName} SET [{columnIDColumnName}]= @newColumnID WHERE {TaskDTO.TaskIDColumnName}={taskID}"
+                 };
+                 try
+                 {
+                     command.Parameters.Add(new SQLiteParameter(columnIDColumnName, newColumnID));
+                     connection.Open();
+                     command.ExecuteNonQuery();
+                 }
+                 catch
+                 {
+                     Log.Error($"Failed to uodate {columnIDColumnName} for task {taskID} in DB");
+                     throw new InvalidOperationException($"Failed to uodate {columnIDColumnName} for task {taskID} in DB");
+                 }
+                 finally
+                 {
+                     command.Dispose();
+                     connection.Close();
+                 }
+
+             }
+             return res > 0;
+         }*/
+        public long SelectMaxTaskID()
         {
-            int res = -1;
+            long result = 0;
             using (var connection = new SQLiteConnection(connectionString))
             {
-                SQLiteCommand command = new SQLiteCommand
-                {
-                    Connection = connection,                                                        
-                    CommandText = $"UPDATE {TableName} SET [{columnIDColumnName}]= @newColumnID WHERE {TaskDTO.TaskIDColumnName}={taskID}"
-                };
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT MAX({TaskDTO.TaskIDColumnName}) FROM {TableName};";
+                SQLiteDataReader dataReader = null;
                 try
                 {
-                    command.Parameters.Add(new SQLiteParameter(columnIDColumnName, newColumnID));
                     connection.Open();
-                    command.ExecuteNonQuery();
+                    dataReader = command.ExecuteReader();
+                    if (dataReader.Read() && !dataReader.IsDBNull(0))
+                    {
+                        result = dataReader.GetInt64(0);
+                    }
                 }
-                catch
+                catch (Exception e)
                 {
-                    Log.Error($"Failed to uodate {columnIDColumnName} for task {taskID} in DB");
-                    throw new InvalidOperationException($"Failed to uodate {columnIDColumnName} for task {taskID} in DB");
+                    Log.Error("Failed to select max task id from database");
+                    throw new Exception("Failed to select max task id from database");
                 }
                 finally
                 {
                     command.Dispose();
                     connection.Close();
                 }
-
             }
-            return res > 0;
-        }*/
+            return result;
+        }
         private TaskDTO ConvertReaderToTask(SQLiteDataReader reader)
         {
             return new TaskDTO(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2), reader.GetString(3),

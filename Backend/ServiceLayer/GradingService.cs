@@ -397,7 +397,18 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string LoadData()
         {
-            throw new NotImplementedException();
+            Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.LoadAllUsers());
+            if (userResponse.ErrorMessage != null)
+            { 
+                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage));
+            }
+            Response<string> boardResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.BS.LoadAllBoards());
+            if (boardResponse.ErrorMessage != null)
+            {
+                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage));
+            }
+            return JsonSerializer.Serialize(new Response<string>());
+
         }
 
         ///<summary>This method deletes all persisted data.
@@ -409,7 +420,17 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string DeleteData()
         {
-            throw new NotImplementedException();
+            Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.DeleteAllUsers());
+            if (userResponse.ErrorMessage != null)
+            {
+                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage));
+            }
+            Response<string> boardResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.BS.DeleteAllBoards());
+            if (boardResponse.ErrorMessage != null)
+            {
+                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage));
+            }
+            return JsonSerializer.Serialize(new Response<string>());
         }
     }
 }
