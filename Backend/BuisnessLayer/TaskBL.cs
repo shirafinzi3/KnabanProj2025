@@ -23,12 +23,13 @@ namespace Backend.BuisnessLayer
         public const int TITLE_LIM = 50;
         public TaskBL(string title, DateTime dueDate, string desc, long id)
         {
-            tDTO = new TaskDTO(taskID, title, desc, dueDate, cTime, assignee);
+            tDTO = new TaskDTO(id, title, desc, dueDate, cTime, assignee);
             this.Title = title;
             this.DueDate = dueDate;
             this.Desc = desc;
             this.taskID = id;
             this.CTime = DateTime.Now;
+            tDTO.CTime = this.cTime; 
             this.Assignee = null;
             tDTO.Save();
         }

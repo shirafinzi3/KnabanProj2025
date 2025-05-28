@@ -30,7 +30,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         private bool isPersistent = false;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
+        public bool IsPersistent { get { return isPersistent; } }
         public long TaskID
         {
             get => taskID;
@@ -90,19 +90,27 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public DateTime CTime
         {
             get => cTime;
+            set
+            {
+                if (isPersistent)
+                {
+                    taskController.Update(taskID, CTimeColumnName, value);
+                }
+                this.cTime = value;
+            }
         }
 
         public long ColumnID
         {
             get => columnID;
-           /* set
+            set
             {
                 if (isPersistent)
                 {
                     taskController.MoveTask(taskID, ColumnIDColumnName, value);
                 }
                 columnID = value;
-            }*/
+            }
         }
 
         public TaskDTO(long taskID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee) 
@@ -127,6 +135,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             this.assignee = assignee;
             taskController = new TaskController();
         }
+        
 
         public void Save()
         {

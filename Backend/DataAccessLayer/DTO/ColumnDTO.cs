@@ -45,6 +45,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
 
         public int MaxTasks
         {
+            
             get => maxTasks;
             set
             {
@@ -54,10 +55,19 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
                 }
                 maxTasks = value;
             }
+            
         }
         public void AddTask(TaskDTO task)
         {
-            task.Save(this.columnID);
+            if (task.IsPersistent)
+            {
+                task.ColumnID = this.columnID;
+            }
+            else
+            {
+                task.Save(this.columnID);
+            }
+            
         }
 
         public void Save()

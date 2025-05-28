@@ -100,7 +100,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 {
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} ({TaskDTO.TaskIDColumnName} ,{TaskDTO.ColumnIDColumnName}, {TaskDTO.TitleColumnName}," +
-                                                $"  {TaskDTO.DueDateColumnName}, {TaskDTO.CTimeColumnName}, {TaskDTO.AssigneeColumnName}) " +
+                                                $"{TaskDTO.DescColumnName},  {TaskDTO.DueDateColumnName}, {TaskDTO.CTimeColumnName}, {TaskDTO.AssigneeColumnName}) " +
                         $"VALUES (@taskID,@columnID, @title, @desc, @dueDate, @cTime,@assignee);";
 
                     SQLiteParameter taskIdParam = new SQLiteParameter(@"taskID", task.TaskID);
@@ -229,7 +229,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             return res > 0;
         }
 
-        /* public bool MoveTask(long taskID, string columnIDColumnName, long newColumnID)
+         public bool MoveTask(long taskID, string columnIDColumnName, long newColumnID)
          {
              int res = -1;
              using (var connection = new SQLiteConnection(connectionString))
@@ -258,7 +258,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
              }
              return res > 0;
-         }*/
+         }
         public long SelectMaxTaskID()
         {
             long result = 0;

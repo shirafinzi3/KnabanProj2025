@@ -30,7 +30,7 @@ namespace BackendTests
             ust.setup();
             Console.WriteLine("Testing logout:");
             ust.LogoutTestCases();
-            ust.deconstruct();*/
+            ust.deconstruct();
             //BoardService
             Console.WriteLine("BOARD SERVICE:");
             BoardServiceTesting bst = new BoardServiceTesting();
@@ -57,10 +57,11 @@ namespace BackendTests
             bst.setup();
             Console.WriteLine("Testing Get board column:");
             bst.GetColumnCases();
-            bst.deconstruct();
+            bst.deconstruct();*/
+            
 
             //TaskService
-            /*Console.WriteLine("TASK SERVICE:");
+            Console.WriteLine("TASK SERVICE:");
             TaskServiceTesting tst = new TaskServiceTesting();
             tst.setup();
             Console.WriteLine("Testing add task:");
@@ -88,7 +89,8 @@ namespace BackendTests
             tst.deconstruct();
             tst.setup();
             Console.WriteLine("Testing delete task:");
-            tst.DeleteTaskTestCases();*/
+            tst.DeleteTaskTestCases();
+            tst.deconstruct();
 
         }
     }

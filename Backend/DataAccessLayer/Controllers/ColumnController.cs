@@ -182,7 +182,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 try
                 {
                     Thread.Sleep(100);
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
