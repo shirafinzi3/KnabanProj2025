@@ -11,6 +11,8 @@ namespace Backend.ServiceLayer
     public class UserService
     {
         private UserFacade UF;
+
+        
         /// <summary>
         /// This construcor intiates a UserFacade object
         /// </summary>
@@ -92,6 +94,7 @@ namespace Backend.ServiceLayer
             {
                 return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
+
         }
         /// <summary>
         /// This method loads all user data from the data base
@@ -104,9 +107,9 @@ namespace Backend.ServiceLayer
                 Response<string> res = new Response<string>();
                 return JsonSerializer.Serialize(res);
             }
-            catch(Exception e) 
+            catch (Exception e)
             {
-                    return JsonSerializer.Serialize(new Response<string>(e.Message));
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
         /// <summary>

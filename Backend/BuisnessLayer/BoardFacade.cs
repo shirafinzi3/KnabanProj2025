@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
 using Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer.Controllers;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 
 namespace IntroSE.Kanban.Backend.BuisnessLayer
@@ -65,6 +68,8 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"cant delete {boardName} because does not exist");
                 throw new InvalidOperationException($"cant delete {boardName} because does not exist");
             }
+
+            toDelete.BoardDTO.Delete();
             boardsById.Remove(toDelete.BoardID);
             Log.Info($"Board {boardName} deleted for user {email} - {isRemoveFromID}");
             
@@ -363,7 +368,64 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new KeyNotFoundException($"User {email} does not exist or has no boardsByEmail");
             }
         }
-        
 
+        public void LoadAllBoards()
+        {
+            BoardController boardController = new BoardController();
+            ColumnController columnController = new ColumnController();
+            TaskController taskController = new TaskController();
+
+            List<BoardDTO> bDTOs = boardController.SelectAll();
+
+            //Load Boards
+            foreach (BoardDTO bDTO in bDTOs)
+            {
+                foreach(string email in bDTO.Users)
+                {
+                    if (!boardsByEmail.ContainsKey(email))
+                    {
+                        boardsByEmail[email] = new Dictionary<string, long>();
+                    }
+                    boardsByEmail[email][bDTO.Name] = bDTO.BoardID;
+                }
+                BoardBL board = new BoardBL(bDTO);
+                boardsById[bDTO.BoardID] = board;
+            }
+            //Load Columns
+            foreach(BoardDTO bDTO in bDTOs)
+            {
+                BoardBL board = boardsById[bDTO.BoardID];
+                List<ColumnDTO> cDtos = columnController.SelectColumnByBoard(bDTO.BoardID);
+
+                foreach(ColumnDTO cDTO in cDtos)
+                {
+                    board.AddLoadedColumn(new Column(cDTO));
+                }
+            }
+
+            foreach(BoardBL board in boardsById.Values)
+            {
+                foreach(Column col in board.Columns.Values)
+                {
+                    List<TaskDTO> tDTOs = taskController.SelectTaskByColumn(col.ColumnID);
+                    foreach(TaskDTO tDTO in tDTOs)
+                    {
+                        col.AddLoadedTask(new TaskBL(tDTO));
+                    }
+                }
+            }
+            Log.Info("Board data uploaded from database");
+        }
+
+        public void DeleteAllBoards()
+        {
+            foreach (BoardBL boardBL in boardsById.Values)
+            {
+                boardBL.BoardDTO.Delete();
+            }
+            boardsByEmail.Clear();
+            boardsById.Clear();
+            Log.Info("Board data deleted from database");
+        }
     }
 }

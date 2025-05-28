@@ -10,21 +10,124 @@ using log4net;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
-    internal class ColumnController
+    internal class BoardUsersController
     {
         private readonly string connectionString;
-        private const string TableName = "Columns";
+        private const string TableName = "BoardUsers";
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public ColumnController()
+        public BoardUsersController()
         {
             string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanban.db"));
             connectionString = $"Data Source={path}; Version=3;";
         }
 
-        public List<ColumnDTO> SelectAll()
+        public List<BoardUsersDTO> SelectByBoard(long boardID)
         {
-            List<ColumnDTO> results = new List<ColumnDTO>();
+            List<BoardUsersDTO> results = new List<BoardUsersDTO>();
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.boardIDColumnName} = @boardID";
+                command.Parameters.AddWithValue("@boardID", boardID);
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        results.Add(ConvertReaderToBoardUsers(dataReader));
+                    }
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+
+                    command.Dispose();
+                    connection.Close();
+                }
+
+            }
+            return results;
+        }
+
+        public List<BoardUsersDTO> SelectByUser(string userEmail)
+        {
+            List<BoardUsersDTO> results = new List<BoardUsersDTO>();
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.userEmailColumnName} = @userEmail";
+                command.Parameters.AddWithValue("@userEmail", userEmail);
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        results.Add(ConvertReaderToBoardUsers(dataReader));
+                    }
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+
+                    command.Dispose();
+                    connection.Close();
+                }
+
+            }
+            return results;
+        }
+
+        public bool Insert(BoardUsersDTO buDTO)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                int res = -1;
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                try
+                {
+                    connection.Open();
+                    command.CommandText = $"INSERT INTO {TableName} ({BoardUsersDTO.boardIDColumnName} ,{BoardUsersDTO.userEmailColumnName})" +
+                        $"VALUES (@boardID, @userEmail);";
+
+                    SQLiteParameter ubBoardIDParam = new SQLiteParameter(@"boardID", buDTO.BoardID);
+                    SQLiteParameter ubUserEmailParam = new SQLiteParameter(@"userEmail", buDTO.UserEmail);
+
+                    command.Parameters.Add(ubBoardIDParam);
+                    command.Parameters.Add(ubUserEmailParam);
+                    command.Prepare();
+
+                    res = command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    Log.Error($"Failed to insert boardUser pair into DB");
+                    throw new InvalidOperationException($"Failed to insert boardUser pair into DB");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+                return res > 0;
+            }
+        }
+
+        public List<BoardUsersDTO> SelectAll()
+        {
+            List<BoardUsersDTO> results = new List<BoardUsersDTO>();
             using (var connection = new SQLiteConnection(connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
@@ -37,7 +140,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
                     while (dataReader.Read())
                     {
-                        results.Add(ConvertReaderToColumn(dataReader));
+                        results.Add(ConvertReaderToBoardUsers(dataReader));
                     }
                 }
                 finally
@@ -55,87 +158,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             return results;
         }
 
-        public List<ColumnDTO> SelectColumnByBoard(long boardID)
-        {
-            List<ColumnDTO> results = new List<ColumnDTO>();
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"SELECT * FROM {TableName} WHERE {ColumnDTO.BoardIDColumnName} = @boardID";
-                command.Parameters.AddWithValue("@boardID", boardID);
-                SQLiteDataReader dataReader = null;
-                try
-                {
-                    connection.Open();
-                    dataReader = command.ExecuteReader();
 
-                    while (dataReader.Read())
-                    {
-                        results.Add(ConvertReaderToColumn(dataReader));
-                    }
-                }
-                catch
-                {
-                    Log.Error($"Failed to select column");
-                    throw new InvalidOperationException($"Failed to selecrt column");
-                }
-                finally
-                {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close();
-                    }
-
-                    command.Dispose();
-                    connection.Close();
-                }
-
-            }
-            return results;
-        }
-
-        public bool Insert(ColumnDTO col)
-        {
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                int res = -1;
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                try
-                {
-                    connection.Open();
-                    command.CommandText = $"INSERT INTO {TableName} ({ColumnDTO.ColumnIDColumnName} ,{ColumnDTO.BoardIDColumnName}, " +
-                                                $" {ColumnDTO.ColumnNameColumnName}, {ColumnDTO.MaxTasksColumnName}) " +
-                        $"VALUES (@columnID,@boardID, @colName, @maxTasks);";
-
-                    SQLiteParameter colIdParam = new SQLiteParameter(@"columnID", col.ColumnID);
-                    SQLiteParameter boardIdParam = new SQLiteParameter(@"boardID", col.BoardID);
-                    SQLiteParameter colNameParam = new SQLiteParameter(@"colName", col.ColName);
-                    SQLiteParameter maxTasksParam = new SQLiteParameter(@"maxTasks", col.MaxTasks);
-
-                    command.Parameters.Add(colIdParam);
-                    command.Parameters.Add(boardIdParam);
-                    command.Parameters.Add(colNameParam);
-                    command.Parameters.Add(maxTasksParam);
-                    command.Prepare();
-
-                    res = command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    Log.Error($"Failed to insert col {col.ColumnID} to DB");
-                    throw new InvalidOperationException($"Failed to insert col {col.ColumnID} to DB");
-                }
-                finally
-                {
-                    command.Dispose();
-                    connection.Close();
-                }
-                return res > 0;
-            }
-        }
-
-        public bool Delete(ColumnDTO cToBeDeleted)
-        {
+        public bool Delete(BoardUsersDTO buToBeDeleted)
+             {
             int res = -1;
 
             using (var connection = new SQLiteConnection(connectionString))
@@ -143,7 +168,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 var command = new SQLiteCommand
                 {
                     Connection = connection,
-                    CommandText = $"DELETE FROM {TableName} WHERE {ColumnDTO.ColumnIDColumnName}={cToBeDeleted.ColumnID}"
+                    CommandText = $"DELETE FROM {TableName} WHERE (({BoardUsersDTO.boardIDColumnName}={buToBeDeleted.BoardID}) AND ({BoardUsersDTO.userEmailColumnName}={buToBeDeleted.UserEmail}))"
                 };
                 try
                 {
@@ -152,8 +177,8 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 catch
                 {
-                    Log.Error($"Failed to delete column {cToBeDeleted.ColumnID} from DB");
-                    throw new InvalidOperationException($"Failed to delete {cToBeDeleted.ColumnID} from DB");
+                    Log.Error($"Failed to delete Board User pair from DB");
+                    throw new InvalidOperationException($"Failed to delete Board User pair from DB");
                 }
                 finally
                 {
@@ -163,43 +188,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return res > 0;
         }
-
-        public bool UpdateMaxTasks(long columnID, string attributeName, int attributeValue)
+        private BoardUsersDTO ConvertReaderToBoardUsers(SQLiteDataReader reader)
         {
-            int res = -1;
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand
-                {
-                    Connection = connection,
-                    CommandText = $"UPDATE {TableName} SET [{attributeName}]=@attributeValue WHERE {ColumnDTO.ColumnIDColumnName}= {columnID}"
-                };
-                try
-                {
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    Log.Error($"Failed to uodate {attributeName} for task {columnID} in DB");
-                    throw new InvalidOperationException($"Failed to uodate {attributeName} for task {columnID} in DB");
-                }
-                finally
-                {
-                    command.Dispose();
-                    connection.Close();
-                }
-
-            }
-            return res > 0;
-        }
-
-        private ColumnDTO ConvertReaderToColumn(SQLiteDataReader reader)
-        {
-            return new ColumnDTO(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2), reader.GetInt32(3));
+            return new BoardUsersDTO(reader.GetInt64(0), reader.GetString(1));
 
         }
     }
 }
-

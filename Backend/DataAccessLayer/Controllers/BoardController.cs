@@ -18,7 +18,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
         public BoardController()
         {
-            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanbanDB.db"));
+            string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "kanban.db"));
             connectionString = $"Data Source={path}; Version=3;";
         }
 
@@ -27,7 +27,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             return Select();
         }
 
-        
+
         public List<BoardDTO> Select()
         {
             List<BoardDTO> result = new List<BoardDTO>();
@@ -42,10 +42,16 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                     dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
-                        result.Add(ConvertReaderToBoard(dataReader));
+                        BoardDTO bDTO = ConvertReaderToBoard(dataReader);
+                        List<BoardUsersDTO> buDTOs = bDTO.BuController.SelectByBoard(bDTO.BoardID);
+                        foreach(BoardUsersDTO buDTO in buDTOs)
+                        {
+                            bDTO.Users.Add(buDTO.UserEmail);
+                        }
+                        result.Add(bDTO);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
                     Log.Error("Failed to select boards from database");
                     throw new Exception("Failed to select boards from database");
@@ -58,7 +64,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return result;
         }
-       
+
 
         public bool Insert(BoardDTO board)
         {
@@ -94,39 +100,91 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
         }
 
-        public bool Delete(BoardDTO board)
+        public bool Update(long boardID, string attributeName, string attributeValue)
         {
-             int res = -1;
-             using (var connection = new SQLiteConnection(connectionString))
+            int res = -1;
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand
                 {
-                    SQLiteCommand command = new SQLiteCommand(null, connection);
-                    try
-                    {
-                        connection.Open();
-                        command.CommandText = $"DELETE FROM {TableName} WHERE {BoardDTO.boardIDColumnName} = @boardIDVal";
-                        command.Parameters.Add(new SQLiteParameter(@"boardIDVal", board.BoardID));
-                        res = command.ExecuteNonQuery();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error("Failed to delete board from database", ex);
-                        throw new Exception("Failed to delete board from database", ex);
-                    }
-                    finally
-                    {
-                        command.Dispose();
-                        connection.Close();
-                    }
+                    Connection = connection,
+                    CommandText = $"UPDATE {TableName} SET [{attributeName}]=@attributeValue WHERE {BoardDTO.boardIDColumnName}={boardID}"
+                };
+                try
+                {
+                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    connection.Open();
+                    command.ExecuteNonQuery();
                 }
-                return res > 0;
+                catch
+                {
+                    Log.Error($"Failed to update {attributeName} for board {boardID} in DB");
+                    throw new InvalidOperationException($"Failed to update {attributeName} for board {boardID} in DB");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+
             }
+            return res > 0;
+        }
         private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
         {
-            int id = reader.GetInt32(0); 
-            string name = reader.GetString(1); 
-            string creator = reader.GetString(2); 
+            int id = reader.GetInt32(0);
+            string name = reader.GetString(1);
+            string creator = reader.GetString(2);
             return new BoardDTO(id, name, creator);
         }
+
+        public bool Delete(BoardDTO board)
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(connectionString))
+            { 
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                try
+                {
+                    connection.Open();
+
+                    //delete tasks
+                    command.CommandText =$"DELETE FROM Tasks WHERE ColumnID IN  " +
+                        $"                  (SELECT ColumnID FROM Columns WHERE {ColumnDTO.BoardIDColumnName} = @boardIDVal);";
+                    command.Parameters.Add(new SQLiteParameter("@boardIDVal", board.BoardID));
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    //delete columns
+                    command.CommandText = $"DELETE FROM Columns WHERE {ColumnDTO.BoardIDColumnName} = @boardIDVal;";
+                    command.Parameters.Add(new SQLiteParameter("@boardIDVal", board.BoardID));
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    // delete board user pairs
+                    command.CommandText =
+                        $"DELETE FROM BoardUsers WHERE {BoardUsersDTO.boardIDColumnName} = @boardIDVal;";
+                    command.Parameters.Add(new SQLiteParameter("@boardIDVal", board.BoardID));
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    // delete board
+                    command.CommandText = $"DELETE FROM {TableName} WHERE {BoardDTO.boardIDColumnName} = @boardIDVal;";
+                    command.Parameters.Add(new SQLiteParameter("@boardIDVal", board.BoardID));
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to delete board and its data from database");
+                    throw new InvalidOperationException("Failed to delete board from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return res > 0;
+        }
     }
-    
 }
