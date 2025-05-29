@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
     internal class ColumnController
     {
         private readonly string connectionString;
-        private const string TableName = "Columns";
+        public const string TableName = "Columns";
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ColumnController()

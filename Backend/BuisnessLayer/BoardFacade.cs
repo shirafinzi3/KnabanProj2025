@@ -245,13 +245,21 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public void JoinBoard(string email, long boardID)
         {
-            emailAuth(email);
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
             if (!boardsById.ContainsKey(boardID))
             {
                 Log.Error($"Board deos not exists for user {email}");
                 throw new InvalidOperationException($"Board does not exists for user {email}");
             }
             BoardBL toJoin = boardsById[boardID];
+            if (!boardsByEmail.ContainsKey(email))
+            {
+                boardsByEmail[email] = new Dictionary<string, long>();
+            }
             if (boardsByEmail[email].ContainsKey(toJoin.BoardName))
             {
                 Log.Error($"Board {toJoin.BoardName} already exists for user {email}");
@@ -313,7 +321,15 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public List<long> GetUserBoards(string email)
         {
-            emailAuth(email);
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boardsByEmail.ContainsKey(email))
+            {
+                return new List<long>();
+            }
             List<long> ids = new List<long>();
             foreach (long id in boardsByEmail[email].Values)
             {
@@ -422,13 +438,11 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public void DeleteAllBoards()
         {
-            foreach (BoardBL boardBL in boardsById.Values)
-            {
-                boardBL.GetBoardDTO().Delete();
-            }
-            boardsByEmail.Clear();
+            BoardController boardController = new BoardController();
+            boardController.DeleteAll();
             boardsById.Clear();
-            Log.Info("Board data deleted from database");
+            boardsByEmail.Clear();
+            Log.Info("All boards deleted from database");
         }
     }
 }

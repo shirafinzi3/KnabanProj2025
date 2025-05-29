@@ -36,7 +36,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             SQLiteConnection connection = new SQLiteConnection(connectionString);
             SQLiteCommand command = new SQLiteCommand(null, connection);
             SQLiteDataReader dataReader = null;
-            //Boards
+
             try
             {
                 connection.Open();
@@ -46,6 +46,16 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 {
                     BoardDTO bDTO = ConvertReaderToBoard(dataReader);
                     result.Add(bDTO);
+                }
+                dataReader.Close();
+                command.Dispose();
+                foreach (BoardDTO bDTO in result)
+                {
+                    List<BoardUsersDTO> buDTOs = bDTO.GetBuController().SelectByBoard(bDTO.BoardID, connection);
+                    foreach (BoardUsersDTO buDTO in buDTOs)
+                    {
+                        bDTO.Users.Add(buDTO.UserEmail);
+                    }
                 }
             }
             catch (Exception e)
@@ -62,25 +72,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 command.Dispose();
                 connection.Close();
             }
-            //UserBoards
-            connection = new SQLiteConnection(connectionString);
-            connection.Open();
-            try
-            {
-                foreach (BoardDTO bDTO in result)
-                {
-                    List<BoardUsersDTO> buDTOs = bDTO.GetBuController().SelectByBoard(bDTO.BoardID, connection);
-                    foreach (BoardUsersDTO buDTO in buDTOs)
-                    {
-                        bDTO.Users.Add(buDTO.UserEmail);
-                    }
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-
             return result;
         }
 
@@ -232,6 +223,40 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return result;
         }
+        public void DeleteAll()
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                try
+                {
+                    connection.Open();
+                    // delete tasks
+                    command.CommandText = $"DELETE FROM {TaskController.TableName};";
+                    command.ExecuteNonQuery();
+                    // delete columns
+                    command.CommandText = $"DELETE FROM {ColumnController.TableName};";
+                    command.ExecuteNonQuery();
+                    // delete board-user pairs
+                    command.CommandText = $"DELETE FROM {BoardUsersController.TableName};";
+                    command.ExecuteNonQuery();
+                    // delete boards
+                    command.CommandText = $"DELETE FROM {TableName};";
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to delete all boards and related data from database");
+                    throw new InvalidOperationException("Failed to delete all boards and related data from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+        }
+
         private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
         {
             int id = reader.GetInt32(0);
@@ -239,5 +264,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             string creator = reader.GetString(2);
             return new BoardDTO(id, name, creator);
         }
+
     }
 }

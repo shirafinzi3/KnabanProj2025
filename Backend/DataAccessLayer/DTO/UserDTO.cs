@@ -68,5 +68,15 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             }
 
         }
+        public void Delete()
+        {
+            if (!isPersistent)
+            {
+                throw new InvalidOperationException("Cannot delete non persisted object");
+            }
+            userController.Delete(this);
+            Log.Info("Board data deleted from DB");
+            isPersistent = false;
+        }
     }
 }

@@ -112,12 +112,9 @@ namespace Backend.BuisnessLayer
         public void DeleteAllUsers()
         {
             UserController userController = new UserController();
-            foreach(UserBL userBL in users.Values)
-            {
-                userController.Delete(userBL.GetUserDTO()); 
-            }
+            userController.DeleteAll();
             users.Clear();
-            Log.Info("Users data deleted  from database");
+            Log.Info("All users deleted from database");
         }
      
     }

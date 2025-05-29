@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
     internal class TaskController
     {
         private readonly string connectionString;
-        private const string TableName = "Tasks";
+        public const string TableName = "Tasks";
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TaskController()

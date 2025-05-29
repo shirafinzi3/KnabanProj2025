@@ -34,10 +34,9 @@ namespace BackendTests
             //BoardService
             Console.WriteLine("BOARD SERVICE:");
             BoardServiceTesting bst = new BoardServiceTesting();
-            Thread.Sleep(200);
             bst.setup();
+            bst.deconstruct();
             Console.WriteLine("Testing create board:");
-            Thread.Sleep(200);
             bst.BoardCreationTestCases();
             bst.deconstruct();
             bst.setup();
@@ -59,6 +58,22 @@ namespace BackendTests
             bst.setup();
             Console.WriteLine("Testing Get board column:");
             bst.GetColumnCases();
+            bst.deconstruct();
+            bst.setup();
+            Console.WriteLine("Testing Join board:");
+            bst.JoinBoardCases();
+            bst.deconstruct();
+            bst.setup();
+            Console.WriteLine("Testing Leave board:");
+            bst.LeaveBoardCases();
+            bst.deconstruct();
+            bst.setup();
+            Console.WriteLine("Testing Transfer ownership:");
+            bst.TransferOwnershipCases();
+            bst.deconstruct();
+            bst.setup();
+            Console.WriteLine("Testing Get User boards:");
+            bst.GetUserBoardsCases();
             bst.deconstruct();
             //TaskService
             Console.WriteLine("TASK SERVICE:");

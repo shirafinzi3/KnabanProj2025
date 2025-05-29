@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
     internal class BoardUsersController
     {
         private readonly string connectionString;
-        private const string TableName = "BoardUsers";
+        public const string TableName = "BoardUsers";
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public BoardUsersController()
@@ -169,7 +169,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         }
 
 
-        public bool Delete(BoardUsersDTO buToBeDeleted)
+        public bool Delete(long boardID, string email)
              {
             int res = -1;
 
@@ -178,10 +178,15 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 var command = new SQLiteCommand
                 {
                     Connection = connection,
-                    CommandText = $"DELETE FROM {TableName} WHERE (({BoardUsersDTO.boardIDColumnName}={buToBeDeleted.BoardID}) AND ({BoardUsersDTO.userEmailColumnName}={buToBeDeleted.UserEmail}))"
+                    CommandText = $"DELETE FROM {TableName} WHERE (({BoardUsersDTO.boardIDColumnName}=@boardID) AND ({BoardUsersDTO.userEmailColumnName}=@userEmail))"
                 };
                 try
                 {
+                    SQLiteParameter ubBoardIDParam = new SQLiteParameter(@"boardID", boardID);
+                    SQLiteParameter ubUserEmailParam = new SQLiteParameter(@"userEmail", email);
+
+                    command.Parameters.Add(ubBoardIDParam);
+                    command.Parameters.Add(ubUserEmailParam);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }

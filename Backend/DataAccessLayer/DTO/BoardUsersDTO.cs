@@ -46,13 +46,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             isPersistent = true;
         }
 
-        public void Delete()
-        {
-            if (isPersistent)
-            {
-                boardUserController.Delete(this);
-                isPersistent= false;
-            }
-        }   
+        
     }
 }

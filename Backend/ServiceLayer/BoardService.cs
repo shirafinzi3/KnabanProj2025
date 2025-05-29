@@ -165,7 +165,7 @@ namespace Backend.ServiceLayer
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
         /// <summary>
