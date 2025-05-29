@@ -40,14 +40,14 @@ namespace BackendTests
             boardName = "Tomer's board";
             BS.ChangeMaxTasks(email, boardName, 0, 25);
             Console.Write("Expected: Success, Actual: ");
-            TestBoardCreation(email,boardName);//Valid creation with partial max tasks
+            TestBoardCreation(email, boardName);//Valid creation with partial max tasks
             boardName = "Shira's Board";
             string email2 = "Tomer@post.bgu.ac.il";
             BS.ChangeMaxTasks(email, boardName, 0, 10);
             BS.ChangeMaxTasks(email, boardName, 1, 10);
             BS.ChangeMaxTasks(email, boardName, 2, 10);
             Console.Write("Expected: Success, Actual: ");
-            TestBoardCreation(email, boardName );//Valid creation with max tasks to all columns
+            TestBoardCreation(email, boardName);//Valid creation with max tasks to all columns
             Console.Write("Expected: Fail, Actual: ");
             TestBoardCreation(email, "Maya's Board");//Invalid creation - same name
             Console.Write("Expected: Fail, Actual: ");
@@ -73,7 +73,7 @@ namespace BackendTests
             BS.CreateBoard(email, boardName);
             Console.Write("Expected: Success, Actual: ");
             TestBoardDeletion(email, boardName);//Valid deletion 
-            BS.CreateBoard(email,boardName2 );
+            BS.CreateBoard(email, boardName2);
             boardName = "Shira's Board";
             Console.Write("Expected: Fail, Actual: ");
             TestBoardDeletion(email, boardName);//Invalid deltion - non existent board 
@@ -109,11 +109,11 @@ namespace BackendTests
             TestChangeMaxTask(email2, "TalBoard", 0, -5);// Invalid change max tasks
 
         }
-        public void TestChangeMaxTask(string email, string boardName,int colIdx, int newlim)
+        public void TestChangeMaxTask(string email, string boardName, int colIdx, int newlim)
         {
-            string str = BS.ChangeMaxTasks(email,boardName,colIdx,newlim);
+            string str = BS.ChangeMaxTasks(email, boardName, colIdx, newlim);
             Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
-            if (res.ErrorMessage == null )
+            if (res.ErrorMessage == null)
             {
                 Console.WriteLine("Success");
             }
@@ -128,7 +128,7 @@ namespace BackendTests
             US.Register(email2, "Tal1905");
             BS.CreateBoard(email2, "TalBoard");
             Console.Write("Expected: Success, Actual: ");
-            TestGetColumnLimit(email2, "TalBoard", 0,-1);//valid - no lim check
+            TestGetColumnLimit(email2, "TalBoard", 0, -1);//valid - no lim check
             BS.ChangeMaxTasks(email2, "TalBoard", 0, 20);
             Console.Write("Expected: Success, Actual: ");
             TestGetColumnLimit(email2, "TalBoard", 0, 20);//valid - lim check
@@ -137,11 +137,11 @@ namespace BackendTests
             TestGetColumnLimit(email2, "TalBoard", 1, 10);//valid - lim check
 
         }
-        public void TestGetColumnLimit(String email, String boardName, int colIdx,int expected)
+        public void TestGetColumnLimit(String email, String boardName, int colIdx, int expected)
         {
             string str = BS.GetColumnLimit(email, boardName, colIdx);
             Response<int>? res = JsonSerializer.Deserialize<Response<int>>(str);
-            if (res.ErrorMessage == null&& res.ReturnValue.Equals(expected))
+            if (res.ErrorMessage == null && res.ReturnValue.Equals(expected))
             {
                 Console.WriteLine("Success");
             }
@@ -195,7 +195,7 @@ namespace BackendTests
         }
         public void TestGetColumn(String email, String boardName, int colIdx, int expected)
         {
-            
+
             string str = BS.GetColumn(email, boardName, colIdx);
             Response<List<TaskSL>>? res = JsonSerializer.Deserialize<Response<List<TaskSL>>>(str);
             if (res.ErrorMessage == null && res.ReturnValue.Count.Equals(expected))
@@ -224,7 +224,7 @@ namespace BackendTests
             Console.Write("Expected: Fail, Actual: ");
             TestJoinBoard(joinerEmail, 999999); // Invalid join - board doesn't exist
         }
-        
+
         public void TestJoinBoard(String email, long boardId)
         {
             string str = BS.JoinBoard(email, boardId);
@@ -245,7 +245,7 @@ namespace BackendTests
             string boardName = "LeaveTestBoard";
             US.Register(ownerEmail, "Owner123");
             US.Register(userEmail, "Member123");
-            string str= BS.CreateBoard(ownerEmail, boardName);
+            string str = BS.CreateBoard(ownerEmail, boardName);
             Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
             long TestBoardId = res.ReturnValue.boardID;
             Console.Write("Expected: Fail, Actual: ");
@@ -257,15 +257,15 @@ namespace BackendTests
             TestLeaveBoard(ownerEmail, TestBoardId);//Invalid- owner try to leaves
         }
         public void TestLeaveBoard(String email, long boardId)
-        {  
+        {
             string str = BS.LeaveBoard(email, boardId);
             Response<string>? res = JsonSerializer.Deserialize<Response<string>>(str);
             if (res.ErrorMessage == null)
                 Console.WriteLine("Success");
             else
                 Console.WriteLine("Failed");
-         }
-        
+        }
+
         public void TransferOwnershipCases()
         {
             string ownerEmail = "Owner@post.bgu.ac.il";
@@ -275,7 +275,7 @@ namespace BackendTests
             US.Register(ownerEmail, "Owner123");
             US.Register(userEmail, "Member123");
             US.Register(userEmail2, "Member234");
-            string str =BS.CreateBoard(ownerEmail, boardName);
+            string str = BS.CreateBoard(ownerEmail, boardName);
             string str2 = BS.CreateBoard(userEmail, "tempName");
             string str3 = BS.CreateBoard(userEmail, boardName);
             Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
@@ -304,6 +304,39 @@ namespace BackendTests
             {
                 Console.WriteLine("Failed");
             }
+        }
+        public void GetUserBoardsCases()
+        {
+            string maya = "maya@post.bgu.ac.il";
+            string shira = "finzis@post.bgu.ac.il";
+            US.Register(maya, "Pass123");
+            US.Register(shira, "Pass456");
+            Console.Write("Expected: Success, Actual: ");
+            TestGetUserBoards(maya, 0);
+            string str = BS.CreateBoard(maya, "MayaBoard1");
+            Response<BoardSL> res = JsonSerializer.Deserialize<Response<BoardSL>>(str);
+            long TestBoardId = res.ReturnValue.boardID;
+            BS.CreateBoard(maya, "MayaaBoard2");
+            Console.Write("Expected: Success, Actual: ");
+            TestGetUserBoards(maya, 2);
+            BS.JoinBoard(shira, TestBoardId);
+            Console.Write("Expected: Success, Actual: ");
+            TestGetUserBoards(shira, 1);
+        }
+
+        public void TestGetUserBoards(string email, int expectedCount)
+        {
+            string str = BS.GetUserBoards(email);
+            Response<List<long>> res = JsonSerializer.Deserialize<Response<List<long>>>(str);
+            if (res.ErrorMessage == null && res.ReturnValue.Count.Equals(expectedCount))
+            {
+                Console.WriteLine("Success");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+         
         }
     }
 }

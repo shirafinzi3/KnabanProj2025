@@ -321,8 +321,15 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public List<long> GetUserBoards(string email)
         {
-            LoadAllBoards();
-            emailAuth(email);
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boardsByEmail.ContainsKey(email))
+            {
+                return new List<long>();
+            }
             List<long> ids = new List<long>();
             foreach (long id in boardsByEmail[email].Values)
             {

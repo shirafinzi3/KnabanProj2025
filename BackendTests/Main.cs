@@ -71,6 +71,10 @@ namespace BackendTests
             Console.WriteLine("Testing Transfer ownership:");
             bst.TransferOwnershipCases();
             bst.deconstruct();
+            bst.setup();
+            Console.WriteLine("Testing Get User boards:");
+            bst.GetUserBoardsCases();
+            bst.deconstruct();
             //TaskService
             Console.WriteLine("TASK SERVICE:");
             TaskServiceTesting tst = new TaskServiceTesting();
