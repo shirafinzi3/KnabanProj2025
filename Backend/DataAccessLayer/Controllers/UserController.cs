@@ -157,6 +157,28 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         {
             return new UserDTO(reader.GetString(0),reader.GetString(1));
         }
-
+        public void DeleteAll()
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE FROM {tableName};";
+                try
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Failed to delete all users");
+                    throw new Exception("Failed to delete all users from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+        }
     }
 }
