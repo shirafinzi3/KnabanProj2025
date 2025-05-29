@@ -234,51 +234,21 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         }
         public void DeleteAll()
         {
-            /*using (var connection = new SQLiteConnection(connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"DELETE FROM {TableName};";
-                try
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Failed to delete all boards");
-                    throw new Exception("Failed to delete all boards from database");
-                }
-                finally
-                {
-                    command.Dispose();
-                    connection.Close();
-                }
-            }*/
             using (var connection = new SQLiteConnection(connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
                     connection.Open();
-
                     // delete tasks
-                    command.CommandText = $@"
-                DELETE FROM Tasks 
-                WHERE ColumnID IN 
-                    (SELECT ColumnID FROM Columns);";
+                    command.CommandText = $"DELETE FROM {TaskController.TableName};";
                     command.ExecuteNonQuery();
-                    command.Parameters.Clear();
-
                     // delete columns
-                    command.CommandText = "DELETE FROM Columns;";
+                    command.CommandText = $"DELETE FROM {ColumnController.TableName};";
                     command.ExecuteNonQuery();
-                    command.Parameters.Clear();
-
                     // delete board-user pairs
-                    command.CommandText = "DELETE FROM BoardUsers;";
+                    command.CommandText = $"DELETE FROM {BoardUsersController.TableName};";
                     command.ExecuteNonQuery();
-                    command.Parameters.Clear();
-
                     // delete boards
                     command.CommandText = $"DELETE FROM {TableName};";
                     command.ExecuteNonQuery();

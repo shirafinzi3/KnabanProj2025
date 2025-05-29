@@ -422,15 +422,6 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public void DeleteAllBoards()
         {
-            /*BoardController boardController = new BoardController();
-            List<BoardDTO> bDTOs = boardController.SelectAll(); 
-            foreach (BoardDTO boardDTO in bDTOs)
-            {
-                boardDTO.Delete();
-            }
-            boardsByEmail.Clear();
-            boardsById.Clear();
-            Log.Info("Board data deleted from database");*/
             BoardController boardController = new BoardController();
             boardController.DeleteAll();
             boardsById.Clear();

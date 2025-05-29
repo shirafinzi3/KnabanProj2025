@@ -153,10 +153,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return res > 0;
         }
-        private UserDTO ConvertReaderToUser(SQLiteDataReader reader)
-        {
-            return new UserDTO(reader.GetString(0),reader.GetString(1));
-        }
         public void DeleteAll()
         {
             using (var connection = new SQLiteConnection(connectionString))
@@ -180,5 +176,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
             }
         }
+        private UserDTO ConvertReaderToUser(SQLiteDataReader reader)
+        {
+            return new UserDTO(reader.GetString(0),reader.GetString(1));
+        }
+       
     }
 }

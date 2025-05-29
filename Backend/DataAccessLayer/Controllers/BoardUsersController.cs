@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
     internal class BoardUsersController
     {
         private readonly string connectionString;
-        private const string TableName = "BoardUsers";
+        public const string TableName = "BoardUsers";
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public BoardUsersController()
