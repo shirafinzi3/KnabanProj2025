@@ -234,7 +234,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         }
         public void DeleteAll()
         {
-            using (var connection = new SQLiteConnection(connectionString))
+            /*using (var connection = new SQLiteConnection(connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 command.CommandText = $"DELETE FROM {TableName};";
@@ -247,6 +247,46 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 {
                     Log.Error("Failed to delete all boards");
                     throw new Exception("Failed to delete all boards from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }*/
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                try
+                {
+                    connection.Open();
+
+                    // delete tasks
+                    command.CommandText = $@"
+                DELETE FROM Tasks 
+                WHERE ColumnID IN 
+                    (SELECT ColumnID FROM Columns);";
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    // delete columns
+                    command.CommandText = "DELETE FROM Columns;";
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    // delete board-user pairs
+                    command.CommandText = "DELETE FROM BoardUsers;";
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    // delete boards
+                    command.CommandText = $"DELETE FROM {TableName};";
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to delete all boards and related data from database");
+                    throw new InvalidOperationException("Failed to delete all boards and related data from database");
                 }
                 finally
                 {
