@@ -75,7 +75,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
              Response<UserSL> res = JsonSerializer.Deserialize<Response<UserSL>>(serviceFactory.US.Register(email, password));
              if (res.ErrorMessage == null)
              {
-                 return JsonSerializer.Serialize(new Response<UserSL>(null,null));
+                 return JsonSerializer.Serialize(new Response<UserSL>());
              }
              else
              {
@@ -420,15 +420,15 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string DeleteData()
         {
-            Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.DeleteAllUsers());
-            if (userResponse.ErrorMessage != null)
-            {
-                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage, null));
-            }
             Response<string> boardResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.BS.DeleteAllBoards());
             if (boardResponse.ErrorMessage != null)
             {
                 return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage,null));
+            }
+            Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.DeleteAllUsers());
+            if (userResponse.ErrorMessage != null)
+            {
+                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage, null));
             }
             return JsonSerializer.Serialize(new Response<string>());
         }
