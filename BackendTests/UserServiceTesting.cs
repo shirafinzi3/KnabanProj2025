@@ -15,30 +15,50 @@ namespace BackendTests
         public void setup()
         {
             ServiceFactory sf = new ServiceFactory();
-            this.US = sf.US; 
+            this.US = sf.US;
+            US.LoadAllUsers();
+        }
+        public void deconstruct()
+        {
+            US.DeleteAllUsers();
         }
         public void RegisterTestCases()
         {
             string email = "MayaLich@post.bgu.ac.il";
+            string email2 = "Finzis@post.bgu.ac.il";
             string pass = "Maya12";
+            Console.Write("Expected: Success, Actual: ");
             TestRegister(email, pass);//Valid Register
+            Console.Write("Expected: Fail?, Actual: ");
             TestRegister(email,pass);//Trying to register with the same email
             pass = "AAAAAA";
-            TestRegister(email,pass);//Invalid password - no numbers
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2,pass);//Invalid password - no numbers
             pass = "A12345";
-            TestRegister(email, pass);//Invalid password - no lowercase letters
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, pass);//Invalid password - no lowercase letters
             pass = "a12345";
-            TestRegister(email, pass);//Invalid password - no uppercase letters
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, pass);//Invalid password - no uppercase letters
             pass = "Ab1";
-            TestRegister(email, pass);//Invalid password - too short password
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, pass);//Invalid password - too short password
             pass = "1234567890ABCDEFGHIJKlmnop";
-            TestRegister(email, pass);//Invalid password - too long password
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, pass);//Invalid password - too long password
+            Console.Write("Expected: Fail, Actual: ");
             TestRegister("", pass); // Invalid - Empty email
-            TestRegister(email, ""); // Invalid - Empty password
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, ""); // Invalid - Empty password
+            Console.Write("Expected: Fail, Actual: ");
             TestRegister(null, pass);// Invalid - null email
-            TestRegister(email, null);// Invalid - null password
+            Console.Write("Expected: Fail, Actual: ");
+            TestRegister(email2, null);// Invalid - null password
+            Console.Write("Expected: Fail, Actual: ");
             TestRegister("not-an-email", pass); // Invalid - invalid email format
+            Console.Write("Expected: Fail, Actual: ");
             TestRegister("missing@domain", pass);// Invalid - invalid email format
+            Console.Write("Expected: Fail, Actual: ");
             TestRegister("missingdomain.com", pass);// Invalid - invalid email format
         }
         public void TestRegister(String email, String pass)
@@ -56,16 +76,24 @@ namespace BackendTests
             US.Register("MayaLich@post.bgu.ac.il", "Mm2121728");
             String email = "MayaLich@post.bgu.ac.il";
             String pass = "Mm2121728";
+            Console.Write("Expected: Success, Actual: ");
             TestLogin(email, pass);//Valid login
             email = "tomer@post.bgu.ac.il";
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin(email, pass);//Non existent user with this email
             email = "MayaLich@post.bgu.ac.il";
             pass = "Mm21212";
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin(email, pass);//Wrong password
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin("user@post.bgu.ac.il", "MM21212"); // Invalid - wrong password, Correct password: "Mm21212"
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin("", pass); // Invalid - Empty email
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin(email, ""); // Invalid - Empty password
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin(null, pass);// Invalid - null email
+            Console.Write("Expected: Fail, Actual: ");
             TestLogin(email, null);// Invalid - null password
         }
         public void TestLogin(String email, String pass)
@@ -83,10 +111,15 @@ namespace BackendTests
             string email = "MayaLich@post.bgu.ac.il";
             US.Register(email, "Mm2121728");
             US.Login(email, "Mm2121728");
+            Console.Write("Expected: Sucess, Actual: ");
             LogoutTest(email); // Valid logout
+            Console.Write("Expected: Fail, Actual: ");
             LogoutTest(email); // Try to logout a not logged in user
+            Console.Write("Expected: Fail, Actual: ");
             LogoutTest("tomer@post.bgu.ac.il");//Try to logout a non existent user
+            Console.Write("Expected: Fail, Actual: ");
             LogoutTest(null);// Invalid - null email
+            Console.Write("Expected: Fail, Actual: ");
             LogoutTest("");// Invalid - empty email
         }
         public void LogoutTest(string email)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Backend.BuisnessLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
 using log4net.Repository.Hierarchy;
 
@@ -15,15 +16,25 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public String columnName { get; }
         private int maxTasks;
+        private long columnID;
+        private ColumnDTO cDTO;
         private readonly Dictionary<long, TaskBL> tasks = new Dictionary<long, TaskBL>();
 
-        public Column(String columnName, int maxTasks)
+        public Column(String columnName, int maxTasks, long columnID)
         {
+            cDTO = new ColumnDTO(columnID, columnName, maxTasks);
             this.columnName = columnName;
             MaxTasks = maxTasks;
+            this.columnID = columnID;
+            cDTO.Save();
+            
         }
-       
-       
+
+        public ColumnDTO GetColumnDTO()
+        {
+            return this.cDTO;
+        }
+        public long ColumnID { get => columnID; }
         public int MaxTasks
         {
             get => maxTasks; 
@@ -39,8 +50,18 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                     Log.Error($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
                     throw new InvalidOperationException($"Cant lower max tasks of {columnName} as it currently holds more than {value}");
                 }
+                cDTO.MaxTasks = value;
                 this.maxTasks = value;
             }
+        }
+
+        public Column(ColumnDTO cDTO)
+        {
+            this.cDTO = cDTO;
+            this.columnName = cDTO.ColName;
+            MaxTasks = cDTO.MaxTasks;
+            this.columnID = cDTO.ColumnID;
+
         }
         public void Add(TaskBL task)
         {
@@ -49,12 +70,19 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 Log.Error($"Column {columnName} is full");
                 throw new InvalidOperationException($"Column {columnName} is full");
             }
+            cDTO.AddTask(task.GetTaskDTO());
             tasks.Add(task.TaskID, task);
         }
 
-        public bool Remove(long taskId)
+        public bool Remove(TaskBL task)
         {
-           return tasks.Remove(taskId);
+            task.GetTaskDTO().Delete();
+           return tasks.Remove(task.TaskID);
+        }
+
+        public void AddLoadedTask(TaskBL task)
+        {
+            tasks[task.TaskID] = task;
         }
         public Dictionary<long, TaskBL> GetTasks() { return tasks; }
     }

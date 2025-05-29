@@ -34,7 +34,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.AddTask(email, boardName, title, desc, dueDate);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -77,7 +77,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.UpdateTitle(email, boardName, taskID, title);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -99,7 +99,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.UpdateDesc(email, boardName, taskID, desc);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -121,7 +121,7 @@ namespace Backend.ServiceLayer
             try
             {
                 TaskBL taskBL = BF.UpdateDueDate(email, boardName, taskID, dueDate);
-                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc , taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                Response<TaskSL> res = new Response<TaskSL>(null, new TaskSL(taskBL.Title, taskBL.Desc , taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
@@ -164,10 +164,32 @@ namespace Backend.ServiceLayer
 
                 foreach(TaskBL taskBL in taskBLs)
                 {
-                    taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.DueDate,taskBL.CTime,taskBL.TaskID));
+                    taskSLs.Add(new TaskSL(taskBL.Title,taskBL.Desc,taskBL.DueDate,taskBL.GetCTime(),taskBL.TaskID));
                 }
                 Response<List<TaskSL>> res = new Response<List<TaskSL>>(null, taskSLs);
                 return JsonSerializer.Serialize(res); 
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<List<TaskSL>>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method allows a user to assign a task to himself or to another user
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardName">The name od the board in which the task is</param>
+        /// <param name="colIndex">The column index of the task</param>
+        /// <param name="taskID">The unique task id</param>
+        /// <param name="emailAssignee">The email of the assignee</param>
+        /// <returns>An empty response or an error message</returns>
+        public string AssignTask(String email,string boardName,int colIndex,long taskID,string emailAssignee)
+        {
+            try
+            {
+                BF.AssignTask(email,boardName,colIndex,taskID,emailAssignee);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
             }
             catch (Exception e)
             {

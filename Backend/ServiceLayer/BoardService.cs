@@ -33,7 +33,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName);
-                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName)); 
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID)); 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 
@@ -60,29 +60,6 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
             }
 
-        }
-        /// <summary>
-        /// This method returns all the boards of a specific user
-        /// </summary>
-        /// <param name="email">the email of the user</param>
-        /// <returns>All the boards of a given user</returns>
-        public string GetAllBoards(string email)
-        {
-            try
-            {
-                Dictionary<string,BoardBL> listOfBoardsBL = BF.GetAllBoards(email);
-                Dictionary<string, BoardSL> listOfBoardsSL = new Dictionary<string, BoardSL>();
-                foreach (BoardBL boardBL in listOfBoardsBL.Values)
-                {
-                    listOfBoardsSL[boardBL.BoardName] = new BoardSL(boardBL.BoardName);
-                }
-                Response<Dictionary<string, BoardSL>> res = new Response<Dictionary<string, BoardSL>>(null, listOfBoardsSL); //Converting the dictionary to a boardSL dictionary);
-                return JsonSerializer.Serialize(res);
-            }
-            catch (Exception e)
-            {
-                return JsonSerializer.Serialize(new Response<Dictionary<string, BoardSL>>(e.Message));
-            }
         }
         /// <summary>
         /// This changes a column max tasks
@@ -162,7 +139,7 @@ namespace Backend.ServiceLayer
                 List<TaskSL> columnTaskSL = new List<TaskSL>();
                 foreach(TaskBL taskBL in columnTaskBL.Values)
                 {
-                    columnTaskSL.Add(new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                    columnTaskSL.Add(new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 }
                 Response<List<TaskSL>> res1 = new Response<List<TaskSL>>(columnTaskSL);
                 return JsonSerializer.Serialize(res1);
@@ -170,6 +147,133 @@ namespace Backend.ServiceLayer
             catch (Exception e)
             {
                 return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method allows a user join another board
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>An empty response or an error message </returns>
+        public string JoinBoard(String email, long boardID)
+        {
+            try
+            {
+                BF.JoinBoard(email, boardID);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method allows a user leave another board
+        /// </summary>
+        /// <param name="email">The email of the user</param>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>An empty response or an error message </returns>
+        public string LeaveBoard(String email, long boardID)
+        {
+            try
+            {
+                BF.LeaveBoard(email, boardID);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method alllows a user to transfer the ownership of a board that he/she owns
+        /// </summary>
+        /// <param name="ownerEmail">The email of the current owner</param>
+        /// <param name="boardName">The board name which is beign transferd</param>
+        /// <param name="otherEmail">The email to which the board is being transfered</param>
+        /// <returns>An empty response or an error message </returns>
+        public string TransferOwnership(String ownerEmail, string boardName, string otherEmail)
+        {
+            try
+            {
+                BF.TransferOwnership(ownerEmail, boardName, otherEmail);
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method returns a board name
+        /// </summary>
+        /// <param name="boardID">A unique board id</param>
+        /// <returns>A response with the board name or an error message </returns>
+        public string GetBoardName(long boardID)
+        {
+            try
+            {
+                string boardName = BF.GetBoardName(boardID);
+                Response<string> res = new Response<string>(null,boardName);
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method returns a list of all the ids of the boards that the user is a member of
+        /// </summary>
+        /// <param name="email">A unique email of the user</param>
+        /// <returns>A response with the list of ids or an error message </returns>
+        public string GetUserBoards(string email)
+        {
+            try
+            {
+                List<long> ids = BF.GetUserBoards(email);
+                Response<List<long>> res = new Response<List<long>>(null, ids);
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+            }
+        }
+
+        /// <summary>
+        /// This method loads all board data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string LoadAllBoards()
+        {
+            try
+            {
+                BF.LoadAllBoards();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method deletes all boar data from the data base
+        /// <returns>An empty response or an error message</returns>
+        public string DeleteAllBoards()
+        {
+            try
+            {
+                BF.DeleteAllBoards();
+                Response<string> res = new Response<string>();
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
 
