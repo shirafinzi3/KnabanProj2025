@@ -252,6 +252,10 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
                 throw new InvalidOperationException($"Board does not exists for user {email}");
             }
             BoardBL toJoin = boardsById[boardID];
+            if (!boardsByEmail.ContainsKey(email))
+            {
+                boardsByEmail[email] = new Dictionary<string, long>();
+            }
             if (boardsByEmail[email].ContainsKey(toJoin.BoardName))
             {
                 Log.Error($"Board {toJoin.BoardName} already exists for user {email}");
