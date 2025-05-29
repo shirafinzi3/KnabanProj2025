@@ -321,6 +321,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public List<long> GetUserBoards(string email)
         {
+            LoadAllBoards();
             emailAuth(email);
             List<long> ids = new List<long>();
             foreach (long id in boardsByEmail[email].Values)
