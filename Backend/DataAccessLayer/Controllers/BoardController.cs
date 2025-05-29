@@ -232,6 +232,30 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             }
             return result;
         }
+        public void DeleteAll()
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE FROM {TableName};";
+                try
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Failed to delete all boards");
+                    throw new Exception("Failed to delete all boards from database");
+                }
+                finally
+                {
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+        }
+
         private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
         {
             int id = reader.GetInt32(0);
@@ -239,5 +263,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             string creator = reader.GetString(2);
             return new BoardDTO(id, name, creator);
         }
+
     }
 }

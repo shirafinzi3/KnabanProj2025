@@ -422,7 +422,7 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
 
         public void DeleteAllBoards()
         {
-            BoardController boardController = new BoardController();
+            /*BoardController boardController = new BoardController();
             List<BoardDTO> bDTOs = boardController.SelectAll(); 
             foreach (BoardDTO boardDTO in bDTOs)
             {
@@ -430,7 +430,12 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             boardsByEmail.Clear();
             boardsById.Clear();
-            Log.Info("Board data deleted from database");
+            Log.Info("Board data deleted from database");*/
+            BoardController boardController = new BoardController();
+            boardController.DeleteAll();
+            boardsById.Clear();
+            boardsByEmail.Clear();
+            Log.Info("All boards deleted from database");
         }
     }
 }
