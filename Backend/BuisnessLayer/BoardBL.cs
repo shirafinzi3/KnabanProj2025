@@ -37,9 +37,9 @@ namespace Backend.BuisnessLayer
                  { IN_PROGRESS, new Column(IN_PROGRESS, -1 ,startColID+1) },
                  { DONE, new Column(DONE, -1, startColID+2) }
             };
-            bDTO.AddColumn(columns[BACKLOG].ColumnDTO);
-            bDTO.AddColumn(columns[IN_PROGRESS].ColumnDTO);
-            bDTO.AddColumn(columns[DONE].ColumnDTO);
+            bDTO.AddColumn(columns[BACKLOG].GetColumnDTO());
+            bDTO.AddColumn(columns[IN_PROGRESS].GetColumnDTO());
+            bDTO.AddColumn(columns[DONE].GetColumnDTO());
             bDTO.AddUser(owner);
             this.owner = owner;
             this.users.Add(owner);
@@ -57,9 +57,9 @@ namespace Backend.BuisnessLayer
             this.columns= new Dictionary<String, Column>();
         }
 
-        public BoardDTO BoardDTO 
+        public BoardDTO GetBoardDTO() 
         {
-            get => bDTO; 
+            return this.bDTO; 
         }
         public void AddLoadedColumn(Column col)
         {
@@ -117,14 +117,14 @@ namespace Backend.BuisnessLayer
             {
                 TaskBL task = columns[BACKLOG].GetTasks()[taskID];
                 columns[IN_PROGRESS].Add(task); //will throw exception if no space
-                columns[BACKLOG].Remove(task);
+                columns[BACKLOG].GetTasks().Remove(taskID);
                 Log.Info($"Task {taskID} was successfully moved to in progress");
             }
             else if (columns[IN_PROGRESS].GetTasks().ContainsKey(taskID))
             {
                 TaskBL task = columns[IN_PROGRESS].GetTasks()[taskID];
                 columns[DONE].Add(task); //will throw exception if no space
-                columns[IN_PROGRESS].Remove(task);
+                columns[IN_PROGRESS].GetTasks().Remove(taskID);
                 Log.Info($"Task {taskID} was successfully moved to done");
 
             }
@@ -146,7 +146,7 @@ namespace Backend.BuisnessLayer
                 if (col.GetTasks().ContainsKey(taskID))
                 {
                     TaskBL toRemove = col.GetTasks()[taskID];
-                    toRemove.TaskDTO.Delete();
+                    toRemove.GetTaskDTO().Delete();
                     return col.GetTasks().Remove(taskID);
                 }
             }
@@ -157,17 +157,17 @@ namespace Backend.BuisnessLayer
         {
             if (colIdx == 0) 
             {
-                columns[BACKLOG].ColumnDTO.MaxTasks = newLim;
+                columns[BACKLOG].GetColumnDTO().MaxTasks= newLim;
                 columns[BACKLOG].MaxTasks = newLim; 
             }
             else if (colIdx == 1) 
             {
-                columns[IN_PROGRESS].ColumnDTO.MaxTasks = newLim;
+                columns[IN_PROGRESS].GetColumnDTO().MaxTasks = newLim;
                 columns[IN_PROGRESS].MaxTasks = newLim; 
             }
             else if (colIdx == 2)
             {
-                columns[DONE].ColumnDTO.MaxTasks = newLim;
+                columns[DONE].GetColumnDTO().MaxTasks = newLim;
                 columns[DONE].MaxTasks = newLim; 
             }
             else

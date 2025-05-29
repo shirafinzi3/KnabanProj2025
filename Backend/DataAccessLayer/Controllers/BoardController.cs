@@ -7,6 +7,8 @@ using System.IO;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using System.Data.SQLite;
 using log4net;
+using System.Reflection.PortableExecutable;
+using System.Threading;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
@@ -31,37 +33,54 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         public List<BoardDTO> Select()
         {
             List<BoardDTO> result = new List<BoardDTO>();
-            using (var connection = new SQLiteConnection(connectionString))
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand(null, connection);
+            SQLiteDataReader dataReader = null;
+            //Boards
+            try
             {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
+                connection.Open();
                 command.CommandText = $"SELECT * FROM {TableName}";
-                SQLiteDataReader dataReader = null;
-                try
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
                 {
-                    connection.Open();
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        BoardDTO bDTO = ConvertReaderToBoard(dataReader);
-                        List<BoardUsersDTO> buDTOs = bDTO.BuController.SelectByBoard(bDTO.BoardID);
-                        foreach(BoardUsersDTO buDTO in buDTOs)
-                        {
-                            bDTO.Users.Add(buDTO.UserEmail);
-                        }
-                        result.Add(bDTO);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Error("Failed to select boards from database");
-                    throw new Exception("Failed to select boards from database");
-                }
-                finally
-                {
-                    command.Dispose();
-                    connection.Close();
+                    BoardDTO bDTO = ConvertReaderToBoard(dataReader);
+                    result.Add(bDTO);
                 }
             }
+            catch (Exception e)
+            {
+                Log.Error("Failed to select boards from database");
+                throw new Exception("Failed to select boards from database");
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+                command.Dispose();
+                connection.Close();
+            }
+            //UserBoards
+            connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            try
+            {
+                foreach (BoardDTO bDTO in result)
+                {
+                    List<BoardUsersDTO> buDTOs = bDTO.GetBuController().SelectByBoard(bDTO.BoardID, connection);
+                    foreach (BoardUsersDTO buDTO in buDTOs)
+                    {
+                        bDTO.Users.Add(buDTO.UserEmail);
+                    }
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
             return result;
         }
 
@@ -112,7 +131,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
@@ -129,13 +148,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
             }
             return res > 0;
-        }
-        private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
-        {
-            int id = reader.GetInt32(0);
-            string name = reader.GetString(1);
-            string creator = reader.GetString(2);
-            return new BoardDTO(id, name, creator);
         }
 
         public bool Delete(BoardDTO board)
@@ -185,6 +197,47 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
             }
             return res > 0;
+        }
+        public long SelectMaxBoardID()
+        {
+            long result = 0;
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT MAX({BoardDTO.boardIDColumnName}) FROM {TableName};";
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+                    if (dataReader.Read() && !dataReader.IsDBNull(0))
+                    {
+                        result = dataReader.GetInt64(0);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to select max board id from database");
+                    throw new Exception("Failed to select max board id from database");
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return result;
+        }
+        private BoardDTO ConvertReaderToBoard(SQLiteDataReader reader)
+        {
+            int id = reader.GetInt32(0);
+            string name = reader.GetString(1);
+            string creator = reader.GetString(2);
+            return new BoardDTO(id, name, creator);
         }
     }
 }

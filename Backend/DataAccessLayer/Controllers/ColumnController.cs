@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
@@ -176,14 +177,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
                 catch
                 {
-                    Log.Error($"Failed to uodate {attributeName} for task {columnID} in DB");
-                    throw new InvalidOperationException($"Failed to uodate {attributeName} for task {columnID} in DB");
+                    Log.Error($"Failed to update {attributeName} for task {columnID} in DB");
+                    throw new InvalidOperationException($"Failed to update {attributeName} for task {columnID} in DB");
                 }
                 finally
                 {
@@ -193,6 +194,40 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
             }
             return res > 0;
+        }
+        public long SelectMaxColumnID()
+        {
+            long result = 0;
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"SELECT MAX({ColumnDTO.ColumnIDColumnName}) FROM {TableName};";
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open();
+                    dataReader = command.ExecuteReader();
+                    if (dataReader.Read() && !dataReader.IsDBNull(0))
+                    {
+                        result = dataReader.GetInt64(0);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to select max column id from database");
+                    throw new Exception("Failed to select max column id from database");
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+                    command.Dispose();
+                    connection.Close();
+                }
+            }
+            return result;
         }
 
         private ColumnDTO ConvertReaderToColumn(SQLiteDataReader reader)

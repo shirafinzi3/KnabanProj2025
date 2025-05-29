@@ -11,6 +11,7 @@ namespace Backend.ServiceLayer
     public class UserService
     {
         private UserFacade UF;
+      
 
         
         /// <summary>
@@ -112,9 +113,11 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
+       
         /// <summary>
         /// This method deletes all user data from the data base
         /// <returns>An empty response or an error message</returns>
+        
         public string DeleteAllUsers()
         {
             try
@@ -128,6 +131,7 @@ namespace Backend.ServiceLayer
                 return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
+       
 
     }
 }

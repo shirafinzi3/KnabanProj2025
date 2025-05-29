@@ -21,6 +21,13 @@ namespace BackendTests
             US = sf.US;
             TS = sf.TS;
             BS = sf.BS;
+            US.LoadAllUsers();
+            BS.LoadAllBoards();
+        }
+        public void deconstruct()
+        {
+            BS.DeleteAllBoards();
+            US.DeleteAllUsers();
         }
         public void AddTaskTestCases()
         {
@@ -192,7 +199,7 @@ namespace BackendTests
             {
                 Console.WriteLine("Success");
             }
-            else Console.WriteLine("Failed");
+            else Console.WriteLine("Failed: " + res.ErrorMessage);
         }
         public void InProgressListTestCases()
         {
@@ -217,7 +224,7 @@ namespace BackendTests
             TestInProgressList(email);//Task1 and Task3 should be In Progress
             Console.WriteLine("Task1 and Task 3 should be in List, Actual: " + TS.InProgressList(email));
             TS.MoveTask(email, boardName1, 1);//Move Task1 to done
-            TS.MoveTask(email, boardName2, 3);//Move Task3 to done
+            TS.MoveTask(email, boardName1, 3);//Move Task3 to done
             TestInProgressList(email);//Expect an empty list
             Console.WriteLine("Empry List, Actual: " + TS.InProgressList(email));
             Console.Write("Expected: Fail, Actual: ");

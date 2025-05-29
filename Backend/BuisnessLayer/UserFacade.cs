@@ -114,7 +114,7 @@ namespace Backend.BuisnessLayer
             UserController userController = new UserController();
             foreach(UserBL userBL in users.Values)
             {
-                userController.Delete(userBL.UDTO); 
+                userController.Delete(userBL.GetUserDTO()); 
             }
             users.Clear();
             Log.Info("Users data deleted  from database");

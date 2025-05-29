@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.IO;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
+using System.Threading;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 {
@@ -51,6 +52,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
                     command.Dispose();
                     connection.Close();
                 }
@@ -104,7 +109,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }
-                catch(Exception ex)
+                catch(Exception e)
                 {
                     Log.Error("Failed to delete user from database");
                     throw new Exception("Failed to delete user from database");
@@ -125,7 +130,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             {
                 SQLiteCommand command = new SQLiteCommand(null,connection);
                 try
-                {   
+                {
                     command.CommandText = $"UPDATE {tableName} SET {UserDTO.passColumnName} = @passwordVal WHERE {UserDTO.emailColumnName}=@emailVal";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", email);
                     SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", password);
@@ -134,7 +139,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }
-                catch(Exception ex)
+                catch(Exception e)
                 {
                     Log.Error("Failed to update password in database");
                     throw new Exception("Failed to update password in database");

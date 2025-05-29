@@ -21,8 +21,16 @@ namespace Backend.BuisnessLayer
         {
             this.uDTO = new UserDTO(email, password);
             this.Email = email;
-            this.Password = password;
-            uDTO.Save();
+            if (validatePass(password))
+            { 
+                this.password = password;
+                uDTO.Save();
+            }
+            else
+            {
+                Log.Error("Invalid password");
+                throw new ArgumentException("Invalid password - it must contain at least one uppercase letter, one lowercase letter, one digit, and be 6-20 characters long.");
+            }
         }
         public UserBL(UserDTO userDTO)
         {
@@ -72,7 +80,7 @@ namespace Backend.BuisnessLayer
                 }
             }
         }
-        public UserDTO UDTO { get;}
+        public UserDTO GetUserDTO() { return this.uDTO; }
         private bool validatePass(string pass)
         {
             string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$";

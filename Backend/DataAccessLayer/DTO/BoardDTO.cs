@@ -25,12 +25,12 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         private readonly BoardUsersController buController;
         public BoardDTO(long ID, string name, string ownerEmail)
         {
-            boardID = ID;
+            this.boardID = ID;
             this.name = name;
-            this.ownerEmail = OwnerEmail;
-            boardController = new BoardController();
-            users = new List<string>();
-            AddUser(ownerEmail);
+            this.ownerEmail = ownerEmail;
+            this.boardController = new BoardController();
+            this.users = new List<string>();
+            this.buController = new BoardUsersController();
         }
 
         public string OwnerEmail
@@ -62,22 +62,22 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             get => boardID;
         }
         
-        public BoardUsersController BuController
+        public BoardUsersController GetBuController()
         {
-            get => buController;
+            return this.buController;
         }
-        public BoardController BoardController
+        public BoardController GetBoardController()
         {
-            get => boardController;
+            return this.boardController;
         }
         
         public List<string> Users
         {
-            get => users; //need to do using SELECT i think?
+            get => users; 
         }
         public void AddUser(string userEmail)
         {
-            if (!users.Contains(userEmail))//need to check if we can just add it without if
+            if (!users.Contains(userEmail))
             {
                 BoardUsersDTO buDTO = new BoardUsersDTO(boardID, userEmail);
                 buDTO.Save();
@@ -87,14 +87,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         }
         public void RemoveUser(string userEmail)
         {
-            if (users.Contains(userEmail)) //need to check if we can just remove it without if
+            if (users.Contains(userEmail)) 
             {
                 BoardUsersDTO buDTO = new BoardUsersDTO(boardID, userEmail);
                 buDTO.Delete();
                 users.Remove(userEmail);
             }
         }
-        public void AddColumn(ColumnDTO column) //NEED TO CHECK THE UML
+        public void AddColumn(ColumnDTO column) 
         {
             column.Save(this.BoardID);
         }

@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.DataAccessLayer.DTO;
 using log4net;
@@ -22,37 +23,46 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             connectionString = $"Data Source={path}; Version=3;";
         }
 
-        public List<BoardUsersDTO> SelectByBoard(long boardID)
+        public List<BoardUsersDTO> SelectByBoard(long boardID, SQLiteConnection connection = null)
         {
             List<BoardUsersDTO> results = new List<BoardUsersDTO>();
-            using (var connection = new SQLiteConnection(connectionString))
+            bool externalConnection = connection != null;
+
+            if (!externalConnection)
             {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.boardIDColumnName} = @boardID";
-                command.Parameters.AddWithValue("@boardID", boardID);
-                SQLiteDataReader dataReader = null;
-                try
+                connection = new SQLiteConnection(connectionString);
+            }
+
+            SQLiteCommand command = new SQLiteCommand(null, connection);
+            command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.boardIDColumnName} = @boardID";
+            command.Parameters.AddWithValue("@boardID", boardID);
+            SQLiteDataReader dataReader = null;
+
+            try
+            {
+                if (!externalConnection)
                 {
                     connection.Open();
-                    dataReader = command.ExecuteReader();
-
-                    while (dataReader.Read())
-                    {
-                        results.Add(ConvertReaderToBoardUsers(dataReader));
-                    }
                 }
-                finally
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close();
-                    }
-
-                    command.Dispose();
+                    results.Add(ConvertReaderToBoardUsers(dataReader));
+                }
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+                command.Dispose();
+                if (!externalConnection)
+                {
                     connection.Close();
                 }
-
             }
+
             return results;
         }
 

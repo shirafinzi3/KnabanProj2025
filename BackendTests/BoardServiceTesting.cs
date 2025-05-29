@@ -22,6 +22,13 @@ namespace BackendTests
             US = sf.US;
             TS = sf.TS;
             BS = sf.BS;
+            US.LoadAllUsers();
+            BS.LoadAllBoards();
+        }
+        public void deconstruct()
+        {
+            BS.DeleteAllBoards();
+            US.DeleteAllUsers();
         }
         public void BoardCreationTestCases()
         {
@@ -177,12 +184,12 @@ namespace BackendTests
             TS.AddTask(email2, "TalBoard", "Task2", "desc", DateTime.Now.AddDays(3));
             TS.AddTask(email2, "TalBoard", "Task3", "desc", DateTime.Now.AddDays(3));
             Console.Write("Expected: Success, Actual: ");
-            TestGetColumn(email2, "TalBoard", 0, 3);//Valid - 3 tasks in "in progress"
+            TestGetColumn(email2, "TalBoard", 0, 3);//Valid - 3 tasks in "backlog"
             TS.MoveTask(email2, "TalBoard", 1);
             Console.Write("Expected: Success, Actual: ");
-            TestGetColumn(email2, "TalBoard", 0, 2);//Valid - 2 tasks in "in progress"
+            TestGetColumn(email2, "TalBoard", 0, 2);//Valid - 2 tasks in "backlog"
             Console.Write("Expected: Success, Actual: ");
-            TestGetColumn(email2, "TalBoard", 1, 1);//Valid - 3 tasks in "backlog"
+            TestGetColumn(email2, "TalBoard", 1, 1);//Valid - 3 tasks in "in progress"
             Console.Write("Expected: Success, Actual: ");
             TestGetColumn(email2, "TalBoard", 2, 0);//Valid - 0 tasks in "done"
         }

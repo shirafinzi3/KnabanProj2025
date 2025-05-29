@@ -30,7 +30,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         private bool isPersistent = false;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
+        public bool IsPersistent { get { return isPersistent; } }
         public long TaskID
         {
             get => taskID;
@@ -90,43 +90,52 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public DateTime CTime
         {
             get => cTime;
+            set
+            {
+                if (isPersistent)
+                {
+                    taskController.Update(taskID, CTimeColumnName, value);
+                }
+                this.cTime = value;
+            }
         }
 
         public long ColumnID
         {
             get => columnID;
-           /* set
+            set
             {
                 if (isPersistent)
                 {
                     taskController.MoveTask(taskID, ColumnIDColumnName, value);
                 }
                 columnID = value;
-            }*/
+            }
         }
 
         public TaskDTO(long taskID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee) 
         {
             this.taskID = taskID;
-            this.title = Title;
-            this.desc = Desc;
-            this.dueDate = DueDate;
-            this.cTime = cTime;
-            this.assignee = Assignee;
-            taskController = new TaskController();
-        }
-
-        public TaskDTO(long taskID, long columnID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee)
-        {
-            this.taskID = taskID;
-            this.columnID = columnID;
-            this.title = Title;
+            this.title = title;
             this.desc = desc;
             this.dueDate = dueDate;
             this.cTime = cTime;
             this.assignee = assignee;
             taskController = new TaskController();
         }
+
+        public TaskDTO(long taskID, long columnID,  string desc, string title, DateTime dueDate, DateTime cTime, string assignee)
+        {
+            this.taskID = taskID;
+            this.columnID = columnID;
+            this.title = title;
+            this.desc = desc;
+            this.dueDate = dueDate;
+            this.cTime = cTime;
+            this.assignee = assignee;
+            taskController = new TaskController();
+        }
+        
 
         public void Save()
         {

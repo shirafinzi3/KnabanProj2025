@@ -29,17 +29,5 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             this.TS = new TaskService(BF);
 
         }
-
-        public void loadAllData()
-        {
-             US.LoadAllUsers();
-             BS.LoadAllBoards();
-        }
-
-        public void deleteAllData()
-        {
-            US.DeleteAllUsers();
-            BS.DeleteAllBoards();
-        }
     }
 }
