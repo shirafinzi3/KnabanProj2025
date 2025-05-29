@@ -400,12 +400,12 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.LoadAllUsers());
             if (userResponse.ErrorMessage != null)
             { 
-                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage));
+                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage, null));
             }
             Response<string> boardResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.BS.LoadAllBoards());
             if (boardResponse.ErrorMessage != null)
             {
-                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage));
+                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage, null));
             }
             return JsonSerializer.Serialize(new Response<string>());
 
@@ -423,12 +423,12 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             Response<string> userResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.US.DeleteAllUsers());
             if (userResponse.ErrorMessage != null)
             {
-                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage));
+                return JsonSerializer.Serialize(new Response<string>(userResponse.ErrorMessage, null));
             }
             Response<string> boardResponse = JsonSerializer.Deserialize<Response<string>>(serviceFactory.BS.DeleteAllBoards());
             if (boardResponse.ErrorMessage != null)
             {
-                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage));
+                return JsonSerializer.Serialize(new Response<string>(boardResponse.ErrorMessage,null));
             }
             return JsonSerializer.Serialize(new Response<string>());
         }
