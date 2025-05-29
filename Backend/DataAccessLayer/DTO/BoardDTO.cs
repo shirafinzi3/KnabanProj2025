@@ -82,7 +82,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
                 BoardUsersDTO buDTO = new BoardUsersDTO(boardID, userEmail);
                 buDTO.Save();
                 users.Add(userEmail);
-                
             }
         }
         public void RemoveUser(string userEmail)

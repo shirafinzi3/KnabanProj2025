@@ -32,7 +32,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
 
         public List<BoardDTO> Select()
         {
-            List<BoardDTO> result = new List<BoardDTO>();
+           /* List<BoardDTO> result = new List<BoardDTO>();
             SQLiteConnection connection = new SQLiteConnection(connectionString);
             SQLiteCommand command = new SQLiteCommand(null, connection);
             SQLiteDataReader dataReader = null;
@@ -81,7 +81,52 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 connection.Close();
             }
 
+            return result;*/
+            List<BoardDTO> result = new List<BoardDTO>();
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand(null, connection);
+            SQLiteDataReader dataReader = null;
+
+            try
+            {
+                connection.Open();
+
+                //Boards
+                command.CommandText = $"SELECT * FROM {TableName}";
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    BoardDTO bDTO = ConvertReaderToBoard(dataReader);
+                    result.Add(bDTO);
+                }
+                dataReader.Close();
+                command.Dispose();
+                foreach (BoardDTO bDTO in result)
+                {
+                    List<BoardUsersDTO> buDTOs = bDTO.GetBuController().SelectByBoard(bDTO.BoardID, connection);
+                    foreach (BoardUsersDTO buDTO in buDTOs)
+                    {
+                        bDTO.Users.Add(buDTO.UserEmail);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Failed to select boards from database");
+                throw new Exception("Failed to select boards from database");
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+                command.Dispose();
+                connection.Close();
+            }
+
             return result;
+        
         }
 
 
