@@ -88,8 +88,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         {
             if (users.Contains(userEmail)) 
             {
-                BoardUsersDTO buDTO = new BoardUsersDTO(boardID, userEmail);
-                buDTO.Delete();
+                buController.Delete(boardID, userEmail);
                 users.Remove(userEmail);
             }
         }

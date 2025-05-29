@@ -245,7 +245,11 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
         }
         public void JoinBoard(string email, long boardID)
         {
-            emailAuth(email);
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
             if (!boardsById.ContainsKey(boardID))
             {
                 Log.Error($"Board deos not exists for user {email}");

@@ -207,7 +207,7 @@ namespace BackendTests
                 Console.WriteLine("Failed");
             }
         }
-        public void JoinBoardCasses()
+        public void JoinBoardCases()
         {
             string email = "maya@post.bgu.ac.il";
             string boardName = "Maya's board";
@@ -224,6 +224,7 @@ namespace BackendTests
             Console.Write("Expected: Fail, Actual: ");
             TestJoinBoard(joinerEmail, 999999); // Invalid join - board doesn't exist
         }
+        
         public void TestJoinBoard(String email, long boardId)
         {
             string str = BS.JoinBoard(email, boardId);
@@ -237,7 +238,7 @@ namespace BackendTests
                 Console.WriteLine("Failed");
             }
         }
-        public void LeaveBoardCasses()
+        public void LeaveBoardCases()
         {
             string ownerEmail = "Owner@post.bgu.ac.il";
             string userEmail = "member@post.bgu.ac.il";
@@ -265,7 +266,7 @@ namespace BackendTests
                 Console.WriteLine("Failed");
          }
         
-        public void TransferOwnershipCasses()
+        public void TransferOwnershipCases()
         {
             string ownerEmail = "Owner@post.bgu.ac.il";
             string userEmail = "member@post.bgu.ac.il";
