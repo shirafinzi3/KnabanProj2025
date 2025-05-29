@@ -139,7 +139,7 @@ namespace Backend.ServiceLayer
                 List<TaskSL> columnTaskSL = new List<TaskSL>();
                 foreach(TaskBL taskBL in columnTaskBL.Values)
                 {
-                    columnTaskSL.Add(new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.CTime, taskBL.TaskID));
+                    columnTaskSL.Add(new TaskSL(taskBL.Title, taskBL.Desc, taskBL.DueDate, taskBL.GetCTime(), taskBL.TaskID));
                 }
                 Response<List<TaskSL>> res1 = new Response<List<TaskSL>>(columnTaskSL);
                 return JsonSerializer.Serialize(res1);

@@ -38,7 +38,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
                     while (dataReader.Read())
@@ -53,6 +52,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
                     command.Dispose();
                     connection.Close();
                 }
@@ -68,7 +71,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 int res = -1;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {tableName} ({UserDTO.emailColumnName}, {UserDTO.passColumnName}) " + $"VALUES (@emailVal, @passwordVal);";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
@@ -101,14 +103,13 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
-                    Thread.Sleep(100);
                     command.CommandText = $"DELETE FROM {tableName} WHERE {UserDTO.emailColumnName}=@emailVal";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email);
                     command.Parameters.Add(emailParam);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }
-                catch(Exception ex)
+                catch(Exception e)
                 {
                     Log.Error("Failed to delete user from database");
                     throw new Exception("Failed to delete user from database");
@@ -130,7 +131,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null,connection);
                 try
                 {
-                    Thread.Sleep(100);
                     command.CommandText = $"UPDATE {tableName} SET {UserDTO.passColumnName} = @passwordVal WHERE {UserDTO.emailColumnName}=@emailVal";
                     SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", email);
                     SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", password);
@@ -139,7 +139,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }
-                catch(Exception ex)
+                catch(Exception e)
                 {
                     Log.Error("Failed to update password in database");
                     throw new Exception("Failed to update password in database");

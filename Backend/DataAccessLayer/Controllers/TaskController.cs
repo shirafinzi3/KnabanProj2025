@@ -130,6 +130,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+
                     command.Dispose();
                     connection.Close();
                 }
@@ -179,7 +180,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
@@ -210,7 +211,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
@@ -241,7 +242,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                  };
                  try
                  {
-                     command.Parameters.Add(new SQLiteParameter(columnIDColumnName, newColumnID));
+                     command.Parameters.AddWithValue("@newColumnID", newColumnID);
                      connection.Open();
                      command.ExecuteNonQuery();
                  }
@@ -283,6 +284,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
                     command.Dispose();
                     connection.Close();
                 }
@@ -291,9 +296,13 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         }
         private TaskDTO ConvertReaderToTask(SQLiteDataReader reader)
         {
+            string assignee = null;
+            if (!reader.IsDBNull(6))
+            {
+                assignee = reader.GetString(6);
+            }
             return new TaskDTO(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2), reader.GetString(3),
-                                                            reader.GetDateTime(4),  reader.GetDateTime(5), reader.GetString(6));
-
+                                                            reader.GetDateTime(4), reader.GetDateTime(5), assignee);
         }
     }
 

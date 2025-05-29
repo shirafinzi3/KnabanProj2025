@@ -33,38 +33,54 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
         public List<BoardDTO> Select()
         {
             List<BoardDTO> result = new List<BoardDTO>();
-            using (var connection = new SQLiteConnection(connectionString))
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand(null, connection);
+            SQLiteDataReader dataReader = null;
+            //Boards
+            try
             {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
+                connection.Open();
                 command.CommandText = $"SELECT * FROM {TableName}";
-                SQLiteDataReader dataReader = null;
-                try
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
                 {
-                    Thread.Sleep(100);
-                    connection.Open();
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        BoardDTO bDTO = ConvertReaderToBoard(dataReader);
-                        List<BoardUsersDTO> buDTOs = bDTO.BuController.SelectByBoard(bDTO.BoardID);
-                        foreach(BoardUsersDTO buDTO in buDTOs)
-                        {
-                            bDTO.Users.Add(buDTO.UserEmail);
-                        }
-                        result.Add(bDTO);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Error("Failed to select boards from database");
-                    throw new Exception("Failed to select boards from database");
-                }
-                finally
-                {
-                    command.Dispose();
-                    connection.Close();
+                    BoardDTO bDTO = ConvertReaderToBoard(dataReader);
+                    result.Add(bDTO);
                 }
             }
+            catch (Exception e)
+            {
+                Log.Error("Failed to select boards from database");
+                throw new Exception("Failed to select boards from database");
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+                command.Dispose();
+                connection.Close();
+            }
+            //UserBoards
+            connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            try
+            {
+                foreach (BoardDTO bDTO in result)
+                {
+                    List<BoardUsersDTO> buDTOs = bDTO.GetBuController().SelectByBoard(bDTO.BoardID, connection);
+                    foreach (BoardUsersDTO buDTO in buDTOs)
+                    {
+                        bDTO.Users.Add(buDTO.UserEmail);
+                    }
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+
             return result;
         }
 
@@ -77,7 +93,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 int res = -1;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} " +
                         $"({BoardDTO.boardIDColumnName}, {BoardDTO.boardNameColumnName}, {BoardDTO.ownerEmailColumnName}) " +
@@ -116,8 +131,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    Thread.Sleep(100);
-                    command.Parameters.Add(new SQLiteParameter(attributeName, attributeValue));
+                    command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
@@ -144,7 +158,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
 
                     //delete tasks
@@ -195,7 +208,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
                     if (dataReader.Read() && !dataReader.IsDBNull(0))
@@ -210,6 +222,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
                     command.Dispose();
                     connection.Close();
                 }

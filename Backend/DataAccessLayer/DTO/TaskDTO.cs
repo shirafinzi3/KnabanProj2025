@@ -124,7 +124,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             taskController = new TaskController();
         }
 
-        public TaskDTO(long taskID, long columnID, string title, string desc, DateTime dueDate, DateTime cTime, string assignee)
+        public TaskDTO(long taskID, long columnID,  string desc, string title, DateTime dueDate, DateTime cTime, string assignee)
         {
             this.taskID = taskID;
             this.columnID = columnID;

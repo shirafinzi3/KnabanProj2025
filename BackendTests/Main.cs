@@ -17,7 +17,7 @@ namespace BackendTests
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
             //UserService
-            /*Console.WriteLine("USER SERVICE:");
+            Console.WriteLine("USER SERVICE:");
             UserServiceTesting ust = new UserServiceTesting();
             ust.setup();
             Console.WriteLine("Testing register:");
@@ -34,8 +34,10 @@ namespace BackendTests
             //BoardService
             Console.WriteLine("BOARD SERVICE:");
             BoardServiceTesting bst = new BoardServiceTesting();
+            Thread.Sleep(200);
             bst.setup();
             Console.WriteLine("Testing create board:");
+            Thread.Sleep(200);
             bst.BoardCreationTestCases();
             bst.deconstruct();
             bst.setup();
@@ -57,9 +59,7 @@ namespace BackendTests
             bst.setup();
             Console.WriteLine("Testing Get board column:");
             bst.GetColumnCases();
-            bst.deconstruct();*/
-            
-
+            bst.deconstruct();
             //TaskService
             Console.WriteLine("TASK SERVICE:");
             TaskServiceTesting tst = new TaskServiceTesting();
@@ -91,7 +91,6 @@ namespace BackendTests
             Console.WriteLine("Testing delete task:");
             tst.DeleteTaskTestCases();
             tst.deconstruct();
-
         }
     }
 }

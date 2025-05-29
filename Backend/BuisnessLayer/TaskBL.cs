@@ -28,7 +28,7 @@ namespace Backend.BuisnessLayer
             this.DueDate = dueDate;
             this.Desc = desc;
             this.taskID = id;
-            this.CTime = DateTime.Now;
+            this.cTime = DateTime.Now;
             tDTO.CTime = this.cTime; 
             this.Assignee = null;
             tDTO.Save();
@@ -37,11 +37,11 @@ namespace Backend.BuisnessLayer
         public TaskBL(TaskDTO tDTO)
         {
             this.tDTO = tDTO;
-            this.Title = tDTO.Title;
+            this.title = tDTO.Title;
             this.dueDate = tDTO.DueDate;
             this.desc = tDTO.Desc;
             this.taskID = tDTO.TaskID;
-            this.CTime = tDTO.CTime;
+            this.cTime = tDTO.CTime;
             this.assignee = tDTO.Assignee;
 
         }
@@ -50,7 +50,7 @@ namespace Backend.BuisnessLayer
             return this.tDTO;
         }
         public long TaskID { get { return this.taskID; }}
-        public DateTime CTime { get; }
+        public DateTime GetCTime() { return this.cTime; }
         public string Desc
         {
             get => desc;

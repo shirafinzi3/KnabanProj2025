@@ -23,38 +23,46 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
             connectionString = $"Data Source={path}; Version=3;";
         }
 
-        public List<BoardUsersDTO> SelectByBoard(long boardID)
+        public List<BoardUsersDTO> SelectByBoard(long boardID, SQLiteConnection connection = null)
         {
             List<BoardUsersDTO> results = new List<BoardUsersDTO>();
-            using (var connection = new SQLiteConnection(connectionString))
+            bool externalConnection = connection != null;
+
+            if (!externalConnection)
             {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.boardIDColumnName} = @boardID";
-                command.Parameters.AddWithValue("@boardID", boardID);
-                SQLiteDataReader dataReader = null;
-                try
+                connection = new SQLiteConnection(connectionString);
+            }
+
+            SQLiteCommand command = new SQLiteCommand(null, connection);
+            command.CommandText = $"SELECT boardID, userEmail FROM {TableName} WHERE {BoardUsersDTO.boardIDColumnName} = @boardID";
+            command.Parameters.AddWithValue("@boardID", boardID);
+            SQLiteDataReader dataReader = null;
+
+            try
+            {
+                if (!externalConnection)
                 {
-                    Thread.Sleep(100);
                     connection.Open();
-                    dataReader = command.ExecuteReader();
-
-                    while (dataReader.Read())
-                    {
-                        results.Add(ConvertReaderToBoardUsers(dataReader));
-                    }
                 }
-                finally
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
                 {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close();
-                    }
-
-                    command.Dispose();
+                    results.Add(ConvertReaderToBoardUsers(dataReader));
+                }
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    dataReader.Close();
+                }
+                command.Dispose();
+                if (!externalConnection)
+                {
                     connection.Close();
                 }
-
             }
+
             return results;
         }
 
@@ -69,7 +77,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -101,7 +108,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} ({BoardUsersDTO.boardIDColumnName} ,{BoardUsersDTO.userEmailColumnName})" +
                         $"VALUES (@boardID, @userEmail);";
@@ -139,7 +145,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -177,7 +182,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }

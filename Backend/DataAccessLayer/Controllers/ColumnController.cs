@@ -33,7 +33,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -68,7 +67,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
 
@@ -105,7 +103,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteCommand command = new SQLiteCommand(null, connection);
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     command.CommandText = $"INSERT INTO {TableName} ({ColumnDTO.ColumnIDColumnName} ,{ColumnDTO.BoardIDColumnName}, " +
                                                 $" {ColumnDTO.ColumnNameColumnName}, {ColumnDTO.MaxTasksColumnName}) " +
@@ -151,7 +148,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                 }
@@ -181,7 +177,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 };
                 try
                 {
-                    Thread.Sleep(100);
                     command.Parameters.AddWithValue("@attributeValue", attributeValue);
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -210,7 +205,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    Thread.Sleep(100);
                     connection.Open();
                     dataReader = command.ExecuteReader();
                     if (dataReader.Read() && !dataReader.IsDBNull(0))
@@ -225,6 +219,10 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.Controllers
                 }
                 finally
                 {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
                     command.Dispose();
                     connection.Close();
                 }
