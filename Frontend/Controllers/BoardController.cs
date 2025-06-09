@@ -52,5 +52,30 @@ namespace IntroSE.Kanban.Frontend.Controllers
             return new ObservableCollection<TaskModel>(
                 ((List<TaskSL>)response.ReturnValue).Select(tsl => new TaskModel(tsl)).ToList());
         }
+        internal ObservableCollection<BoardModel> GetAllBoards(UserModel user)
+        {
+            Response<List<BoardSL>> response = JsonSerializer.Deserialize<Response< List<BoardSL>>>( bs.GetUserBoards(user.Email));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+            ObservableCollection<BoardModel> list = new ObservableCollection<BoardModel>();
+            foreach(BoardSL board in response.ReturnValue)
+            {
+                list.Add(new BoardModel(board));
+            }
+            return list ;
+        }
+        internal BoardModel CreateBoard(UserModel user, string BoardName)
+        {
+            Response<BoardSL> response = JsonSerializer.Deserialize<Response<BoardSL>>(bs.CreateBoard(user.Email,BoardName));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+            
+            return new BoardModel(response.ReturnValue);
+        }
+
     }
 }
