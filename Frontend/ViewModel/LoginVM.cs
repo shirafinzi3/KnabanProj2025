@@ -22,7 +22,6 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             set
             {
                 this.password = value;
-                RaisePropertyChanged(nameof(password));
             }
         }
         private string email;
@@ -32,7 +31,6 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             set
             {
                 this.email = value;
-                RaisePropertyChanged(nameof(email));
             }
         }
         private string errorMessage;
@@ -67,7 +65,23 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                 ErrorMessage = ex.Message;
                 return null;
             }
-            
+        }
+        internal UserModel? Register()
+        {
+            if (string.IsNullOrEmpty(Email))
+            {
+                ErrorMessage = "Email cannot be empty";
+                return null;
+            }
+            try
+            {
+                return uc.Register(email, password);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return null;
+            }
         }
     }
 }
