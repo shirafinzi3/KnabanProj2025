@@ -12,11 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using IntroSE.Kanban.Frontend.Model;
-<<<<<<< HEAD
 using IntroSE.Kanban.Frontend.ViewModel;
 using Microsoft.VisualBasic;
-=======
->>>>>>> f05138e8dac2f68b42c3e778b7888744f5486310
 
 namespace IntroSE.Kanban.Frontend.View
 {
@@ -25,23 +22,20 @@ namespace IntroSE.Kanban.Frontend.View
     /// </summary>
     public partial class Boards : Window
     {
-<<<<<<< HEAD
         private UserModel User;
         private BoardsVM BoardsVM;
 
         internal Boards(UserModel User)
-=======
-        internal Boards()
->>>>>>> f05138e8dac2f68b42c3e778b7888744f5486310
         {
             InitializeComponent();
             this.User = User;
             this.BoardsVM = new BoardsVM(User);
             this.DataContext = BoardsVM;
         }
-        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            BoardModel selectedBoard = (BoardModel)((DataGridRow)sender).Item;
+            BoardModel selectedBoard = (BoardModel)((ListBoxItem)sender).Content;
+            this.BoardsVM.SelectedBoard = selectedBoard;
             BoardWindow boardWindow = new BoardWindow(User, selectedBoard);
             boardWindow.Show();
             this.Close();

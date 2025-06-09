@@ -337,6 +337,24 @@ namespace IntroSE.Kanban.Backend.BuisnessLayer
             }
             return ids;
         }
+        public List<BoardBL> GetAllBoards(string email)
+        {
+            if (!auth.IsLoggedIn(email))
+            {
+                Log.Error($"User {email} is not logged in");
+                throw new InvalidOperationException($"User {email} is not logged in");
+            }
+            if (!boardsByEmail.ContainsKey(email))
+            {
+                return new List<BoardBL>();
+            }
+            List<BoardBL> boards = new List<BoardBL>();
+            foreach (long id in boardsByEmail[email].Values)
+            {
+                boards.Add(boardsById[id]);
+            }
+            return boards;
+        }
         private TaskBL GetEditableTask(string email, string boardName, long taskID, string field)
         {
             TaskBL toReturn = null;

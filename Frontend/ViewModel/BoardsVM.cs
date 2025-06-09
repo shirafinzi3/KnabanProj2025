@@ -24,6 +24,19 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                 RaisePropertyChanged(nameof(ErrorMessage));
             }
         }
+        BoardModel selectedBoard;
+        public BoardModel SelectedBoard
+        {
+            get
+            {
+                return selectedBoard;
+            }
+            set
+            {
+                this.selectedBoard = value;
+                RaisePropertyChanged(nameof(selectedBoard));
+            }
+        }
         internal BoardsVM(UserModel user)
         {
             User = user;
@@ -46,10 +59,12 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             try
             {
                 bool res = ControllerFactory.Instance.UserController.Logout(User);
+                return res;
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+                return false;
             }
         }
         //Will hold a public user model

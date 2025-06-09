@@ -51,11 +51,6 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         }
         internal UserModel? Login()
         {
-            if (string.IsNullOrEmpty(Email))
-            {
-                ErrorMessage = "Email cannot be empty";
-                return null;
-            }
             try
             {
                 return uc.Login(email, password);
@@ -68,11 +63,6 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         }
         internal UserModel? Register()
         {
-            if (string.IsNullOrEmpty(Email))
-            {
-                ErrorMessage = "Email cannot be empty";
-                return null;
-            }
             try
             {
                 return uc.Register(email, password);

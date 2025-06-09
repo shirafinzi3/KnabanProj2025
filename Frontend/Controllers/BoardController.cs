@@ -54,7 +54,7 @@ namespace IntroSE.Kanban.Frontend.Controllers
         }
         internal ObservableCollection<BoardModel> GetAllBoards(UserModel user)
         {
-            Response<List<BoardSL>> response = JsonSerializer.Deserialize<Response< List<BoardSL>>>( bs.GetUserBoards(user.Email));
+            Response<List<BoardSL>> response = JsonSerializer.Deserialize<Response< List<BoardSL>>>(bs.GetAllBoards(user.Email));
             if (response.ErrorMessage != null)
             {
                 throw new Exception(response.ErrorMessage);
