@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IntroSE.Kanban.Frontend.Model;
+using IntroSE.Kanban.Frontend.ViewModel;
+using Microsoft.VisualBasic;
 
 namespace IntroSE.Kanban.Frontend.View
 {
@@ -19,10 +22,39 @@ namespace IntroSE.Kanban.Frontend.View
     /// </summary>
     public partial class Boards : Window
     {
-        public Boards()
+        private UserModel User;
+        private BoardsVM BoardsVM;
+
+        internal Boards(UserModel User)
         {
             InitializeComponent();
+            this.User = User;
+            this.BoardsVM = new BoardsVM(User);
+            this.DataContext = BoardsVM;
         }
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            BoardModel selectedBoard = (BoardModel)((DataGridRow)sender).Item;
+            BoardWindow boardWindow = new BoardWindow(User, selectedBoard);
+            boardWindow.Show();
+            this.Close();
+        }
+        private void CreateBoard_Click(object sender, RoutedEventArgs e)
+        {
+            string input = Interaction.InputBox("Enter new board name:", "Add Board", "");  
+            BoardsVM.CreateBoard(input);
+        }
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            bool ret = BoardsVM.Logout();
+            if (ret)
+            {
+                Login login = new Login();
+                login.Show();
+                this.Close();
+            }
+        }
+
     }
     // Will hold a UserModel and a BoardsVM
     // In the xaml file might want to use DataGrid to present boards - allows clicking on a row
