@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using IntroSE.Kanban.Backend.ServiceLayer;
+using IntroSE.Kanban.Frontend.Model;
 using IntroSE.Kanban.Frontend.ViewModel;
 
 namespace IntroSE.Kanban.Frontend.View
@@ -32,11 +33,31 @@ namespace IntroSE.Kanban.Frontend.View
         // Holds a loginVM object to use its methods
         // Holds button click logic
         // On successful login will send the usermodel to the new main window it creates
-        // The error that the service throws should be shown when trying to register ot login with non valid data
+        // The error that the service throws should be shown when trying to register or login with non valid data
         // For each text box we should use binding with mode.
         // In binding - specify pass (mostly fields) in the data context (view model) using the setter.
         // If we want to display defultive data in textbox use Mode - TwoWay
         // For error message or any there label- use mode One Way 
-        
+        private void Login_Click(object sender, RoutedEventArgs e)
+        {
+            UserModel? ret = loginVM.Login();
+            if (ret != null)
+            {
+                Boards boards = new Boards(ret);
+                boards.Show();
+                this.Close();
+            }
+        }
+        private void Register_Click(object sender, RoutedEventArgs e)
+        {
+            UserModel? ret = loginVM.Register();
+            if (ret != null)
+            {
+                Boards boards = new Boards(ret);
+                boards.Show();
+                this.Close();
+            }
+        }
+
     }
 }

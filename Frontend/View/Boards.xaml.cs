@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IntroSE.Kanban.Frontend.Model;
 
 namespace IntroSE.Kanban.Frontend.View
 {
@@ -19,7 +20,7 @@ namespace IntroSE.Kanban.Frontend.View
     /// </summary>
     public partial class Boards : Window
     {
-        public Boards()
+        internal Boards()
         {
             InitializeComponent();
         }
