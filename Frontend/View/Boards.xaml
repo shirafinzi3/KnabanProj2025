@@ -1,0 +1,83 @@
+﻿<Window x:Class="IntroSE.Kanban.Frontend.View.Boards"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IntroSE.Kanban.Frontend.View"
+        mc:Ignorable="d"
+        Title="Boards" Height="600" Width="1000"
+        Background="#FFF9F9F9">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Column="0" Margin="10" LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
+                <Button Content="Create Board"
+                        Width="120" Height="40" Margin="0,0,0,10"
+                        Background="#48A6A7" Foreground="White" FontWeight="Bold"
+                        Click="CreateBoard_Click"/>
+
+               
+            </StackPanel>
+
+            <Button Content="Logout"
+                    Width="120" Height="40" Margin="0,20,0,0"
+                    VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                    Background="#DA6C6C" Foreground="White" FontWeight="Bold"
+                    Click="Logout_Click"/>
+        </DockPanel>
+
+        <DockPanel Grid.Column="1" Margin="10">
+            <StackPanel DockPanel.Dock="Top">
+                <TextBlock FontSize="16" FontWeight="Bold" Margin="0,0,0,10">
+                    <Run Text="Welcome, " />
+                    <Run Text="{Binding UserName}" />
+                </TextBlock>
+
+                <Label Content="All your boards:" Margin="0,10,0,5" />
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled"
+                              Height="450">
+                    <ListBox ItemsSource="{Binding AllBoards}" 
+         SelectedItem="{Binding SelectedBoard, Mode=TwoWay}" 
+         BorderThickness="0"
+         Background="Transparent"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="MouseDoubleClick"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Gray" BorderThickness="1" Background="White" 
+                    CornerRadius="10" Margin="8" Width="180" Height="120">
+                                    <StackPanel Margin="10">
+                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" />
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </StackPanel>
+
+            <Label Margin="0,10,0,0" Content="{Binding Path=ErrorMessage, Mode=OneWay}" 
+                   Foreground="Red" FontSize="12"
+                   DockPanel.Dock="Bottom" Height="32"/>
+        </DockPanel>
+    </Grid>
+</Window>
