@@ -18,6 +18,8 @@ namespace IntroSE.Kanban.Frontend.Controllers
             var serviceFactory = new ServiceFactory();
             this.UserController = new UserController(serviceFactory.US);
             this.BoardController = new BoardController(serviceFactory.BS, serviceFactory.TS);
+            serviceFactory.US.LoadAllUsers();
+            serviceFactory.BS.LoadAllBoards();
         }
     }
 }
