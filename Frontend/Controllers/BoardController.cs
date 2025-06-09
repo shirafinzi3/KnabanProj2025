@@ -76,6 +76,15 @@ namespace IntroSE.Kanban.Frontend.Controllers
             
             return new BoardModel(response.ReturnValue);
         }
+        internal void DeleteBoard(UserModel user, BoardModel boardModel)
+        {
+            Response<string> response = JsonSerializer.Deserialize<Response<string>>(bs.DeleteBoard(user.Email, boardModel.BoardName));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+
+        }
 
     }
 }

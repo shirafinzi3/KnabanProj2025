@@ -14,6 +14,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         private string errorMessage;
         public UserModel User { get; }
         public string WelcomeMessage { get { return $"Welcome, {User.Email}!"; } }
+        
         public ObservableCollection<BoardModel> AllBoards { get; }
         public string ErrorMessage
         {
@@ -48,6 +49,18 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             {
                 BoardModel boardModel = ControllerFactory.Instance.BoardController.CreateBoard(User, input);
                 AllBoards.Add(boardModel);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+        }
+        public void DeleteBoard(BoardModel boardModel)
+        {
+            try
+            { 
+                ControllerFactory.Instance.BoardController.DeleteBoard(User, boardModel);
+                AllBoards.Remove(boardModel);
             }
             catch (Exception ex)
             {

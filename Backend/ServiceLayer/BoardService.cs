@@ -33,7 +33,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName);
-                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID)); 
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID,boardBL.Owner)); 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 
@@ -256,7 +256,7 @@ namespace Backend.ServiceLayer
                 List<BoardSL> list = new List<BoardSL>();
                 foreach(BoardBL boardBL in boards)
                 {
-                    list.Add(new BoardSL(boardBL.BoardName, boardBL.BoardID));
+                    list.Add(new BoardSL(boardBL.BoardName, boardBL.BoardID,boardBL.Owner));
                 }
                 Response<List<BoardSL>> res = new Response<List<BoardSL>>(null, list);
                 return JsonSerializer.Serialize(res);

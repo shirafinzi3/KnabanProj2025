@@ -23,6 +23,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         private readonly BoardController boardController;
         private bool isPersistent = false;
         private readonly BoardUsersController buController;
+        public bool IsPersistent
+        {
+            get { return isPersistent; }
+            set { isPersistent = value; }
+        }
         public BoardDTO(long ID, string name, string ownerEmail)
         {
             this.boardID = ID;
