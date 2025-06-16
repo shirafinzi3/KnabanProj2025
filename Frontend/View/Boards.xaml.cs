@@ -53,13 +53,10 @@ namespace IntroSE.Kanban.Frontend.View
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            bool ret = BoardsVM.Logout();
-            if (ret)
-            {
-                Login login = new Login();
-                login.Show();
-                this.Close();
-            }
+           BoardsVM.Logout();
+           Login login = new Login();
+           login.Show();
+           this.Close();
         }
 
 

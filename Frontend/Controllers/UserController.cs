@@ -34,14 +34,13 @@ namespace IntroSE.Kanban.Frontend.Controllers
             }
             return new UserModel(res.ReturnValue);
         }
-        public bool Logout(UserModel user)
+        public void Logout(UserModel user)
         {
-            Response<bool> res = JsonSerializer.Deserialize<Response<bool>>(us.Logout(user.Email));
+            Response<string> res = JsonSerializer.Deserialize<Response<string>>(us.Logout(user.Email));
             if (res.ErrorMessage != null)
             {
                 throw new Exception(res.ErrorMessage);
             }
-            return res.ReturnValue;
         }
 
     }
