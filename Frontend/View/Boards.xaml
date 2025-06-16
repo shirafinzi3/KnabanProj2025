@@ -14,70 +14,142 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Column="0" Margin="10" LastChildFill="True">
-            <StackPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
+            <StackPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                 <Button Content="Create Board"
                         Width="120" Height="40" Margin="0,0,0,10"
-                        Background="#48A6A7" Foreground="White" FontWeight="Bold"
-                        Click="CreateBoard_Click"/>
-
-               
+                        Background="#006A71" Foreground="White" FontWeight="Bold"
+                        Click="CreateBoard_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="10"
+                                                BorderThickness="0"
+                                                Padding="5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
 
             <Button Content="Logout"
                     Width="120" Height="40" Margin="0,20,0,0"
                     VerticalAlignment="Bottom" HorizontalAlignment="Center"
                     Background="#DA6C6C" Foreground="White" FontWeight="Bold"
-                    Click="Logout_Click"/>
+                    Click="Logout_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            CornerRadius="10"
+                                            BorderThickness="0"
+                                            Padding="5">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
         </DockPanel>
 
-        <DockPanel Grid.Column="1" Margin="10">
-            <StackPanel DockPanel.Dock="Top">
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0">
                 <TextBlock FontSize="16" FontWeight="Bold" Margin="0,0,0,10">
                     <Run Text="Welcome, " />
                     <Run Text="{Binding UserName}" />
                 </TextBlock>
 
-                <Label Content="All your boards:" Margin="0,10,0,5" />
+                <TextBlock FontSize="16" FontWeight="Bold" Margin="0,10,0,5">
+                    <Run Text="All your boards:" />
+                </TextBlock>
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Disabled"
-                              Height="450">
-                    <ListBox ItemsSource="{Binding AllBoards}" 
-         SelectedItem="{Binding SelectedBoard, Mode=TwoWay}" 
-         BorderThickness="0"
-         Background="Transparent"
-         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox ItemsSource="{Binding AllBoards}" 
+                         SelectedItem="{Binding SelectedBoard, Mode=TwoWay}" 
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                         Height="450">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="MouseDoubleClick"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
 
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <EventSetter Event="MouseDoubleClick" Handler="MouseDoubleClick"/>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
 
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F2EFE7"
+                                    BorderBrush="#D8D2C4"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Margin="8"
+                                    Width="200"
+                                    Height="160">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="Gray" BorderThickness="1" Background="White" 
-                    CornerRadius="10" Margin="8" Width="180" Height="120">
-                                    <StackPanel Margin="10">
-                                        <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="14" />
-                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
+                                    <TextBlock Text="{Binding Owner}"
+                                               FontSize="13"
+                                               Foreground="#7A7565"
+                                               FontStyle="Italic"
+                                               Grid.Row="0"/>
+
+                                    <TextBlock Text="{Binding BoardName}"
+                                               FontWeight="Bold"
+                                               FontSize="20"
+                                               Foreground="#4C4A45"
+                                               Margin="0,4,0,6"
+                                               Grid.Row="1"/>
+
+                                   
+                                    <Button Content="🗑"
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="#5F5C53"
+                                            Click="DeleteBoard_Click"
+                                            ToolTip="Delete this board"
+                                            Grid.Row="3"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
 
-            <Label Margin="0,10,0,0" Content="{Binding Path=ErrorMessage, Mode=OneWay}" 
+            <Label Grid.Row="1"
+                   Margin="0,5,10,0"
+                   Content="{Binding Path=ErrorMessage, Mode=OneWay}" 
                    Foreground="Red" FontSize="12"
-                   DockPanel.Dock="Bottom" Height="32"/>
-        </DockPanel>
+                   HorizontalAlignment="Center"/>
+        </Grid>
     </Grid>
 </Window>

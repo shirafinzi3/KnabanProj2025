@@ -45,6 +45,15 @@ namespace IntroSE.Kanban.Frontend.View
             string input = Interaction.InputBox("Enter new board name:", "Add Board", "");  
             BoardsVM.CreateBoard(input);
         }
+        private void DeleteBoard_Click(object sender, RoutedEventArgs e)
+        {
+            var board = ((Button)sender).DataContext as BoardModel;
+            if (board != null)
+            {
+                BoardsVM.DeleteBoard(board);
+            }
+        }
+
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             bool ret = BoardsVM.Logout();

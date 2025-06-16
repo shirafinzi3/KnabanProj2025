@@ -55,6 +55,7 @@ namespace Backend.BuisnessLayer
             this.owner = bDTO.OwnerEmail;
             this.users = new List<string>(bDTO.Users);
             this.columns= new Dictionary<String, Column>();
+            bDTO.IsPersistent = true;
         }
 
         public BoardDTO GetBoardDTO() 
