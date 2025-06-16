@@ -17,9 +17,6 @@ using Microsoft.VisualBasic;
 
 namespace IntroSE.Kanban.Frontend.View
 {
-    /// <summary>
-    /// Interaction logic for Boards.xaml
-    /// </summary>
     public partial class Boards : Window
     {
         private UserModel User;
@@ -67,9 +64,4 @@ namespace IntroSE.Kanban.Frontend.View
 
 
     }
-    // Will hold a UserModel and a BoardsVM
-    // In the xaml file might want to use DataGrid to present boards - allows clicking on a row
-    // After login main window opens - should show the name of the user and his list of boards
-    // This window should allow creating and deleting boards
-    // This window will send to a board window when double clicked on a row in the list of boards
 }

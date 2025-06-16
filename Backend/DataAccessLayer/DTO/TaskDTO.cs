@@ -30,7 +30,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         private bool isPersistent = false;
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public bool IsPersistent { get { return isPersistent; } }
+        public bool IsPersistent
+        {
+            get { return isPersistent; }
+            set { isPersistent = value; }
+        }
         public long TaskID
         {
             get => taskID;

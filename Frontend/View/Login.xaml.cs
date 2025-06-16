@@ -17,9 +17,7 @@ using IntroSE.Kanban.Frontend.ViewModel;
 
 namespace IntroSE.Kanban.Frontend.View
 {
-    /// <summary>
-    /// Interaction logic for Login.xaml
-    /// </summary>
+
     public partial class Login : Window
     {
         private LoginVM loginVM;
@@ -29,15 +27,6 @@ namespace IntroSE.Kanban.Frontend.View
             this.loginVM = new LoginVM();
             this.DataContext = loginVM;
         }
-        // Handles connecion with the window (similiar to service layer)
-        // Holds a loginVM object to use its methods
-        // Holds button click logic
-        // On successful login will send the usermodel to the new main window it creates
-        // The error that the service throws should be shown when trying to register or login with non valid data
-        // For each text box we should use binding with mode.
-        // In binding - specify pass (mostly fields) in the data context (view model) using the setter.
-        // If we want to display defultive data in textbox use Mode - TwoWay
-        // For error message or any there label- use mode One Way 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             UserModel? ret = loginVM.Login();

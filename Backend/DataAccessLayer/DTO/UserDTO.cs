@@ -19,6 +19,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
         public const string emailColumnName = "email";
         public const string passColumnName = "password";
         private readonly UserController userController;
+     
         public string Password
         {
             get => password;
@@ -45,6 +46,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer.DTO
             }
         }
         private bool isPersistent = false;
+        public bool IsPersistent
+        {
+            get { return isPersistent; }
+            set { isPersistent = value; }
+        }
         public UserDTO(string email, string password)
         {
             this.Email = email; 

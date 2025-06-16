@@ -15,9 +15,6 @@ using IntroSE.Kanban.Frontend.ViewModel;
 
 namespace IntroSE.Kanban.Frontend.View
 {
-    /// <summary>
-    /// Interaction logic for AddTaskWindow.xaml
-    /// </summary>
     public partial class AddTaskWindow : Window
     {
         private readonly AddTaskVM vm;
