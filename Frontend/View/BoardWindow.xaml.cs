@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using IntroSE.Kanban.Frontend.Model;
+using IntroSE.Kanban.Frontend.ViewModel;
 
 namespace IntroSE.Kanban.Frontend.View
 {
@@ -19,9 +21,19 @@ namespace IntroSE.Kanban.Frontend.View
     /// </summary>
     public partial class BoardWindow : Window
     {
-        public BoardWindow()
+        private UserModel user;
+        private BoardModel board;
+        private BoardWindowVM vm;
+
+        internal BoardWindow(UserModel user, BoardModel board)
         {
             InitializeComponent();
+            this.user = user;
+            this.board = board;
+            vm = new BoardWindowVM(user, board);
+            this.DataContext = vm;
         }
+
+
     }
 }

@@ -17,8 +17,9 @@ namespace IntroSE.Kanban.Frontend.Controllers
         {
             var serviceFactory = new ServiceFactory();
             this.UserController = new UserController(serviceFactory.US);
-            this.BoardController = new BoardController(serviceFactory.BS);
+            this.BoardController = new BoardController(serviceFactory.BS, serviceFactory.TS);
+            serviceFactory.US.LoadAllUsers();
+            serviceFactory.BS.LoadAllBoards();
         }
-        // Might want to add TaskContoller ot send task service to board controller with board service
     }
 }

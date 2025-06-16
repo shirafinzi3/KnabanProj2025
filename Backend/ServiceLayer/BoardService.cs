@@ -33,7 +33,7 @@ namespace Backend.ServiceLayer
             try
             {
                 BoardBL boardBL = BF.CreateBoard(email, boardName);
-                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID)); 
+                Response<BoardSL> res = new Response<BoardSL>(null, new BoardSL(boardBL.BoardName,boardBL.BoardID,boardBL.Owner)); 
                 return JsonSerializer.Serialize(res);
             }
             catch(Exception e) 
@@ -240,7 +240,30 @@ namespace Backend.ServiceLayer
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<BoardSL>(e.Message));
+                return JsonSerializer.Serialize(new Response<List<long>>(e.Message));
+            }
+        }
+        /// <summary>
+        /// This method returns a list of all the boards sl's that the user is a member of
+        /// </summary>
+        /// <param name="email">A unique email of the user</param>
+        /// <returns>A response with the list of board sl's or an error message </returns>
+        public string GetAllBoards(string email)
+        {
+            try
+            {
+                List<BoardBL> boards = BF.GetAllBoards(email);
+                List<BoardSL> list = new List<BoardSL>();
+                foreach(BoardBL boardBL in boards)
+                {
+                    list.Add(new BoardSL(boardBL.BoardName, boardBL.BoardID,boardBL.Owner));
+                }
+                Response<List<BoardSL>> res = new Response<List<BoardSL>>(null, list);
+                return JsonSerializer.Serialize(res);
+            }
+            catch (Exception e)
+            {
+                return JsonSerializer.Serialize(new Response<List<BoardSL>>(e.Message));
             }
         }
 
