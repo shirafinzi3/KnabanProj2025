@@ -69,18 +69,16 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                 ErrorMessage = ex.Message;
             }
         }
-        public bool Logout()
+        public void Logout()
         {
             try
             {
-                bool res = ControllerFactory.Instance.UserController.Logout(User);
+                ControllerFactory.Instance.UserController.Logout(User);
                 ErrorMessage = "";
-                return res;
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
-                return false;
             }
         }
     }
