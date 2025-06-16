@@ -16,9 +16,13 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         public BoardModel Board { get; }
         public string BoardName => Board.BoardName;
         public string UserEmail => User.Email;
-        public readonly String BACKLOG;
-        public readonly String IN_PROGRESS;
-        public readonly String DONE;
+        public readonly String bACKLOG;
+        public readonly String iN_PROGRESS;
+        public readonly String dONE;
+
+        public String BACKLOG {  get; }
+        public String IN_PROGRESS {  get; }
+        public String DONE {  get; }
 
         public string ErrorMessage
         {
@@ -51,6 +55,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             {
                 TaskModel task = ControllerFactory.Instance.BoardController.AddTask(User, Board, title, description, dueDate);
                 BacklogTasks.Add(task);
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
@@ -75,6 +80,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                 {
                     DoneTasks.Remove(task);
                 }
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
@@ -98,12 +104,14 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                     InProgressTasks.Remove(task);
                     DoneTasks.Add(task);
                 }
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
             }
         }
+
 
     }
 }

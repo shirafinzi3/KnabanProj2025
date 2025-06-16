@@ -43,7 +43,7 @@ namespace Backend.BuisnessLayer
             this.taskID = tDTO.TaskID;
             this.cTime = tDTO.CTime;
             this.assignee = tDTO.Assignee;
-
+            tDTO.IsPersistent = true;
         }
         public TaskDTO GetTaskDTO()
         {

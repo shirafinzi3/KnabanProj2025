@@ -49,6 +49,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             {
                 BoardModel boardModel = ControllerFactory.Instance.BoardController.CreateBoard(User, input);
                 AllBoards.Add(boardModel);
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
@@ -61,6 +62,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             { 
                 ControllerFactory.Instance.BoardController.DeleteBoard(User, boardModel);
                 AllBoards.Remove(boardModel);
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
@@ -72,6 +74,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             try
             {
                 bool res = ControllerFactory.Instance.UserController.Logout(User);
+                ErrorMessage = "";
                 return res;
             }
             catch (Exception ex)
@@ -80,7 +83,5 @@ namespace IntroSE.Kanban.Frontend.ViewModel
                 return false;
             }
         }
-        //Will hold a public user model
-        // Use ObservableCollection if we want a list that listens for changes (maybe with tasks or get all boards)
     }
 }

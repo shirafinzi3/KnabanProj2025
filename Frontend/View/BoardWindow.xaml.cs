@@ -18,9 +18,6 @@ using Microsoft.VisualBasic;
 
 namespace IntroSE.Kanban.Frontend.View
 {
-    /// <summary>
-    /// Interaction logic for BoardWindow.xaml
-    /// </summary>
     public partial class BoardWindow : Window
     {
         private UserModel user;
@@ -67,6 +64,12 @@ namespace IntroSE.Kanban.Frontend.View
             {
                 vm.MoveTask(task, col);
             }
+        }
+        private void ReturnToBoards_Click(object sender, RoutedEventArgs e)
+        {
+            Boards boards = new Boards(user);
+            boards.Show();
+            this.Close();
         }
     }
 }

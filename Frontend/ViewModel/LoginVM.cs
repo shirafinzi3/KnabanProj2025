@@ -10,11 +10,6 @@ namespace IntroSE.Kanban.Frontend.ViewModel
 {
     internal class LoginVM : Notifiable
     {
-        // Similiar to buisness layer
-        // Should have the following fields - email, errorMessage
-        // Call RaisePropertyChanged in the setter of error mesaage
-        // Setters and getters should be public
-        //Use binding in xaml (one way to source)
         UserController uc = ControllerFactory.Instance.UserController;
         private string password;
         public string Password {

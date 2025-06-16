@@ -37,6 +37,7 @@ namespace Backend.BuisnessLayer
             this.uDTO = userDTO;
             this.password = userDTO.Password;
             this.email = userDTO.Email;
+            userDTO.IsPersistent = true;
         }
         public bool Login(string pass)
         {
