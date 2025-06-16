@@ -86,5 +86,42 @@ namespace IntroSE.Kanban.Frontend.Controllers
 
         }
 
+        internal TaskModel AddTask(UserModel user, BoardModel board, string title, string description, DateTime dueDate)
+        {
+            Response<TaskSL> response = JsonSerializer.Deserialize<Response<TaskSL>>(ts.AddTask(user.Email, board.BoardName, title, description, dueDate));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+            return new TaskModel(response.ReturnValue);
+        }
+
+        internal void DeleteTask(UserModel user, BoardModel board, TaskModel task)
+        {
+            Response<bool> response = JsonSerializer.Deserialize<Response<bool>>(ts.DeleteTask(user.Email, board.BoardName, task.Id));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+        }
+
+        internal void MoveTask(UserModel user, BoardModel board, TaskModel task)
+        {
+            Response<String> response = JsonSerializer.Deserialize<Response<String>>(ts.MoveTask(user.Email, board.BoardName, task.Id));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+        }
+
+        internal String GetColumnName(UserModel user, BoardModel board, int colIdx)
+        {
+            Response<String> response = JsonSerializer.Deserialize<Response<String>>(bs.GetColumnName(user.Email, board.BoardName, colIdx));
+            if (response.ErrorMessage != null)
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+            return response.ReturnValue;
+        }
     }
 }

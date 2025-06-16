@@ -65,6 +65,7 @@ namespace IntroSE.Kanban.Frontend.View
             }
         }
 
+
     }
     // Will hold a UserModel and a BoardsVM
     // In the xaml file might want to use DataGrid to present boards - allows clicking on a row
