@@ -11,7 +11,7 @@ namespace Backend.ServiceLayer
         public long Id {  get; set; }
         public String Title {  get; set; }
         public String Description {  get; set; }
-        public DateTime CTime { get; }
+        public DateTime CTime { get; set; }
         public DateTime DueDate {  get; set; }
         public string assignee { get; set; }
         /// <summary>

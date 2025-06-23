@@ -36,6 +36,8 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         public ObservableCollection<TaskModel> BacklogTasks { get; }
         public ObservableCollection<TaskModel> InProgressTasks { get; }
         public ObservableCollection<TaskModel> DoneTasks { get; }
+        public String Owner { get; set; }
+        public ObservableCollection<String> Members { get; set; }
 
         public BoardWindowVM(UserModel user, BoardModel board)
         {
@@ -47,6 +49,16 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             BACKLOG = ControllerFactory.Instance.BoardController.GetColumnName(User, Board, 0);
             IN_PROGRESS = ControllerFactory.Instance.BoardController.GetColumnName(User, Board, 1);
             DONE = ControllerFactory.Instance.BoardController.GetColumnName(User, Board, 2);
+            this.Owner = board.Owner;
+            this.Members = new ObservableCollection<String>();
+            foreach(string member in board.users)
+            {
+                if (member != Owner)
+                {
+                    this.Members.Add(member);
+                }
+            }
+            
         }
 
         public void AddTask(string title, string description, DateTime dueDate)
