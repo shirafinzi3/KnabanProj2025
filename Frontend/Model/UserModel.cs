@@ -11,14 +11,9 @@ namespace IntroSE.Kanban.Frontend.Model
     internal class UserModel
     {
         public string Email { get; set; }
-        /// <summary>
-        /// This constructor get an email and creates a UserSL
-        /// </summary>
-        /// <param name="email">The email of the user</param>
         public UserModel(UserSL user)
         {
             this.Email = user.Email;
         }
-        //May contain other data - can hold board related data
     }
 }

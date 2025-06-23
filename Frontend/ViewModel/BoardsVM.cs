@@ -14,6 +14,7 @@ namespace IntroSE.Kanban.Frontend.ViewModel
         private string errorMessage;
         public UserModel User { get; }
         public string WelcomeMessage { get { return $"Welcome, {User.Email}!"; } }
+        
         public ObservableCollection<BoardModel> AllBoards { get; }
         public string ErrorMessage
         {
@@ -48,26 +49,37 @@ namespace IntroSE.Kanban.Frontend.ViewModel
             {
                 BoardModel boardModel = ControllerFactory.Instance.BoardController.CreateBoard(User, input);
                 AllBoards.Add(boardModel);
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
             }
         }
-        public bool Logout()
+        public void DeleteBoard(BoardModel boardModel)
+        {
+            try
+            { 
+                ControllerFactory.Instance.BoardController.DeleteBoard(User, boardModel);
+                AllBoards.Remove(boardModel);
+                ErrorMessage = "";
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+        }
+        public void Logout()
         {
             try
             {
-                bool res = ControllerFactory.Instance.UserController.Logout(User);
-                return res;
+                ControllerFactory.Instance.UserController.Logout(User);
+                ErrorMessage = "";
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
-                return false;
             }
         }
-        //Will hold a public user model
-        // Use ObservableCollection if we want a list that listens for changes (maybe with tasks or get all boards)
     }
 }

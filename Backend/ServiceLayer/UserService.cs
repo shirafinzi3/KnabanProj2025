@@ -50,12 +50,12 @@ namespace Backend.ServiceLayer
             try
             {
                 UF.Logout(email);
-                Response<bool> res1 = new Response<bool>(true);
+                Response<string> res1 = new Response<string>();
                 return JsonSerializer.Serialize(res1);
             }
             catch (Exception e)
             {
-                return JsonSerializer.Serialize(new Response<bool>(e.Message));
+                return JsonSerializer.Serialize(new Response<string>(e.Message));
             }
         }
         /// <summary>

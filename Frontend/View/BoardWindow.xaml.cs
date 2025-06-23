@@ -11,14 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Backend.ServiceLayer;
 using IntroSE.Kanban.Frontend.Model;
 using IntroSE.Kanban.Frontend.ViewModel;
+using Microsoft.VisualBasic;
 
 namespace IntroSE.Kanban.Frontend.View
 {
-    /// <summary>
-    /// Interaction logic for BoardWindow.xaml
-    /// </summary>
     public partial class BoardWindow : Window
     {
         private UserModel user;
@@ -34,6 +33,43 @@ namespace IntroSE.Kanban.Frontend.View
             this.DataContext = vm;
         }
 
+        private void AddTask_Click(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddTaskWindow { Owner = this };
+            var addVm = (AddTaskVM)addWindow.DataContext;
 
+            if (addWindow.ShowDialog() == true)
+            {
+                vm.AddTask(addVm.Title, addVm.Description, addVm.DueDate.Value);
+            }
+        }
+
+        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            String col = (String)button.Tag;
+            var task = ((Button)sender).DataContext as TaskModel;
+            if (task != null)
+            {
+                vm.DeleteTask(task, col);
+            }
+        }
+
+        private void MoveTask_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            String col = (String)button.Tag;
+            var task = ((Button)sender).DataContext as TaskModel;
+            if (task != null)
+            {
+                vm.MoveTask(task, col);
+            }
+        }
+        private void ReturnToBoards_Click(object sender, RoutedEventArgs e)
+        {
+            Boards boards = new Boards(user);
+            boards.Show();
+            this.Close();
+        }
     }
 }
