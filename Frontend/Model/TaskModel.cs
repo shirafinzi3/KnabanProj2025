@@ -12,9 +12,9 @@ namespace IntroSE.Kanban.Frontend.Model
         public long Id { get; set; }
         public String Title { get; set; }
         public String Description { get; set; }
-        public DateTime CTime { get; }
+        public DateTime CTime { get; set; }
         public DateTime DueDate { get; set; }
-        public string assignee { get; set; }
+        public string Assignee { get; set; }
         public TaskModel(TaskSL task)
         {
             this.Id = task.Id;
@@ -31,11 +31,11 @@ namespace IntroSE.Kanban.Frontend.Model
             this.DueDate = task.DueDate;
             if (task.assignee == null)
             {
-                this.assignee = "Unassigned";
+                this.Assignee = "Unassigned";
             }
             else
             {
-                this.assignee = task.assignee;
+                this.Assignee = task.assignee;
             }  
         }
     }

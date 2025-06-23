@@ -5,51 +5,67 @@
         Height="600" Width="900"
         Background="#FFF9F9F9">
     <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">
-            <Button Content="⮐" FontSize="24"
-                    Width="40" Height="36" Margin="0,0,8,0"
-                    Background="#009899" Foreground="White" FontWeight="Bold"
-                    Click="ReturnToBoards_Click">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Content="⮐" FontSize="24"
+                        Width="40" Height="36" Margin="0,0,8,0"
+                        Background="#009899" Foreground="White" FontWeight="Bold"
+                        Click="ReturnToBoards_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Add Task"
+                        Width="120" Height="36" Margin="0,0,16,0"
+                        Background="#006A71" Foreground="White" FontWeight="Bold"
+                        Click="AddTask_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" VerticalAlignment="Center" Margin="12,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Owner: " FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Owner}" Margin="4,0,12,0"/>
+                    <TextBlock Text="Members: " FontWeight="Bold"/>
+                    <ItemsControl ItemsSource="{Binding Members}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Margin="0,0,4,0"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
 
-            <Button Content="Add Task"
-                    Width="120" Height="36" Margin="0,0,16,0"
-                    Background="#006A71" Foreground="White" FontWeight="Bold"
-                    Click="AddTask_Click">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
-
-            <TextBlock Text="{Binding ErrorMessage}"
-                       Foreground="Red"
-                       VerticalAlignment="Center"
-                       Margin="12,0,0,0"/>
+            </StackPanel>
         </StackPanel>
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -80,16 +96,12 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding DueDate, StringFormat={}— {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding Assignee, StringFormat=Assigned to: {0}}" FontSize="12" Foreground="#555" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding CTime, StringFormat=Created on: {0:yyyy-MM-dd HH:mm}}" FontSize="12" Foreground="#888" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{Binding DueDate, StringFormat=Due: {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                 </StackPanel>
-                                <Button Grid.Column="1"
-                                        Content="→" Width="24" Height="24" Margin="8,0,0,0" Padding="0"
-                                        Background="Transparent" BorderThickness="0"
-                                        Tag="backlog" Click="MoveTask_Click"/>
-                                <Button Grid.Column="2"
-                                        Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0"
-                                        Background="Transparent" BorderThickness="0"
-                                        Tag="backlog" Click="DeleteTask_Click"/>
+                                <Button Grid.Column="1" Content="→" Width="24" Height="24" Margin="8,0,0,0" Padding="0" Background="Transparent" BorderThickness="0" Tag="backlog" Click="MoveTask_Click"/>
+                                <Button Grid.Column="2" Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0" Background="Transparent" BorderThickness="0" Tag="backlog" Click="DeleteTask_Click"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -119,16 +131,12 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding DueDate, StringFormat={}— {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding Assignee, StringFormat=Assigned to: {0}}" FontSize="12" Foreground="#555" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding CTime, StringFormat=Created on: {0:yyyy-MM-dd HH:mm}}" FontSize="12" Foreground="#888" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{Binding DueDate, StringFormat=Due: {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                 </StackPanel>
-                                <Button Grid.Column="1"
-                                        Content="→" Width="24" Height="24" Margin="8,0,0,0" Padding="0"
-                                        Background="Transparent" BorderThickness="0"
-                                        Tag="in progress" Click="MoveTask_Click"/>
-                                <Button Grid.Column="2"
-                                        Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0"
-                                        Background="Transparent" BorderThickness="0"
-                                        Tag="in progress" Click="DeleteTask_Click"/>
+                                <Button Grid.Column="1" Content="→" Width="24" Height="24" Margin="8,0,0,0" Padding="0" Background="Transparent" BorderThickness="0" Tag="in progress" Click="MoveTask_Click"/>
+                                <Button Grid.Column="2" Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0" Background="Transparent" BorderThickness="0" Tag="in progress" Click="DeleteTask_Click"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -157,12 +165,11 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding DueDate, StringFormat={}— {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding Assignee, StringFormat=Assigned to: {0}}" FontSize="12" Foreground="#555" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding CTime, StringFormat=Created on: {0:yyyy-MM-dd HH:mm}}" FontSize="12" Foreground="#888" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{Binding DueDate, StringFormat=Due: {0:yyyy-MM-dd}}" FontStyle="Italic" FontSize="12" Foreground="Gray" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                 </StackPanel>
-                                <Button Grid.Column="1"
-                                        Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0"
-                                        Background="Transparent" BorderThickness="0"
-                                        Tag="done" Click="DeleteTask_Click"/>
+                                <Button Grid.Column="1" Content="🗑" Width="20" Height="20" Margin="8,0,0,0" Padding="0" Background="Transparent" BorderThickness="0" Tag="done" Click="DeleteTask_Click"/>
                             </Grid>
                         </Border>
                     </DataTemplate>
